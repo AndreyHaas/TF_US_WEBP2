@@ -45,3 +45,9 @@ $daten = [
 
 </body>
 </html>
+
+<!--
+Quellenangabe:
+https://www.w3schools.com/php/default.asp
+https://www.php.net/
+-->

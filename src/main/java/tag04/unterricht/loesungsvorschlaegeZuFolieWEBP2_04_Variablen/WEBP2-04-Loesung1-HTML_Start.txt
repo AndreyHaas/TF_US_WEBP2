@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="de">
+	<head>
+		<meta charset="utf-8" />
+		<title>Lottozahlen</title>
+		<style>
+			body {background-color: black;}
+			h1 {color: lightgreen}
+			h2 {color: lightblue;}
+			h3 {color: yellow;}
+			p {color: magenta;}
+			.treffer {color: red;}
+		</style>
+	</head>
+	<body>
+		<h1>Lottoziehung</h1>
+		<p>6 aus 49</p>

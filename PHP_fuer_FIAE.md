@@ -10268,3 +10268,15960 @@ Objekte verschiedener Unterklassen können über denselben Oberklassentyp behand
 ✓ Komposition bevorzugen, wenn keine echte Vererbung vorliegt.
 
 ---
+
+# Kapitel 112
+
+# Was ist ein Interface?
+
+Ein Interface beschreibt ausschließlich
+
+- welche Methoden vorhanden sein müssen
+
+nicht aber,
+
+wie diese Methoden implementiert werden.
+
+Ein Interface enthält also einen **Vertrag** (Contract).
+
+---
+
+## Vergleich
+
+### Klasse
+
+```
+Ich weiß,
+
+WAS
+
+und
+
+WIE
+```
+
+---
+
+### Interface
+
+```
+Ich weiß nur,
+
+WAS vorhanden sein muss.
+```
+
+---
+
+# Beispiel
+
+Jedes Fahrzeug kann starten.
+
+Wie genau?
+
+Das entscheidet jedes Fahrzeug selbst.
+
+---
+
+```
+Startbar
+
+↓
+
+starten()
+```
+
+```
+Auto
+
+↓
+
+starten()
+```
+
+```
+Motorrad
+
+↓
+
+starten()
+```
+
+```
+Flugzeug
+
+↓
+
+starten()
+```
+
+---
+
+# Kapitel 113
+
+# Interface erstellen
+
+```php
+interface Startbar
+{
+
+    public function starten(): void;
+
+}
+```
+
+---
+
+Ein Interface besitzt
+
+- keine Attribute
+- keine Konstruktoren
+- normalerweise keine Implementierung
+
+Es beschreibt lediglich Methoden.
+
+---
+
+# Kapitel 114
+
+# implements
+
+Eine Klasse übernimmt ein Interface mit
+
+```php
+implements
+```
+
+---
+
+```php
+interface Startbar
+{
+
+    public function starten(): void;
+
+}
+```
+
+---
+
+```php
+class Auto implements Startbar
+{
+
+    public function starten(): void
+    {
+
+        echo "Auto startet.";
+
+    }
+
+}
+```
+
+---
+
+Verwendung
+
+```php
+$auto = new Auto();
+
+$auto->starten();
+```
+
+Ausgabe
+
+```
+Auto startet.
+```
+
+---
+
+# Was passiert,
+
+wenn eine Methode fehlt?
+
+```php
+class Auto implements Startbar
+{
+
+}
+```
+
+PHP meldet
+
+```
+Fatal Error
+
+Class Auto contains
+1 abstract method...
+```
+
+Warum?
+
+Weil jede Methode des Interfaces implementiert werden muss.
+
+---
+
+# Kapitel 115
+
+# Mehrere Klassen
+
+```php
+interface Druckbar
+{
+
+    public function drucken(): void;
+
+}
+```
+
+---
+
+```php
+class Rechnung implements Druckbar
+{
+
+    public function drucken(): void
+    {
+
+        echo "Rechnung";
+
+    }
+
+}
+```
+
+---
+
+```php
+class Vertrag implements Druckbar
+{
+
+    public function drucken(): void
+    {
+
+        echo "Vertrag";
+
+    }
+
+}
+```
+
+---
+
+Jetzt kann jede Klasse unterschiedlich arbeiten.
+
+---
+
+# Kapitel 116
+
+# Polymorphie mit Interfaces
+
+```php
+function ausgeben(Druckbar $objekt)
+{
+
+    $objekt->drucken();
+
+}
+```
+
+---
+
+Jetzt funktioniert
+
+```php
+ausgeben(new Rechnung());
+
+ausgeben(new Vertrag());
+```
+
+Das ist Polymorphie.
+
+---
+
+# Kapitel 117
+
+# Mehrere Interfaces
+
+Im Gegensatz zur Vererbung
+
+kann eine Klasse
+
+mehrere Interfaces implementieren.
+
+---
+
+```php
+interface Druckbar
+{
+
+    public function drucken(): void;
+
+}
+```
+
+---
+
+```php
+interface Speicherbar
+{
+
+    public function speichern(): void;
+
+}
+```
+
+---
+
+```php
+class Dokument
+
+implements
+
+Druckbar,
+
+Speicherbar
+{
+
+    public function drucken(): void
+    {
+
+        echo "Druck";
+
+    }
+
+    public function speichern(): void
+    {
+
+        echo "Speichern";
+
+    }
+
+}
+```
+
+---
+
+Darstellung
+
+```
+Druckbar
+
+↘
+
+ Dokument
+
+↗
+
+Speicherbar
+```
+
+---
+
+# Kapitel 118
+
+# Interface oder Vererbung?
+
+Vererbung
+
+```
+IST-EIN
+
+Auto
+
+ist ein
+
+Fahrzeug
+```
+
+---
+
+Interface
+
+```
+KANN ETWAS
+
+Auto
+
+kann
+
+starten
+```
+
+---
+
+Merksatz
+
+Vererbung beschreibt
+
+```
+Beziehungen
+```
+
+Interfaces beschreiben
+
+```
+Fähigkeiten
+```
+
+---
+
+# Kapitel 119
+
+# Dependency Inversion Principle (D)
+
+Eines der SOLID-Prinzipien.
+
+Falsch
+
+```php
+class RechnungService
+{
+
+    private PDFDrucker $drucker;
+
+}
+```
+
+Jetzt funktioniert der Service
+
+nur mit PDF.
+
+---
+
+Besser
+
+```php
+class RechnungService
+{
+
+    private Druckbar $drucker;
+
+}
+```
+
+Jetzt können verwendet werden
+
+- PDF
+- Word
+- HTML
+- Drucker
+- Testobjekte
+
+ohne den Service zu verändern.
+
+---
+
+# Kapitel 120
+
+# UML
+
+Interface
+
+```
++----------------+
+| <<interface>>  |
+| Druckbar       |
++----------------+
+| + drucken()    |
++----------------+
+```
+
+---
+
+Klasse
+
+```
+      <<interface>>
+
+        Druckbar
+
+            ▲
+
+            │
+
+      ..............
+
+            │
+
+       Rechnung
+```
+
+Gestrichelte Linie
+
+↓
+
+implements
+
+---
+
+# Kapitel 121
+
+# Interface vs. abstrakte Klasse
+
+| Interface                  | Abstrakte Klasse           |
+|----------------------------|----------------------------|
+| Vertrag                    | gemeinsame Implementierung |
+| keine Attribute            | Attribute erlaubt          |
+| keine Konstruktoren        | Konstruktor erlaubt        |
+| mehrere Interfaces möglich | nur eine Oberklasse        |
+| beschreibt Fähigkeiten     | beschreibt Basisklassen    |
+
+---
+
+Merksatz
+
+```
+abstract
+
+↓
+
+gemeinsamer Code
+```
+
+```
+interface
+
+↓
+
+gemeinsame Schnittstelle
+```
+
+---
+
+# Kapitel 122
+
+# Praxisbeispiel
+
+Interface
+
+```php
+interface Exportierbar
+{
+
+    public function exportieren(): string;
+
+}
+```
+
+---
+
+CSV
+
+```php
+class CsvExport
+
+implements Exportierbar
+{
+
+    public function exportieren(): string
+    {
+
+        return "CSV";
+
+    }
+
+}
+```
+
+---
+
+JSON
+
+```php
+class JsonExport
+
+implements Exportierbar
+{
+
+    public function exportieren(): string
+    {
+
+        return "JSON";
+
+    }
+
+}
+```
+
+---
+
+Service
+
+```php
+class ExportService
+{
+
+    public function export(
+
+        Exportierbar $export
+
+    ): void
+    {
+
+        echo $export->exportieren();
+
+    }
+
+}
+```
+
+---
+
+Benutzung
+
+```php
+$service = new ExportService();
+
+$service->export(
+
+    new CsvExport()
+
+);
+
+$service->export(
+
+    new JsonExport()
+
+);
+```
+
+Ausgabe
+
+```
+CSV
+
+JSON
+```
+
+Der Service kennt
+
+keine konkrete Klasse.
+
+---
+
+# Kapitel 123
+
+# Mini-Projekt
+
+Erstellen Sie
+
+Interface
+
+```php
+Bezahlbar
+```
+
+Methoden
+
+```php
+bezahlen()
+```
+
+---
+
+Klassen
+
+```
+PayPal
+
+Kreditkarte
+
+Überweisung
+```
+
+Alle implementieren
+
+```
+Bezahlbar
+```
+
+---
+
+Service
+
+```php
+function bezahlen(
+
+    Bezahlbar $zahlung
+
+)
+{
+    $zahlung->bezahlen();
+}
+```
+
+Dadurch können beliebig viele Zahlungsarten ergänzt werden.
+
+---
+
+# Typische IHK-Fragen
+
+## Warum Interfaces?
+
+Antwort
+
+Zur Entkopplung von Klassen und zur Definition gemeinsamer Schnittstellen.
+
+---
+
+## Unterschied
+
+implements
+
+und
+
+extends
+
+---
+
+Antwort
+
+```
+extends
+
+↓
+
+Vererbung
+```
+
+```
+implements
+
+↓
+
+Interface
+```
+
+---
+
+## Kann eine Klasse mehrere Interfaces besitzen?
+
+Ja.
+
+---
+
+## Kann eine Klasse mehrere Oberklassen besitzen?
+
+Nein.
+
+PHP unterstützt keine Mehrfachvererbung.
+
+---
+
+# Prüfungsfallen
+
+❌ Interface instanziieren.
+
+```php
+new Druckbar();
+```
+
+Nicht erlaubt.
+
+---
+
+❌ Methode vergessen.
+
+Alle Methoden müssen implementiert werden.
+
+---
+
+❌ `extends` statt `implements` verwenden.
+
+---
+
+❌ Interface mit gemeinsamer Logik füllen.
+
+Ein Interface beschreibt primär den Vertrag, nicht die Implementierung.
+
+---
+
+# Best Practices
+
+✓ Gegen Interfaces programmieren.
+
+✓ Nicht gegen konkrete Klassen programmieren.
+
+✓ Interfaces klein halten (Interface Segregation Principle).
+
+✓ Aussagekräftige Namen verwenden (`Exportierbar`, `Speicherbar`, `Druckbar`).
+
+✓ Interfaces dort einsetzen, wo mehrere Implementierungen möglich sind.
+
+---
+
+# Kapitel 124
+
+# Warum Namespaces?
+
+Stellen Sie sich ein großes Projekt vor.
+
+Es besitzt
+
+```
+100 Klassen
+```
+
+Vielleicht existieren sogar mehrere Klassen mit demselben Namen.
+
+Beispiel
+
+```
+User
+```
+
+im Backend
+
+und
+
+```
+User
+```
+
+im Frontend.
+
+PHP könnte diese Klassen nicht unterscheiden.
+
+Dafür existieren **Namespaces**.
+
+---
+
+## Vergleich
+
+Windows
+
+```
+C:\Bilder\Urlaub\bild.jpg
+```
+
+Linux
+
+```
+/home/max/bilder/
+```
+
+Java
+
+```
+de.firma.service
+```
+
+PHP
+
+```
+App\Service
+```
+
+Namespaces funktionieren ähnlich wie Ordner.
+
+---
+
+# Kapitel 125
+
+# Namespace erstellen
+
+Datei
+
+```
+Kunde.php
+```
+
+```php
+<?php
+
+namespace App\Model;
+
+class Kunde
+{
+
+}
+```
+
+Jetzt lautet der vollständige Name
+
+```
+App\Model\Kunde
+```
+
+---
+
+# Objekt erzeugen
+
+Ohne Import
+
+```php
+$kunde = new App\Model\Kunde();
+```
+
+Das funktioniert,
+
+ist aber unübersichtlich.
+
+---
+
+# Kapitel 126
+
+# use
+
+Deshalb existiert
+
+```php
+use
+```
+
+---
+
+```php
+<?php
+
+use App\Model\Kunde;
+
+$kunde = new Kunde();
+```
+
+Jetzt muss der vollständige Namespace nicht mehr geschrieben werden.
+
+---
+
+Mehrere Klassen
+
+```php
+use App\Model\Kunde;
+
+use App\Model\Adresse;
+
+use App\Service\KundenService;
+```
+
+---
+
+# Alias verwenden
+
+```php
+use App\Model\Kunde as Customer;
+```
+
+Nun kann geschrieben werden
+
+```php
+$kunde = new Customer();
+```
+
+Das ist hilfreich,
+
+wenn zwei Klassen denselben Namen besitzen.
+
+---
+
+# Kapitel 127
+
+# Projektstruktur
+
+Professionelle Projekte verwenden meist eine ähnliche Struktur.
+
+```
+Projekt/
+
+│
+
+├── src/
+
+│   ├── Model/
+
+│   ├── Service/
+
+│   ├── Repository/
+
+│   └── Controller/
+
+│
+
+├── public/
+
+│   └── index.php
+
+│
+
+├── vendor/
+
+│
+
+├── composer.json
+
+│
+
+└── README.md
+```
+
+---
+
+Warum?
+
+Jede Klasse besitzt ihren festen Platz.
+
+Das verbessert
+
+- Wartbarkeit
+- Übersichtlichkeit
+- Teamarbeit
+
+---
+
+# Kapitel 128
+
+# include und require
+
+PHP kann Dateien laden.
+
+Es existieren vier Varianten.
+
+```php
+include
+```
+
+```php
+require
+```
+
+```php
+include_once
+```
+
+```php
+require_once
+```
+
+---
+
+## include
+
+```php
+include "kunde.php";
+```
+
+Existiert die Datei nicht,
+
+läuft das Programm weiter.
+
+PHP erzeugt lediglich eine Warnung.
+
+---
+
+## require
+
+```php
+require "kunde.php";
+```
+
+Existiert die Datei nicht,
+
+wird das Programm sofort beendet.
+
+---
+
+Merksatz
+
+```
+include
+
+↓
+
+Warnung
+```
+
+```
+require
+
+↓
+
+Fatal Error
+```
+
+---
+
+# *_once
+
+```php
+require_once
+```
+
+lädt die Datei nur einmal.
+
+Mehrfaches Einbinden wird verhindert.
+
+---
+
+Beispiel
+
+```php
+require_once "config.php";
+```
+
+Selbst wenn der Befehl mehrfach aufgerufen wird,
+
+wird die Datei nur einmal geladen.
+
+---
+
+# Kapitel 129
+
+# Autoloading
+
+Früher
+
+```php
+require_once "Kunde.php";
+
+require_once "Adresse.php";
+
+require_once "Bestellung.php";
+
+require_once "Produkt.php";
+
+...
+```
+
+Bei großen Projekten entstanden hunderte solcher Zeilen.
+
+---
+
+Heute übernimmt das
+
+**Autoloading**.
+
+Nur die tatsächlich benötigten Klassen werden geladen.
+
+---
+
+# Kapitel 130
+
+# PSR-4
+
+PSR bedeutet
+
+```
+PHP Standards Recommendation
+```
+
+PSR-4 beschreibt,
+
+wie Klassen automatisch gefunden werden.
+
+---
+
+Beispiel
+
+Klasse
+
+```php
+namespace App\Model;
+
+class Kunde
+{
+
+}
+```
+
+liegt in
+
+```
+src/
+
+└── Model/
+
+    └── Kunde.php
+```
+
+Namespace und Ordnerstruktur stimmen überein.
+
+---
+
+# Vorteile
+
+✓ automatisches Laden
+
+✓ keine include-Ketten
+
+✓ Standard in Laravel
+
+✓ Standard in Symfony
+
+✓ Standard in modernen Projekten
+
+---
+
+# Kapitel 131
+
+# Composer
+
+Composer ist der Paketmanager von PHP.
+
+Vergleich
+
+| Sprache    | Paketmanager   |
+|------------|----------------|
+| Java       | Maven / Gradle |
+| JavaScript | npm            |
+| Python     | pip            |
+| PHP        | Composer       |
+
+---
+
+Mit Composer können
+
+- Bibliotheken installiert
+- Abhängigkeiten verwaltet
+- Autoloading erzeugt
+
+werden.
+
+---
+
+# composer.json
+
+```json
+{
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        }
+    }
+}
+```
+
+Diese Datei beschreibt,
+
+wo sich Klassen befinden.
+
+---
+
+Autoloader erzeugen
+
+```bash
+composer dump-autoload
+```
+
+---
+
+Danach genügt
+
+```php
+require_once "vendor/autoload.php";
+```
+
+Alle Klassen werden automatisch gefunden.
+
+---
+
+# Kapitel 132
+
+# Beispielprojekt
+
+Projekt
+
+```
+src/
+
+    Model/
+
+        Kunde.php
+
+    Service/
+
+        KundenService.php
+
+public/
+
+    index.php
+
+vendor/
+
+composer.json
+```
+
+---
+
+## Kunde.php
+
+```php
+<?php
+
+namespace App\Model;
+
+class Kunde
+{
+
+    public function __construct(
+
+        public string $name
+
+    ){
+
+    }
+
+}
+```
+
+---
+
+## KundenService.php
+
+```php
+<?php
+
+namespace App\Service;
+
+use App\Model\Kunde;
+
+class KundenService
+{
+
+    public function anzeigen(Kunde $kunde): void
+    {
+
+        echo $kunde->name;
+
+    }
+
+}
+```
+
+---
+
+## index.php
+
+```php
+<?php
+
+require_once "../vendor/autoload.php";
+
+use App\Model\Kunde;
+
+use App\Service\KundenService;
+
+$kunde = new Kunde("Max");
+
+$service = new KundenService();
+
+$service->anzeigen($kunde);
+```
+
+Ausgabe
+
+```
+Max
+```
+
+---
+
+# Kapitel 133
+
+# MVC (Überblick)
+
+Die meisten modernen PHP-Anwendungen nutzen MVC.
+
+```
+Browser
+
+↓
+
+Controller
+
+↓
+
+Service
+
+↓
+
+Repository
+
+↓
+
+Datenbank
+```
+
+---
+
+Die wichtigsten Bestandteile
+
+### Model
+
+enthält Daten
+
+---
+
+### View
+
+stellt Daten dar
+
+---
+
+### Controller
+
+verarbeitet Anfragen
+
+---
+
+### Service
+
+enthält Geschäftslogik
+
+---
+
+### Repository
+
+kommuniziert mit der Datenbank
+
+---
+
+Diese Architektur werden wir später mit PDO praktisch umsetzen.
+
+---
+
+# Mini-Projekt
+
+Erstellen Sie folgendes Projekt.
+
+```
+src/
+
+    Model/
+
+        Buch.php
+
+    Service/
+
+        BuchService.php
+
+public/
+
+    index.php
+```
+
+Buch
+
+```
+Titel
+
+Autor
+```
+
+Service
+
+```
+anzeigen()
+```
+
+Benutzen Sie
+
+- Namespace
+- use
+- Constructor Property Promotion
+
+---
+
+# Typische IHK-Fragen
+
+## Warum Namespaces?
+
+Antwort
+
+Um Namenskonflikte zwischen Klassen zu vermeiden und Projekte besser zu strukturieren.
+
+---
+
+## Unterschied
+
+include
+
+und
+
+require
+
+---
+
+Antwort
+
+```
+include
+
+↓
+
+Warnung
+```
+
+```
+require
+
+↓
+
+Programmabbruch
+```
+
+---
+
+## Wozu dient Composer?
+
+Antwort
+
+Zum Verwalten von Bibliotheken und zum automatischen Laden von Klassen.
+
+---
+
+## Was ist PSR-4?
+
+Antwort
+
+Ein Standard für die Zuordnung von Namespaces zu Verzeichnissen.
+
+---
+
+# Prüfungsfallen
+
+❌ Namespace vergessen.
+
+❌ `use` mit `extends` verwechseln.
+
+❌ `require_once "vendor/autoload.php"` vergessen.
+
+❌ Falsche Ordnerstruktur bei PSR-4.
+
+❌ Mehrfaches `include` statt `require_once`.
+
+---
+
+# Best Practices
+
+✓ PSR-4 verwenden.
+
+✓ Composer in jedem Projekt einsetzen.
+
+✓ `src` für Quellcode verwenden.
+
+✓ Klassen logisch in Model, Service, Repository usw. aufteilen.
+
+✓ `require_once` nur für den Composer-Autoloader verwenden.
+
+✓ Möglichst keine manuellen `include`-Ketten schreiben.
+
+---
+
+# Kapitel 134
+
+# Warum PDO?
+
+Fast jede moderne Anwendung arbeitet mit einer Datenbank.
+
+Beispiele
+
+- Online-Shop
+- Kundenverwaltung
+- Login-System
+- Forum
+- Warenwirtschaft
+- CRM
+- ERP
+
+PHP besitzt dafür mehrere Möglichkeiten.
+
+Heute verwendet man fast ausschließlich
+
+```
+PDO
+
+(PHP Data Objects)
+```
+
+---
+
+# Vorteile von PDO
+
+✓ unterstützt viele Datenbanken
+
+✓ sichere Prepared Statements
+
+✓ objektorientierte API
+
+✓ Standard in Laravel und Symfony
+
+✓ verhindert SQL-Injection
+
+---
+
+# Kapitel 135
+
+# Verbindung zur Datenbank
+
+Für eine Verbindung werden benötigt
+
+- Datenbankserver
+- Datenbankname
+- Benutzername
+- Passwort
+
+---
+
+## Beispiel
+
+```php
+$host = "localhost";
+
+$db = "firma";
+
+$user = "root";
+
+$password = "";
+```
+
+---
+
+# DSN
+
+DSN bedeutet
+
+```
+Data Source Name
+```
+
+Aufbau
+
+```text
+mysql:host=localhost;dbname=firma;charset=utf8mb4
+```
+
+Bestandteile
+
+| Teil    | Bedeutung    |
+|---------|--------------|
+| mysql   | Datenbanktyp |
+| host    | Server       |
+| dbname  | Datenbank    |
+| charset | Zeichensatz  |
+
+---
+
+# Kapitel 136
+
+# PDO-Objekt erzeugen
+
+```php
+$pdo = new PDO(
+
+    "mysql:host=localhost;dbname=firma;charset=utf8mb4",
+
+    "root",
+
+    ""
+
+);
+```
+
+Jetzt besteht eine Verbindung zur Datenbank.
+
+---
+
+# Fehlerbehandlung
+
+Immer aktivieren
+
+```php
+$pdo->setAttribute(
+
+    PDO::ATTR_ERRMODE,
+
+    PDO::ERRMODE_EXCEPTION
+
+);
+```
+
+Warum?
+
+Fehler werden sofort als Exception gemeldet.
+
+Das erleichtert die Fehlersuche erheblich.
+
+---
+
+# Kapitel 137
+
+# Verbindung mit try-catch
+
+```php
+try{
+
+    $pdo = new PDO(
+
+        "mysql:host=localhost;dbname=firma;charset=utf8mb4",
+
+        "root",
+
+        ""
+
+    );
+
+    $pdo->setAttribute(
+
+        PDO::ATTR_ERRMODE,
+
+        PDO::ERRMODE_EXCEPTION
+
+    );
+
+    echo "Verbindung erfolgreich.";
+
+}
+catch(PDOException $e){
+
+    echo $e->getMessage();
+
+}
+```
+
+---
+
+Ablauf
+
+```
+Verbindung
+
+↓
+
+Erfolg?
+
+↓
+
+Ja
+
+↓
+
+weiterarbeiten
+
+↓
+
+Nein
+
+↓
+
+Exception
+
+↓
+
+Fehlermeldung
+```
+
+---
+
+# Kapitel 138
+
+# query()
+
+Für einfache SELECT-Abfragen.
+
+```php
+$sql = "SELECT * FROM kunde";
+
+$result = $pdo->query($sql);
+```
+
+`query()` führt die SQL-Anweisung sofort aus.
+
+---
+
+Ergebnis
+
+```
+PDOStatement
+```
+
+---
+
+# Kapitel 139
+
+# fetch()
+
+Liest genau **einen Datensatz**.
+
+```php
+$row = $result->fetch();
+```
+
+Beispiel
+
+Tabelle
+
+| id | name |
+|----|------|
+| 1  | Max  |
+| 2  | Lisa |
+
+---
+
+PHP
+
+```php
+$row = $result->fetch();
+
+print_r($row);
+```
+
+Ausgabe
+
+```php
+Array
+(
+    [id] => 1
+    [name] => Max
+)
+```
+
+---
+
+# fetch(PDO::FETCH_ASSOC)
+
+Empfohlene Variante
+
+```php
+$row = $result->fetch(
+
+    PDO::FETCH_ASSOC
+
+);
+```
+
+Ausgabe
+
+```php
+Array
+(
+    [id] => 1
+
+    [name] => Max
+)
+```
+
+Keine numerischen Indizes mehr.
+
+---
+
+# Kapitel 140
+
+# fetchAll()
+
+Liest alle Datensätze.
+
+```php
+$rows = $result->fetchAll(
+
+    PDO::FETCH_ASSOC
+
+);
+```
+
+---
+
+Ergebnis
+
+```php
+Array
+(
+    [0] =>
+
+        Array
+        (
+            [id] => 1
+            [name] => Max
+        )
+
+    [1] =>
+
+        Array
+        (
+            [id] => 2
+            [name] => Lisa
+        )
+)
+```
+
+---
+
+Verarbeitung
+
+```php
+foreach($rows as $row){
+
+    echo $row["name"];
+
+    echo "<br>";
+
+}
+```
+
+---
+
+# Kapitel 141
+
+# SQL-Injection
+
+Eines der wichtigsten Sicherheitsthemen.
+
+---
+
+Falsch
+
+```php
+$name = $_POST["name"];
+
+$sql =
+
+"SELECT * FROM kunde
+
+WHERE name = '$name'";
+```
+
+---
+
+Benutzer gibt ein
+
+```sql
+' OR 1=1 --
+```
+
+Ergebnis
+
+```sql
+SELECT *
+
+FROM kunde
+
+WHERE name=''
+
+OR 1=1
+```
+
+Alle Datensätze werden geliefert.
+
+---
+
+Dies nennt man
+
+```
+SQL-Injection
+```
+
+---
+
+# Kapitel 142
+
+# prepare()
+
+Prepared Statements verhindern SQL-Injection.
+
+```php
+$sql =
+
+"SELECT *
+
+FROM kunde
+
+WHERE name = ?";
+```
+
+---
+
+```php
+$stmt = $pdo->prepare($sql);
+```
+
+Noch passiert nichts.
+
+Die Abfrage wird lediglich vorbereitet.
+
+---
+
+# Kapitel 143
+
+# execute()
+
+```php
+$stmt->execute(
+
+    [
+
+        $name
+
+    ]
+
+);
+```
+
+Jetzt wird die Abfrage ausgeführt.
+
+---
+
+Danach
+
+```php
+$row =
+
+$stmt->fetch(
+
+    PDO::FETCH_ASSOC
+
+);
+```
+
+---
+
+Gesamter Ablauf
+
+```php
+$name = "Max";
+
+$stmt =
+
+$pdo->prepare(
+
+"SELECT *
+
+FROM kunde
+
+WHERE name=?"
+
+);
+
+$stmt->execute(
+
+    [
+
+        $name
+
+    ]
+
+);
+
+$row =
+
+$stmt->fetch(
+
+PDO::FETCH_ASSOC
+
+);
+```
+
+---
+
+# Warum ist das sicher?
+
+Der Benutzerwert wird **nicht** in den SQL-Text eingefügt.
+
+Die Datenbank behandelt ihn ausschließlich als Wert.
+
+---
+
+# Kapitel 144
+
+# Benannte Platzhalter
+
+Noch lesbarer
+
+```php
+$sql =
+
+"SELECT *
+
+FROM kunde
+
+WHERE name = :name";
+```
+
+---
+
+Ausführen
+
+```php
+$stmt =
+
+$pdo->prepare($sql);
+
+$stmt->execute(
+
+    [
+
+        "name"=>$name
+
+    ]
+
+);
+```
+
+---
+
+Mehrere Parameter
+
+```php
+$sql =
+
+"
+
+SELECT *
+
+FROM kunde
+
+WHERE name=:name
+
+AND alter>:alter
+
+";
+```
+
+---
+
+```php
+$stmt->execute(
+
+    [
+
+        "name"=>$name,
+
+        "alter"=>$alter
+
+    ]
+
+);
+```
+
+---
+
+# Kapitel 145
+
+# PDOStatement
+
+```
+PDO
+
+↓
+
+Verbindung
+```
+
+```
+PDOStatement
+
+↓
+
+eine SQL-Abfrage
+```
+
+---
+
+Beispiel
+
+```php
+$pdo
+
+↓
+
+Verbindung
+```
+
+```php
+$stmt
+
+↓
+
+SELECT * FROM kunde
+```
+
+---
+
+# Mini-Projekt
+
+Tabelle
+
+```
+kunde
+
+id
+
+name
+
+alter
+```
+
+Suche
+
+```php
+$name = "Lisa";
+
+$stmt =
+
+$pdo->prepare(
+
+"
+
+SELECT *
+
+FROM kunde
+
+WHERE name=:name
+
+"
+
+);
+
+$stmt->execute(
+
+    [
+
+        "name"=>$name
+
+    ]
+
+);
+
+$kunde =
+
+$stmt->fetch(
+
+PDO::FETCH_ASSOC
+
+);
+
+print_r($kunde);
+```
+
+---
+
+# Typische IHK-Fragen
+
+## Warum PDO?
+
+Antwort
+
+Um verschiedene Datenbanken mit einer einheitlichen API anzusprechen und sichere Datenbankabfragen zu ermöglichen.
+
+---
+
+## Unterschied
+
+query()
+
+und
+
+prepare()
+
+---
+
+Antwort
+
+```
+query()
+
+↓
+
+führt SQL sofort aus
+```
+
+```
+prepare()
+
+↓
+
+bereitet SQL vor
+```
+
+---
+
+## Warum Prepared Statements?
+
+Antwort
+
+Zum Schutz vor SQL-Injection.
+
+---
+
+## Unterschied
+
+fetch()
+
+und
+
+fetchAll()
+
+---
+
+Antwort
+
+```
+fetch()
+
+↓
+
+ein Datensatz
+```
+
+```
+fetchAll()
+
+↓
+
+alle Datensätze
+```
+
+---
+
+# Prüfungsfallen
+
+❌ SQL mit Stringverkettung zusammensetzen.
+
+❌ `query()` für Benutzereingaben verwenden.
+
+❌ `execute()` vergessen.
+
+❌ `fetch()` aufrufen, bevor `execute()` ausgeführt wurde.
+
+❌ Keine Fehlerbehandlung mit `try-catch`.
+
+---
+
+# Best Practices
+
+✓ Immer `prepare()` für Benutzereingaben verwenden.
+
+✓ `PDO::FETCH_ASSOC` nutzen.
+
+✓ Fehler mit `PDO::ERRMODE_EXCEPTION` behandeln.
+
+✓ SQL und PHP sauber trennen.
+
+✓ Platzhalter statt Stringverkettung verwenden.
+
+---
+
+# Kapitel 146
+
+# CRUD
+
+Fast jede Geschäftsanwendung besteht aus vier Grundoperationen.
+
+| Operation | SQL    |
+|-----------|--------|
+| Create    | INSERT |
+| Read      | SELECT |
+| Update    | UPDATE |
+| Delete    | DELETE |
+
+Merksatz:
+
+```
+CRUD
+
+↓
+
+Create
+
+Read
+
+Update
+
+Delete
+```
+
+---
+
+# Kapitel 147
+
+# INSERT
+
+Neue Datensätze werden mit
+
+```sql
+INSERT INTO
+```
+
+angelegt.
+
+SQL
+
+```sql
+INSERT INTO kunde
+
+(name, alter)
+
+VALUES
+
+('Max', 28);
+```
+
+Mit PDO
+
+```php
+$sql = "
+
+INSERT INTO kunde
+
+(name, alter)
+
+VALUES
+
+(:name, :alter)
+
+";
+
+$stmt = $pdo->prepare($sql);
+
+$stmt->execute([
+
+    "name" => "Max",
+
+    "alter" => 28
+
+]);
+```
+
+---
+
+# Warum Platzhalter?
+
+Auch beim INSERT können Benutzereingaben gefährlich sein.
+
+Deshalb gilt:
+
+> Immer `prepare()` verwenden.
+
+---
+
+# Kapitel 148
+
+# lastInsertId()
+
+Viele Tabellen besitzen eine AUTO_INCREMENT-ID.
+
+Beispiel
+
+| id | name |
+|----|------|
+| 15 | Max  |
+
+Nach dem INSERT möchte man oft wissen,
+
+welche ID vergeben wurde.
+
+```php
+$id = $pdo->lastInsertId();
+
+echo $id;
+```
+
+Ausgabe
+
+```
+15
+```
+
+---
+
+Typische Anwendungen
+
+- Rechnung erzeugen
+- Kunde anlegen
+- Bestellung speichern
+- Fremdschlüssel erzeugen
+
+---
+
+# Kapitel 149
+
+# UPDATE
+
+SQL
+
+```sql
+UPDATE kunde
+SET alter = 29
+WHERE id = 5;
+```
+
+PDO
+
+```php
+$sql = "
+
+UPDATE kunde
+
+SET alter=:alter
+
+WHERE id=:id
+
+";
+
+$stmt = $pdo->prepare($sql);
+
+$stmt->execute([
+
+    "alter" => 29,
+
+    "id" => 5
+
+]);
+```
+
+---
+
+Wichtig
+
+Ohne
+
+```sql
+WHERE
+```
+
+werden **alle Datensätze geändert.**
+
+---
+
+Beispiel
+
+```sql
+UPDATE kunde
+SET alter = 30;
+```
+
+Jetzt besitzen alle Kunden Alter 30.
+
+Das ist ein häufiger Prüfungsfehler.
+
+---
+
+# Kapitel 150
+
+# DELETE
+
+SQL
+
+```sql
+DELETE FROM kunde
+WHERE id = 7;
+```
+
+PDO
+
+```php
+$sql = "
+
+DELETE FROM kunde
+
+WHERE id=:id
+
+";
+
+$stmt = $pdo->prepare($sql);
+
+$stmt->execute([
+
+    "id" => 7
+
+]);
+```
+
+---
+
+Auch hier gilt
+
+Ohne
+
+```sql
+WHERE
+```
+
+werden alle Datensätze gelöscht.
+
+```sql
+DELETE FROM kunde;
+```
+
+---
+
+# Kapitel 151
+
+# rowCount()
+
+Nach UPDATE oder DELETE möchte man wissen,
+
+wie viele Datensätze betroffen waren.
+
+```php
+echo $stmt->rowCount();
+```
+
+Ausgabe
+
+```
+1
+```
+
+---
+
+Wenn
+
+```
+0
+```
+
+zurückgegeben wird,
+
+existierte der Datensatz möglicherweise nicht.
+
+---
+
+# Kapitel 152
+
+# Transaktionen
+
+Stellen Sie sich eine Banküberweisung vor.
+
+```
+Konto A
+
+↓
+
+-100 €
+
+↓
+
+Konto B
+
+↓
+
++100 €
+```
+
+Was passiert,
+
+wenn nach dem Abbuchen ein Fehler auftritt?
+
+Dann fehlt Geld.
+
+Deshalb verwendet man
+
+```
+Transaktionen
+```
+
+---
+
+Eine Transaktion bedeutet
+
+```
+Alles
+
+oder
+
+Nichts
+```
+
+---
+
+# Kapitel 153
+
+# beginTransaction()
+
+```php
+$pdo->beginTransaction();
+```
+
+Jetzt werden Änderungen zunächst nur vorgemerkt.
+
+---
+
+# commit()
+
+Wenn alles erfolgreich war
+
+```php
+$pdo->commit();
+```
+
+Jetzt werden alle Änderungen dauerhaft gespeichert.
+
+---
+
+# rollback()
+
+Falls ein Fehler auftritt
+
+```php
+$pdo->rollback();
+```
+
+Alle Änderungen werden zurückgenommen.
+
+---
+
+# Kapitel 154
+
+# Komplettes Beispiel
+
+```php
+try{
+
+    $pdo->beginTransaction();
+
+    $stmt = $pdo->prepare(
+
+        "
+
+        UPDATE konto
+
+        SET kontostand = kontostand - 100
+
+        WHERE id=1
+
+        "
+
+    );
+
+    $stmt->execute();
+
+    $stmt = $pdo->prepare(
+
+        "
+
+        UPDATE konto
+
+        SET kontostand = kontostand + 100
+
+        WHERE id=2
+
+        "
+
+    );
+
+    $stmt->execute();
+
+    $pdo->commit();
+
+}
+catch(PDOException $e){
+
+    $pdo->rollback();
+
+}
+```
+
+---
+
+Ablauf
+
+```
+beginTransaction()
+
+↓
+
+Änderungen
+
+↓
+
+Fehler?
+
+↓
+
+Nein
+
+↓
+
+commit()
+
+↓
+
+fertig
+```
+
+---
+
+Bei Fehler
+
+```
+beginTransaction()
+
+↓
+
+Fehler
+
+↓
+
+rollback()
+
+↓
+
+alles rückgängig
+```
+
+---
+
+# Kapitel 155
+
+# Repository Pattern
+
+In modernen Anwendungen werden SQL-Abfragen
+
+nicht im Controller geschrieben.
+
+Stattdessen existiert ein Repository.
+
+---
+
+```
+Controller
+
+↓
+
+Repository
+
+↓
+
+PDO
+
+↓
+
+MySQL
+```
+
+---
+
+Beispiel
+
+```php
+class KundeRepository
+{
+
+    public function findAll(): array
+    {
+
+        // SQL
+
+    }
+
+    public function findById(int $id): ?array
+    {
+
+        // SQL
+
+    }
+
+    public function save(Kunde $kunde): void
+    {
+
+        // INSERT
+
+    }
+
+    public function update(Kunde $kunde): void
+    {
+
+        // UPDATE
+
+    }
+
+    public function delete(int $id): void
+    {
+
+        // DELETE
+
+    }
+
+}
+```
+
+---
+
+Vorteile
+
+✓ SQL an einer Stelle
+
+✓ Controller bleibt klein
+
+✓ bessere Wartbarkeit
+
+✓ einfacher testbar
+
+---
+
+# Kapitel 156
+
+# CRUD-Anwendung
+
+```
+Browser
+
+↓
+
+Controller
+
+↓
+
+Repository
+
+↓
+
+PDO
+
+↓
+
+MySQL
+```
+
+Repository enthält
+
+```
+SELECT
+
+INSERT
+
+UPDATE
+
+DELETE
+```
+
+Controller enthält
+
+```
+Geschäftslogik
+```
+
+View enthält
+
+```
+HTML
+```
+
+---
+
+# Mini-Projekt
+
+Tabelle
+
+```sql
+kunde
+
+id
+
+name
+
+stadt
+```
+
+Erstellen Sie ein Repository mit
+
+```php
+findAll()
+
+findById()
+
+insert()
+
+update()
+
+delete()
+```
+
+Verwenden Sie ausschließlich
+
+- PDO
+- prepare()
+- execute()
+
+---
+
+# Typische IHK-Fragen
+
+## Warum Prepared Statements auch bei UPDATE?
+
+Antwort
+
+Weil auch dort Benutzereingaben verwendet werden können.
+
+---
+
+## Wozu dient `lastInsertId()`?
+
+Antwort
+
+Sie liefert die automatisch erzeugte ID des zuletzt eingefügten Datensatzes.
+
+---
+
+## Wann verwendet man Transaktionen?
+
+Antwort
+
+Wenn mehrere zusammengehörige Datenbankoperationen entweder vollständig oder gar nicht ausgeführt werden dürfen.
+
+---
+
+## Warum Repository?
+
+Antwort
+
+Zur Trennung von Datenbankzugriff und Geschäftslogik.
+
+---
+
+# Prüfungsfallen
+
+❌ UPDATE ohne WHERE.
+
+❌ DELETE ohne WHERE.
+
+❌ `commit()` vergessen.
+
+❌ `rollback()` nicht im Fehlerfall aufrufen.
+
+❌ SQL direkt im Controller schreiben.
+
+❌ `lastInsertId()` vor dem INSERT aufrufen.
+
+---
+
+# Best Practices
+
+✓ Jede Benutzereingabe mit `prepare()` verarbeiten.
+
+✓ Datenbankzugriffe in Repository-Klassen kapseln.
+
+✓ Transaktionen bei zusammenhängenden Änderungen verwenden.
+
+✓ Fehler immer mit Exceptions behandeln.
+
+✓ SQL-Anweisungen klar und lesbar formatieren.
+
+---
+
+# Kapitel 157
+
+# Das HTTP-Protokoll
+
+HTTP bedeutet
+
+```
+Hypertext Transfer Protocol
+```
+
+Es regelt die Kommunikation zwischen Browser und Webserver.
+
+---
+
+## Ablauf
+
+```
+Browser
+
+↓
+
+HTTP Request
+
+↓
+
+Webserver
+
+↓
+
+PHP
+
+↓
+
+MySQL
+
+↓
+
+PHP
+
+↓
+
+HTTP Response
+
+↓
+
+Browser
+```
+
+---
+
+Jeder Seitenaufruf besteht aus
+
+- einer Anfrage (Request)
+- einer Antwort (Response)
+
+---
+
+# Kapitel 158
+
+# HTTP-Methoden
+
+Die wichtigsten Methoden sind
+
+| Methode | Bedeutung           |
+|---------|---------------------|
+| GET     | Daten abrufen       |
+| POST    | Daten senden        |
+| PUT     | Daten ändern (API)  |
+| DELETE  | Daten löschen (API) |
+
+Für die IHK sind hauptsächlich GET und POST relevant.
+
+---
+
+# Kapitel 159
+
+# GET
+
+GET überträgt Daten über die URL.
+
+Beispiel
+
+```
+https://example.de/index.php?id=5
+```
+
+Die URL enthält
+
+```
+id=5
+```
+
+---
+
+PHP
+
+```php
+$id = $_GET["id"];
+
+echo $id;
+```
+
+Ausgabe
+
+```
+5
+```
+
+---
+
+Mehrere Parameter
+
+```
+?name=Max&alter=30
+```
+
+PHP
+
+```php
+echo $_GET["name"];
+
+echo $_GET["alter"];
+```
+
+---
+
+Vorteile
+
+✓ einfach
+
+✓ URL kann gespeichert werden
+
+✓ Suchmaschinenfreundlich
+
+---
+
+Nachteile
+
+✗ Daten sind sichtbar
+
+✗ Länge begrenzt
+
+✗ nicht für Passwörter geeignet
+
+---
+
+# Kapitel 160
+
+# POST
+
+POST sendet Daten im HTTP-Body.
+
+Sie erscheinen **nicht** in der URL.
+
+---
+
+HTML
+
+```html
+<form method="post">
+
+<input
+
+type="text"
+
+name="name">
+
+<button>
+
+Speichern
+
+</button>
+
+</form>
+```
+
+---
+
+PHP
+
+```php
+$name = $_POST["name"];
+
+echo $name;
+```
+
+---
+
+Vorteile
+
+✓ keine Längenbeschränkung (praktisch)
+
+✓ Daten stehen nicht in der URL
+
+✓ geeignet für Formulare
+
+---
+
+Merksatz
+
+```
+GET
+
+lesen
+```
+
+```
+POST
+
+senden
+```
+
+---
+
+# Kapitel 161
+
+# HTML-Formulare
+
+Beispiel
+
+```html
+<form action="index.php" method="post">
+
+    <label>Name</label>
+
+    <input type="text" name="name">
+    
+    <br>
+
+    <label>Alter</label>
+
+    <input type="number" name="alter">
+
+    <br>
+
+    <button>Senden</button>
+
+</form>
+```
+
+---
+
+Beim Klick auf
+
+```
+Senden
+```
+
+werden die Daten an
+
+```
+index.php
+```
+
+übertragen.
+
+---
+
+# Kapitel 162
+
+# Formular auslesen
+
+```php
+if($_SERVER["REQUEST_METHOD"]=="POST"){
+
+    $name = $_POST["name"];
+
+    $alter = $_POST["alter"];
+
+    echo $name;
+
+    echo $alter;
+
+}
+```
+
+Warum?
+
+Damit die Verarbeitung nur erfolgt,
+
+wenn das Formular tatsächlich abgeschickt wurde.
+
+---
+
+# Kapitel 163
+
+# $_REQUEST
+
+PHP besitzt
+
+```php
+$_REQUEST
+```
+
+Es enthält
+
+- GET
+- POST
+- Cookies
+
+---
+
+Beispiel
+
+```php
+echo $_REQUEST["name"];
+```
+
+In modernen Anwendungen wird jedoch bevorzugt
+
+```php
+$_GET
+```
+
+oder
+
+```php
+$_POST
+```
+
+verwendet.
+
+---
+
+# Kapitel 164
+
+# Benutzereingaben validieren
+
+Benutzereingaben dürfen niemals ungeprüft übernommen werden.
+
+---
+
+Falsch
+
+```php
+$name = $_POST["name"];
+```
+
+---
+
+Besser
+
+```php
+$name = trim($_POST["name"]);
+```
+
+---
+
+Noch besser
+
+```php
+$name = filter_input(
+
+    INPUT_POST,
+
+    "name",
+
+    FILTER_SANITIZE_SPECIAL_CHARS
+
+);
+```
+
+---
+
+# trim()
+
+Entfernt Leerzeichen.
+
+```php
+$name = " Max ";
+
+$name = trim($name);
+```
+
+Ergebnis
+
+```
+Max
+```
+
+---
+
+# Kapitel 165
+
+# filter_input()
+
+Zahl prüfen
+
+```php
+$alter = filter_input(
+
+    INPUT_POST,
+
+    "alter",
+
+    FILTER_VALIDATE_INT
+
+);
+```
+
+---
+
+Wenn keine gültige Zahl eingegeben wurde
+
+```php
+false
+```
+
+wird zurückgegeben.
+
+---
+
+E-Mail prüfen
+
+```php
+$email = filter_input(
+
+    INPUT_POST,
+
+    "email",
+
+    FILTER_VALIDATE_EMAIL
+
+);
+```
+
+---
+
+URL prüfen
+
+```php
+$url = filter_input(
+
+    INPUT_POST,
+
+    "url",
+
+    FILTER_VALIDATE_URL
+
+);
+```
+
+---
+
+# Kapitel 166
+
+# filter_var()
+
+Auch einzelne Werte können geprüft werden.
+
+```php
+$email = "max@test.de";
+
+if(
+
+filter_var(
+
+$email,
+
+FILTER_VALIDATE_EMAIL
+
+)
+
+){
+
+    echo "gültig";
+
+}
+```
+
+---
+
+# Kapitel 167
+
+# Sessions
+
+HTTP ist zustandslos.
+
+Das bedeutet
+
+Der Server merkt sich den Benutzer nicht.
+
+---
+
+Deshalb existieren Sessions.
+
+```
+Browser
+
+↓
+
+Session-ID
+
+↓
+
+Server
+
+↓
+
+Sessiondaten
+```
+
+---
+
+Session starten
+
+```php
+session_start();
+```
+
+Dies muss **vor jeder HTML-Ausgabe** erfolgen.
+
+---
+
+Wert speichern
+
+```php
+$_SESSION["name"]="Max";
+```
+
+---
+
+Wert lesen
+
+```php
+echo $_SESSION["name"];
+```
+
+---
+
+Session löschen
+
+```php
+session_destroy();
+```
+
+---
+
+# Kapitel 168
+
+# Cookies
+
+Cookies werden
+
+nicht auf dem Server,
+
+sondern im Browser gespeichert.
+
+---
+
+Cookie setzen
+
+```php
+setcookie(
+
+"sprache",
+
+"de",
+
+time()+3600
+
+);
+```
+
+Bedeutung
+
+```
+1 Stunde gültig
+```
+
+---
+
+Cookie lesen
+
+```php
+echo $_COOKIE["sprache"];
+```
+
+---
+
+Unterschied
+
+| Session  | Cookie         |
+|----------|----------------|
+| Server   | Browser        |
+| sicherer | weniger sicher |
+| Login    | Einstellungen  |
+
+---
+
+# Kapitel 169
+
+# Einfacher Login
+
+Formular
+
+```html
+<form method="post">
+
+<input name="user">
+    
+<input type="password" name="password">
+
+<button>Login</button>
+
+</form>
+```
+
+---
+
+PHP
+
+```php
+session_start();
+
+if(
+
+$_POST["user"]=="admin"
+
+&&
+
+$_POST["password"]=="1234"
+
+){
+
+    $_SESSION["login"]=true;
+
+}
+```
+
+---
+
+Geschützte Seite
+
+```php
+session_start();
+
+if(
+
+!isset($_SESSION["login"])
+
+){
+
+    die("Kein Zugriff.");
+
+}
+```
+
+---
+
+# Hinweis
+
+In echten Anwendungen werden Passwörter niemals im Klartext gespeichert.
+
+Stattdessen verwendet man
+
+```php
+password_hash()
+```
+
+und
+
+```php
+password_verify()
+```
+
+Dieses Thema behandeln wir später ausführlich.
+
+---
+
+# Kapitel 170
+
+# Ablauf eines Formulars
+
+```
+Browser
+
+↓
+
+Formular
+
+↓
+
+POST
+
+↓
+
+PHP
+
+↓
+
+Validierung
+
+↓
+
+PDO
+
+↓
+
+MySQL
+
+↓
+
+Antwort
+
+↓
+
+Browser
+```
+
+---
+
+# Mini-Projekt
+
+Erstellen Sie ein Formular
+
+```
+Name
+
+E-Mail
+
+Alter
+```
+
+Prüfen Sie
+
+- Name nicht leer
+- Alter = Integer
+- E-Mail gültig
+
+Danach Ausgabe
+
+```
+Willkommen Max
+```
+
+---
+
+# Typische IHK-Fragen
+
+## Unterschied GET und POST?
+
+Antwort
+
+GET überträgt Daten in der URL.
+
+POST überträgt Daten im HTTP-Body.
+
+---
+
+## Warum validieren?
+
+Antwort
+
+Um fehlerhafte oder manipulierte Eingaben zu verhindern.
+
+---
+
+## Wozu dienen Sessions?
+
+Antwort
+
+Zur Speicherung benutzerspezifischer Daten auf dem Server.
+
+---
+
+## Unterschied Session und Cookie?
+
+Antwort
+
+Session liegt auf dem Server,
+
+Cookie im Browser.
+
+---
+
+# Prüfungsfallen
+
+❌ `session_start()` nach HTML aufrufen.
+
+❌ Passwörter per GET übertragen.
+
+❌ Benutzereingaben ungeprüft verwenden.
+
+❌ `$_REQUEST` überall einsetzen.
+
+❌ Cookies mit Sessions verwechseln.
+
+---
+
+# Best Practices
+
+✓ Formulare immer validieren.
+
+✓ Für Formulare POST verwenden.
+
+✓ Sessions für Logins nutzen.
+
+✓ Cookies nur für Einstellungen oder Präferenzen verwenden.
+
+✓ Passwörter niemals im Klartext speichern.
+
+✓ `filter_input()` bevorzugen.
+
+---
+
+# Kapitel 171
+
+# Warum Sicherheit wichtig ist
+
+Fast jede Webanwendung verarbeitet
+
+- Benutzerdaten
+- Passwörter
+- Kundendaten
+- Zahlungsinformationen
+- personenbezogene Daten
+
+Schon ein kleiner Fehler kann dazu führen, dass Angreifer Zugriff auf die gesamte Anwendung erhalten.
+
+---
+
+Die häufigsten Angriffe sind
+
+- SQL-Injection
+- XSS
+- CSRF
+- unsichere Passwörter
+- unsichere Dateiuploads
+
+---
+
+# Kapitel 172
+
+# Passwörter niemals speichern
+
+Falsch
+
+```php
+$password = "geheim123";
+```
+
+Datenbank
+
+| Benutzer | Passwort  |
+|----------|-----------|
+| Max      | geheim123 |
+
+---
+
+Problem
+
+Jeder mit Zugriff auf die Datenbank kennt alle Passwörter.
+
+---
+
+Richtig
+
+```php
+password_hash()
+```
+
+---
+
+# Kapitel 173
+
+# password_hash()
+
+```php
+$password = "geheim123";
+
+$hash = password_hash(
+
+    $password,
+
+    PASSWORD_DEFAULT
+
+);
+
+echo $hash;
+```
+
+Ausgabe
+
+```
+$2y$10$...
+```
+
+Jeder Aufruf erzeugt einen anderen Hash.
+
+---
+
+Warum?
+
+Es wird automatisch
+
+- Salt
+- Algorithmus
+- Kostenfaktor
+
+verwendet.
+
+---
+
+Beispiel
+
+```php
+echo password_hash(
+
+"passwort",
+
+PASSWORD_DEFAULT
+
+);
+```
+
+Aufruf 1
+
+```
+$2y$10$A...
+```
+
+Aufruf 2
+
+```
+$2y$10$B...
+```
+
+Obwohl das Passwort identisch ist.
+
+---
+
+# Kapitel 174
+
+# password_verify()
+
+Beim Login wird **nicht**
+
+der Hash neu berechnet.
+
+Stattdessen
+
+```php
+password_verify()
+```
+
+---
+
+```php
+$passwort = $_POST["password"];
+
+if(
+
+password_verify(
+
+$passwort,
+
+$hash
+
+)
+
+){
+
+    echo "Login erfolgreich.";
+
+}
+```
+
+---
+
+Ablauf
+
+```
+Benutzer
+
+↓
+
+Passwort
+
+↓
+
+password_verify()
+
+↓
+
+Hash vergleichen
+
+↓
+
+Login
+```
+
+---
+
+# Kapitel 175
+
+# SQL-Injection (Wiederholung)
+
+Gefährlich
+
+```php
+$sql =
+
+"
+
+SELECT *
+
+FROM user
+
+WHERE
+
+name='$name'
+
+";
+```
+
+---
+
+Angriff
+
+```
+' OR 1=1 --
+```
+
+Ergebnis
+
+```sql
+SELECT *
+
+FROM user
+
+WHERE
+
+name=''
+
+OR 1=1
+```
+
+Alle Benutzer werden ausgegeben.
+
+---
+
+Lösung
+
+```php
+$stmt =
+
+$pdo->prepare(
+
+"
+
+SELECT *
+
+FROM user
+
+WHERE name=?
+
+"
+
+);
+
+$stmt->execute([
+
+    $name
+
+]);
+```
+
+---
+
+Merksatz
+
+> Benutzereingaben niemals direkt in SQL einsetzen.
+
+---
+
+# Kapitel 176
+
+# Cross Site Scripting (XSS)
+
+XSS bedeutet,
+
+dass Angreifer JavaScript in Webseiten einschleusen.
+
+---
+
+Beispiel
+
+Benutzer gibt ein
+
+```html
+<script>
+
+alert("Hallo")
+
+</script>
+```
+
+Ausgabe
+
+```php
+echo $_POST["name"];
+```
+
+Browser führt das Script aus.
+
+---
+
+Gefahr
+
+- Cookies stehlen
+- Benutzer umleiten
+- Login übernehmen
+- Inhalte manipulieren
+
+---
+
+# Kapitel 177
+
+# Schutz vor XSS
+
+Verwenden Sie
+
+```php
+htmlspecialchars()
+```
+
+---
+
+```php
+echo htmlspecialchars(
+
+$name,
+
+ENT_QUOTES,
+
+"UTF-8"
+
+);
+```
+
+---
+
+Aus
+
+```html
+<script>
+```
+
+wird
+
+```html
+&lt;script&gt;
+```
+
+Jetzt erscheint der Code nur als Text.
+
+---
+
+Merksatz
+
+**Alles, was in HTML ausgegeben wird, sollte maskiert werden.**
+
+---
+
+# Kapitel 178
+
+# Cross Site Request Forgery (CSRF)
+
+CSRF bedeutet,
+
+dass ein Benutzer unbeabsichtigt eine Aktion ausführt.
+
+---
+
+Beispiel
+
+Benutzer ist im Online-Banking eingeloggt.
+
+Er besucht eine manipulierte Webseite.
+
+Diese sendet automatisch
+
+```html
+<form
+
+action="bank.de"
+
+method="POST">
+
+...
+```
+
+Die Bank glaubt,
+
+der Benutzer hätte die Anfrage selbst gestellt.
+
+---
+
+# Schutz
+
+CSRF-Token
+
+---
+
+Beim Anzeigen
+
+```php
+$_SESSION["token"] =
+
+bin2hex(
+
+random_bytes(32)
+
+);
+```
+
+---
+
+Im Formular
+
+```html
+<input
+
+type="hidden"
+
+name="token"
+
+value="<?= $_SESSION['token'] ?>">
+```
+
+---
+
+Beim Absenden
+
+```php
+if(
+
+$_POST["token"]
+
+===
+
+$_SESSION["token"]
+
+){
+
+    // gültig
+
+}
+```
+
+---
+
+# Kapitel 179
+
+# Dateiupload
+
+HTML
+
+```html
+<form
+
+method="post"
+
+enctype="multipart/form-data">
+
+<input
+
+type="file"
+
+name="bild">
+
+</form>
+```
+
+---
+
+PHP
+
+```php
+$_FILES["bild"]
+```
+
+enthält
+
+- Dateiname
+- Größe
+- Typ
+- temporäre Datei
+
+---
+
+# Unsicher
+
+```php
+move_uploaded_file(
+
+...
+
+);
+
+```
+
+ohne Prüfung.
+
+---
+
+Gefahr
+
+Ein Benutzer lädt hoch
+
+```
+virus.php
+```
+
+---
+
+# Sicher
+
+Dateityp prüfen
+
+```php
+$finfo = new finfo(
+
+FILEINFO_MIME_TYPE
+
+);
+
+$type =
+
+$finfo->file(
+
+$_FILES["bild"]["tmp_name"]
+
+);
+```
+
+---
+
+Nur erlauben
+
+```
+image/jpeg
+image/png
+image/gif
+```
+
+---
+
+Außerdem prüfen
+
+- Dateigröße
+- Dateiendung
+- zufälligen Dateinamen vergeben
+
+---
+
+# Kapitel 180
+
+# Sessions absichern
+
+Nach erfolgreichem Login
+
+```php
+session_regenerate_id(true);
+```
+
+Dadurch wird Session Hijacking erschwert.
+
+---
+
+Beim Logout
+
+```php
+session_destroy();
+```
+
+---
+
+Zusätzlich
+
+```php
+$_SESSION = [];
+```
+
+---
+
+# Kapitel 181
+
+# OWASP Top 10
+
+OWASP
+
+=
+
+Open Worldwide Application Security Project
+
+---
+
+Die wichtigsten Risiken
+
+| Risiko                      | Bedeutung                      |
+|-----------------------------|--------------------------------|
+| Broken Access Control       | fehlende Rechteprüfung         |
+| Cryptographic Failures      | schlechte Verschlüsselung      |
+| Injection                   | SQL-Injection                  |
+| Insecure Design             | schlechtes Design              |
+| Security Misconfiguration   | falsche Konfiguration          |
+| Vulnerable Components       | veraltete Bibliotheken         |
+| Authentication Failures     | schwache Logins                |
+| Software Integrity Failures | manipulierte Software          |
+| Logging Failures            | fehlende Protokollierung       |
+| SSRF                        | Server greift fremde Server an |
+
+Für die IHK sind besonders wichtig:
+
+- SQL-Injection
+- XSS
+- CSRF
+- Passwortsicherheit
+
+---
+
+# Mini-Projekt
+
+Erstellen Sie ein Login.
+
+Anforderungen
+
+✓ Passwort mit
+
+```php
+password_hash()
+```
+
+speichern
+
+✓ Login mit
+
+```php
+password_verify()
+```
+
+prüfen
+
+✓ Session starten
+
+✓ Session-ID regenerieren
+
+✓ Logout ermöglichen
+
+---
+
+# Typische IHK-Fragen
+
+## Warum `password_hash()`?
+
+Antwort
+
+Passwörter werden sicher gehascht und niemals im Klartext gespeichert.
+
+---
+
+## Warum `password_verify()`?
+
+**Antwort**: Zum sicheren Vergleich zwischen Passwort und Hash.
+
+---
+
+## Unterschied Hash und Verschlüsselung?
+
+Hash
+
+```
+Einwegfunktion
+
+↓
+
+nicht rückgängig
+```
+
+Verschlüsselung
+
+```
+Schlüssel vorhanden
+
+↓
+
+entschlüsselbar
+```
+
+---
+
+## Schutz vor SQL-Injection?
+
+**Antwort**: Prepared Statements.
+
+---
+
+## Schutz vor XSS?
+
+**Antwort:** `htmlspecialchars()`.
+
+---
+
+## Schutz vor CSRF?
+
+**Antwort:** CSRF-Token.
+
+---
+
+# Prüfungsfallen
+
+❌ Passwörter im Klartext speichern.
+
+❌ MD5 oder SHA1 für Passwörter verwenden.
+
+❌ SQL per Stringverkettung erzeugen.
+
+❌ HTML ohne `htmlspecialchars()` ausgeben.
+
+❌ Uploads ohne Dateiprüfung speichern.
+
+❌ Session-ID nach Login nicht erneuern.
+
+---
+
+# Best Practices
+
+✓ Immer `password_hash()` verwenden.
+
+✓ Login mit `password_verify()` prüfen.
+
+✓ Prepared Statements einsetzen.
+
+✓ Alle HTML-Ausgaben maskieren.
+
+✓ Dateiuploads streng validieren.
+
+✓ Sessions nach Login regenerieren.
+
+✓ Sicherheitsupdates regelmäßig installieren.
+
+---
+
+# Kapitel 182
+
+# Dateien in PHP
+
+Viele Programme arbeiten mit Dateien.
+
+Beispiele
+
+- Log-Dateien
+- Konfigurationsdateien
+- CSV-Exporte
+- JSON
+- XML
+- Textdateien
+
+PHP besitzt zahlreiche Funktionen für Dateizugriffe.
+
+---
+
+# Kapitel 183
+
+# fopen()
+
+Eine Datei wird mit
+
+```php
+fopen()
+```
+
+geöffnet.
+
+```php
+$datei = fopen(
+
+"test.txt",
+
+"r"
+
+);
+```
+
+---
+
+## Parameter
+
+```
+Dateiname
+
++
+
+Modus
+```
+
+---
+
+## Häufige Modi
+
+| Modus | Bedeutung                  |
+|-------|----------------------------|
+| r     | lesen                      |
+| w     | schreiben (Inhalt löschen) |
+| a     | anhängen                   |
+| x     | neu anlegen                |
+| r+    | lesen und schreiben        |
+
+---
+
+Merksatz
+
+```
+r
+
+↓
+
+Read
+```
+
+```
+w
+
+↓
+
+Write
+```
+
+```
+a
+
+↓
+
+Append
+```
+
+---
+
+# Kapitel 184
+
+# fclose()
+
+Nach dem Arbeiten
+
+sollte jede Datei geschlossen werden.
+
+```php
+fclose($datei);
+```
+
+---
+
+Warum?
+
+- Ressourcen freigeben
+- Dateisperren vermeiden
+- Best Practice
+
+---
+
+# Kapitel 185
+
+# fread()
+
+Datei lesen
+
+```php
+$datei = fopen(
+
+"test.txt",
+
+"r"
+
+);
+
+$content = fread(
+
+$datei,
+
+filesize("test.txt")
+
+);
+
+fclose($datei);
+
+echo $content;
+```
+
+---
+
+Beispiel
+
+Datei
+
+```
+Hallo Welt
+```
+
+Ausgabe
+
+```
+Hallo Welt
+```
+
+---
+
+# Kapitel 186
+
+# file_get_contents()
+
+Heute deutlich häufiger verwendet.
+
+```php
+$content = file_get_contents(
+
+"test.txt"
+
+);
+
+echo $content;
+```
+
+Vorteile
+
+✓ kürzer
+
+✓ einfacher
+
+✓ keine Schleife notwendig
+
+---
+
+# Kapitel 187
+
+# Schreiben
+
+```php
+$datei = fopen(
+
+"text.txt",
+
+"w"
+
+);
+
+fwrite(
+
+$datei,
+
+"Hallo"
+
+);
+
+fclose($datei);
+```
+
+---
+
+Datei
+
+```
+Hallo
+```
+
+---
+
+Anhängen
+
+```php
+$datei = fopen(
+
+"log.txt",
+
+"a"
+
+);
+
+fwrite(
+
+$datei,
+
+"Neue Zeile\n"
+
+);
+
+fclose($datei);
+```
+
+---
+
+# file_put_contents()
+
+Moderne Variante
+
+```php
+file_put_contents(
+
+"text.txt",
+
+"Hallo"
+
+);
+```
+
+---
+
+Anhängen
+
+```php
+file_put_contents(
+
+"log.txt",
+
+"Neue Zeile\n",
+
+FILE_APPEND
+
+);
+```
+
+---
+
+# Kapitel 188
+
+# Datei zeilenweise lesen
+
+```php
+$zeilen = file(
+
+"log.txt"
+
+);
+
+foreach($zeilen as $zeile){
+
+    echo $zeile;
+
+}
+```
+
+---
+
+Datei
+
+```
+Max
+
+Lisa
+
+Tom
+```
+
+---
+
+Ausgabe
+
+```
+Max
+
+Lisa
+
+Tom
+```
+
+---
+
+# Kapitel 189
+
+# CSV-Dateien
+
+CSV bedeutet
+
+```
+Comma Separated Values
+```
+
+Beispiel
+
+```
+Max,28,Hamburg
+
+Lisa,31,Berlin
+
+Tom,25,München
+```
+
+---
+
+CSV lesen
+
+```php
+$datei = fopen(
+
+"kunden.csv",
+
+"r"
+
+);
+
+while(
+
+($daten = fgetcsv($datei))
+
+!== false
+
+){
+
+    print_r($daten);
+
+}
+
+fclose($datei);
+```
+
+---
+
+Ergebnis
+
+```php
+Array
+
+(
+
+[0]=>Max
+
+[1]=>28
+
+[2]=>Hamburg
+
+)
+```
+
+---
+
+# CSV schreiben
+
+```php
+$datei = fopen(
+
+"kunden.csv",
+
+"w"
+
+);
+
+fputcsv(
+
+$datei,
+
+["Max",28,"Hamburg"]
+
+);
+
+fclose($datei);
+```
+
+---
+
+Datei
+
+```
+Max,28,Hamburg
+```
+
+---
+
+# Kapitel 190
+
+# JSON
+
+JSON bedeutet
+
+```
+JavaScript Object Notation
+```
+
+Es ist heute das wichtigste Datenaustauschformat.
+
+---
+
+Beispiel
+
+```json
+{
+  "name":"Max",
+  "alter":28
+}
+```
+
+---
+
+# JSON erzeugen
+
+```php
+$kunde = [
+
+"name"=>"Max",
+
+"alter"=>28
+
+];
+
+$json = json_encode($kunde);
+
+echo $json;
+```
+
+Ausgabe
+
+```json
+{"name":"Max","alter":28}
+```
+
+---
+
+# JSON lesen
+
+```php
+$json =
+
+file_get_contents(
+
+"kunde.json"
+
+);
+
+$kunde =
+
+json_decode(
+
+$json,
+
+true
+
+);
+
+echo $kunde["name"];
+```
+
+---
+
+Warum
+
+```
+true
+```
+
+?
+
+Damit ein Array erzeugt wird.
+
+Ohne
+
+```
+true
+```
+
+erhält man ein Objekt.
+
+---
+
+# Kapitel 191
+
+# Verzeichnisse
+
+Existiert eine Datei?
+
+```php
+file_exists(
+
+"test.txt"
+
+);
+```
+
+---
+
+Größe
+
+```php
+filesize(
+
+"test.txt"
+
+);
+```
+
+---
+
+Löschen
+
+```php
+unlink(
+
+"test.txt"
+
+);
+```
+
+---
+
+Ordner erstellen
+
+```php
+mkdir(
+
+"bilder"
+);
+```
+
+---
+
+Ordner löschen
+
+```php
+rmdir(
+
+"bilder"
+);
+```
+
+---
+
+# Kapitel 192
+
+# scandir()
+
+Dateien eines Ordners lesen
+
+```php
+$dateien = scandir(".");
+
+print_r($dateien);
+```
+
+Ausgabe
+
+```
+.
+
+..
+
+index.php
+
+test.txt
+
+bilder
+```
+
+---
+
+# Kapitel 193
+
+# Log-Dateien
+
+Typische IHK-Aufgabe
+
+Log-Datei
+
+```
+1661156269 Max Mustermann 192.168.178.42 google.de granted
+
+1661156577 Erika Mustermann 192.168.178.47 youtube.de denied
+```
+
+---
+
+Aufgabe
+
+Erzeugen
+
+```
+short.csv
+```
+
+```
+Max Mustermann,
+
+192.168.178.42,
+
+granted
+```
+
+---
+
+und
+
+```
+long.csv
+```
+
+```
+2022-08-22T08:22:57,
+
+Erika Mustermann,
+
+192.168.178.47,
+
+youtube.de,
+
+denied
+```
+
+---
+
+Lösungsansatz
+
+```
+Datei
+
+↓
+
+Eintrag-Objekt
+
+↓
+
+CSV
+
+↓
+
+Export
+```
+
+Genau diese Aufgabe kommt in ähnlicher Form regelmäßig in der AP2 vor.
+
+---
+
+# Kapitel 194
+
+# JSON-Konfiguration
+
+config.json
+
+```json
+{
+
+"host":"localhost",
+
+"user":"root",
+
+"db":"firma"
+
+}
+```
+
+---
+
+Einlesen
+
+```php
+$config = json_decode(
+
+file_get_contents(
+
+"config.json"
+
+),
+
+true
+
+);
+
+echo $config["host"];
+```
+
+---
+
+# Mini-Projekt
+
+Erstellen Sie
+
+```
+personen.csv
+```
+
+Inhalt
+
+```
+Max,28
+
+Lisa,30
+
+Tom,41
+```
+
+---
+
+Programm
+
+- CSV lesen
+- Person-Objekte erzeugen
+- Durchschnittsalter berechnen
+- Ausgabe als JSON
+
+---
+
+# Typische IHK-Fragen
+
+## Unterschied
+
+fopen()
+
+und
+
+file_get_contents()
+
+---
+
+Antwort
+
+```
+fopen()
+
+↓
+
+Dateihandle
+```
+
+```
+file_get_contents()
+
+↓
+
+gesamte Datei
+```
+
+---
+
+## Unterschied
+
+CSV
+
+und
+
+JSON
+
+---
+
+Antwort
+
+CSV
+
+```
+Tabellen
+```
+
+JSON
+
+```
+Objekte
+
+Arrays
+```
+
+---
+
+## Wann JSON?
+
+Antwort
+
+Für Datenaustausch zwischen Anwendungen oder APIs.
+
+---
+
+# Prüfungsfallen
+
+❌ Datei nicht schließen.
+
+❌ `filesize()` bei nicht vorhandener Datei.
+
+❌ `json_decode()` ohne `true`, obwohl ein Array erwartet wird.
+
+❌ `w` statt `a` verwenden (Datei wird überschrieben).
+
+❌ CSV mit `explode(",")` statt `fgetcsv()` einlesen.
+
+---
+
+# Best Practices
+
+✓ `file_get_contents()` für kleine Dateien verwenden.
+
+✓ `fopen()` bei großen Dateien oder Streams.
+
+✓ Immer prüfen, ob Dateien existieren.
+
+✓ CSV mit `fgetcsv()` verarbeiten.
+
+✓ JSON mit `json_encode()` und `json_decode()` bearbeiten.
+
+✓ Ressourcen nach Gebrauch schließen.
+
+---
+
+# Kapitel 195
+
+# Was ist eine Exception?
+
+Eine Exception ist ein Ausnahmezustand während der Programmausführung.
+
+Beispiele
+
+- Datei existiert nicht
+- Datenbank nicht erreichbar
+- Division durch Null(0)
+- Ungültige Benutzereingaben
+- Netzwerkfehler
+
+---
+
+Ohne Fehlerbehandlung
+
+```
+Programm
+
+↓
+
+Fehler
+
+↓
+
+Abbruch
+```
+
+---
+
+Mit Exception Handling
+
+```
+Programm
+
+↓
+
+Fehler
+
+↓
+
+Exception
+
+↓
+
+catch
+
+↓
+
+Programm läuft weiter
+```
+
+---
+
+# Kapitel 196
+
+# Arten von Fehlern
+
+| Typ          | Beschreibung           |
+|--------------|------------------------|
+| Syntaxfehler | Programm startet nicht |
+| Warning      | Warnung                |
+| Notice       | Hinweis                |
+| Exception    | behandelbarer Fehler   |
+| Fatal Error  | Programm beendet sich  |
+
+---
+
+## Syntaxfehler
+
+```php
+echo "Hallo
+```
+
+Fehlende Anführungszeichen.
+
+Programm startet nicht.
+
+---
+
+## Laufzeitfehler
+
+```php
+include("datei.php");
+```
+
+Datei existiert nicht.
+
+---
+
+## Exception
+
+```php
+throw new Exception("Fehler");
+```
+
+Kann behandelt werden.
+
+---
+
+# Kapitel 197
+
+# try und catch
+
+Grundstruktur
+
+```php
+try{
+
+    // Code
+
+}
+catch(Exception $e){
+
+    // Fehlerbehandlung
+
+}
+```
+
+---
+
+Beispiel
+
+```php
+try{
+
+    throw new Exception(
+
+        "Etwas ist schiefgelaufen."
+
+    );
+
+}
+catch(Exception $e){
+
+    echo $e->getMessage();
+
+}
+```
+
+Ausgabe
+
+```
+Etwas ist schiefgelaufen.
+```
+
+---
+
+# Kapitel 198
+
+# throw
+
+Mit `throw` wird eine Exception ausgelöst.
+
+```php
+if($alter < 18){
+
+    throw new Exception(
+
+        "Nicht volljährig."
+
+    );
+
+}
+```
+
+---
+
+Ablauf
+
+```
+Code
+
+↓
+
+Bedingung erfüllt
+
+↓
+
+throw
+
+↓
+
+catch
+
+↓
+
+Fehler behandeln
+```
+
+---
+
+# Kapitel 199
+
+# Exception-Objekt
+
+Im `catch` steht ein Exception-Objekt zur Verfügung.
+
+```php
+catch(Exception $e)
+```
+
+---
+
+Wichtige Methoden
+
+| Methode      | Bedeutung     |
+|--------------|---------------|
+| getMessage() | Fehlermeldung |
+| getCode()    | Fehlercode    |
+| getFile()    | Datei         |
+| getLine()    | Zeilennummer  |
+
+---
+
+Beispiel
+
+```php
+catch(Exception $e){
+
+    echo $e->getMessage();
+
+    echo $e->getFile();
+
+    echo $e->getLine();
+
+}
+```
+
+---
+
+# Kapitel 200
+
+# finally
+
+`finally` wird **immer** ausgeführt.
+
+```php
+try{
+
+    echo "Start";
+
+}
+catch(Exception $e){
+
+    echo "Fehler";
+
+}
+finally{
+
+    echo "Aufräumen";
+
+}
+```
+
+---
+
+Auch wenn keine Exception auftritt,
+
+wird `finally` ausgeführt.
+
+---
+
+Typische Verwendung
+
+- Dateien schließen
+- Datenbankverbindungen beenden
+- Ressourcen freigeben
+
+---
+
+# Kapitel 201
+
+# Eigene Exceptions
+
+Eigene Exception-Klassen verbessern die Lesbarkeit.
+
+```php
+class LoginException
+
+extends Exception
+{
+
+}
+```
+
+---
+
+Verwendung
+
+```php
+throw new LoginException(
+
+    "Login fehlgeschlagen."
+
+);
+```
+
+---
+
+Abfangen
+
+```php
+catch(LoginException $e){
+
+    echo $e->getMessage();
+
+}
+```
+
+---
+
+# Kapitel 202
+
+# Mehrere catch-Blöcke
+
+```php
+try{
+
+    ...
+
+}
+catch(PDOException $e){
+
+    echo "Datenbankfehler";
+
+}
+catch(RuntimeException $e){
+
+    echo "Laufzeitfehler";
+
+}
+catch(Exception $e){
+
+    echo "Allgemeiner Fehler";
+
+}
+```
+
+---
+
+Warum?
+
+Jede Exception kann unterschiedlich behandelt werden.
+
+---
+
+# Kapitel 203
+
+# Exception weiterwerfen
+
+Eine Exception kann erneut ausgelöst werden.
+
+```php
+catch(Exception $e){
+
+    throw $e;
+
+}
+```
+
+Oder
+
+```php
+throw new Exception(
+
+    "Neuer Fehler"
+
+);
+```
+
+---
+
+Typischer Ablauf
+
+```
+Repository
+
+↓
+
+Service
+
+↓
+
+Controller
+
+↓
+
+Benutzer
+```
+
+Jede Schicht kann entscheiden,
+
+ob sie die Exception behandelt oder weitergibt.
+
+---
+
+# Kapitel 204
+
+# Logging
+
+Fehler sollten protokolliert werden.
+
+Nicht
+
+```php
+echo $e;
+```
+
+Sondern
+
+```php
+error_log(
+
+$e->getMessage()
+
+);
+```
+
+---
+
+Eigenes Log
+
+```php
+file_put_contents(
+
+"log.txt",
+
+$e->getMessage(),
+
+FILE_APPEND
+
+);
+```
+
+---
+
+Logeintrag
+
+```
+2026-01-15
+
+Datenbank nicht erreichbar
+```
+
+---
+
+# Kapitel 205
+
+# Debugging
+
+Ein Debugger hilft,
+
+Fehler Schritt für Schritt zu analysieren.
+
+---
+
+Einfaches Debugging
+
+```php
+var_dump($variable);
+```
+
+---
+
+Oder
+
+```php
+print_r($array);
+```
+
+---
+
+Schöner
+
+```php
+echo "<pre>";
+
+print_r($array);
+
+echo "</pre>";
+```
+
+---
+
+# Kapitel 206
+
+# Häufige Fehlerquellen
+
+Division
+
+```php
+10 / 0
+```
+
+---
+
+Datei
+
+```php
+file_get_contents(
+
+"abc.txt"
+
+);
+```
+
+---
+
+PDO
+
+```php
+SELECT *
+
+FROM abc
+```
+
+Tabelle existiert nicht.
+
+---
+
+Array
+
+```php
+$array[100]
+```
+
+Index existiert nicht.
+
+---
+
+# Kapitel 207
+
+# Gute Fehlerbehandlung
+
+Nicht
+
+```php
+catch(Exception $e){
+
+}
+```
+
+Leerer Catch-Block.
+
+---
+
+Besser
+
+```php
+catch(Exception $e){
+
+    error_log(
+
+        $e->getMessage()
+
+    );
+
+    echo "Es ist ein Fehler aufgetreten.";
+
+}
+```
+
+---
+
+Warum?
+
+Benutzer erhalten
+
+keine internen Informationen.
+
+---
+
+# Kapitel 208
+
+# Exception-Hierarchie
+
+```
+Throwable
+
+│
+
+├── Error
+
+│
+
+└── Exception
+
+      │
+
+      ├── RuntimeException
+
+      ├── PDOException
+
+      ├── InvalidArgumentException
+
+      └── Eigene Exceptions
+```
+
+---
+
+Seit PHP 7 implementieren sowohl
+
+`Error`
+
+als auch
+
+`Exception`
+
+das Interface
+
+```
+Throwable
+```
+
+---
+
+# Mini-Projekt
+
+Schreiben Sie eine Klasse
+
+```php
+DateiService
+```
+
+Methoden
+
+```php
+lesen()
+
+schreiben()
+```
+
+Anforderungen
+
+- Datei prüfen
+- Exception werfen
+- Fehler loggen
+- Benutzerfreundliche Meldung ausgeben
+
+---
+
+# Typische IHK-Fragen
+
+## Warum Exceptions?
+
+Antwort
+
+Damit Fehler kontrolliert behandelt werden können, ohne dass das Programm sofort beendet wird.
+
+---
+
+## Unterschied `throw` und `catch`?
+
+`throw`
+
+→ löst eine Exception aus.
+
+`catch`
+
+→ behandelt die Exception.
+
+---
+
+## Wann wird `finally` ausgeführt?
+
+Antwort
+
+Immer – unabhängig davon, ob eine Exception auftritt oder nicht.
+
+---
+
+## Warum Logging?
+
+Antwort
+
+Damit Fehler später analysiert werden können, ohne sie dem Benutzer anzuzeigen.
+
+---
+
+# Prüfungsfallen
+
+❌ Leere `catch`-Blöcke.
+
+❌ Interne Fehlermeldungen direkt an den Benutzer ausgeben.
+
+❌ Dateien nicht schließen.
+
+❌ Exceptions verschlucken.
+
+❌ Alles mit `try-catch` umgeben, obwohl es nicht nötig ist.
+
+---
+
+# Best Practices
+
+✓ Spezifische Exceptions verwenden.
+
+✓ Fehler protokollieren (`error_log()`).
+
+✓ Benutzerfreundliche Meldungen anzeigen.
+
+✓ `finally` für Aufräumarbeiten nutzen.
+
+✓ Eigene Exception-Klassen für Geschäftslogik erstellen.
+
+✓ Keine sensiblen Informationen im Browser ausgeben.
+
+---
+
+# Kapitel 209
+
+# Wiederholung OOP
+
+Eine Klasse beschreibt den Bauplan eines Objekts.
+
+```php
+class Auto
+{
+
+    public string $marke;
+
+    public function fahren()
+    {
+
+        echo "Fährt";
+
+    }
+
+}
+```
+
+Objekt
+
+```php
+$auto = new Auto();
+```
+
+---
+
+## OOP-Grundbegriffe
+
+| Begriff  | Bedeutung           |
+|----------|---------------------|
+| Klasse   | Bauplan             |
+| Objekt   | Instanz             |
+| Attribut | Eigenschaft         |
+| Methode  | Funktion der Klasse |
+
+---
+
+# Kapitel 210
+
+# Vererbung
+
+Vererbung bedeutet
+
+Eine Klasse übernimmt Eigenschaften einer anderen Klasse.
+
+---
+
+Beispiel
+
+```
+                Fahrzeug
+                    ▲
+                    │
+     ┌──────────────┴─────────────┐
+     │                            │
+    Auto                        Motorrad
+```
+
+---
+
+PHP
+
+```php
+class Fahrzeug
+{
+
+    public function fahren()
+    {
+
+        echo "Das Fahrzeug fährt.";
+
+    }
+
+}
+
+class Auto extends Fahrzeug
+{
+
+}
+```
+
+---
+
+Jetzt besitzt Auto automatisch
+
+```php
+fahren()
+```
+
+---
+
+Benutzung
+
+```php
+$auto = new Auto();
+
+$auto->fahren();
+```
+
+Ausgabe
+
+```
+Das Fahrzeug fährt.
+```
+
+---
+
+# Kapitel 211
+
+# Überschreiben (Override)
+
+Methoden können überschrieben werden.
+
+```php
+class Fahrzeug
+{
+
+    public function fahren()
+    {
+
+        echo "Fahrzeug";
+
+    }
+
+}
+
+class Auto extends Fahrzeug
+{
+
+    public function fahren()
+    {
+
+        echo "Auto";
+
+    }
+
+}
+```
+
+---
+
+Jetzt lautet die Ausgabe
+
+```
+Auto
+```
+
+---
+
+# Kapitel 212
+
+# parent
+
+Auf Methoden der Oberklasse kann zugegriffen werden.
+
+```php
+class Fahrzeug
+{
+
+    public function fahren()
+    {
+
+        echo "Fahrzeug";
+
+    }
+
+}
+
+class Auto extends Fahrzeug
+{
+
+    public function fahren()
+    {
+
+        parent::fahren();
+
+        echo " fährt schnell.";
+
+    }
+
+}
+```
+
+Ausgabe
+
+```
+Fahrzeug fährt schnell.
+```
+
+---
+
+# Kapitel 213
+
+# Konstruktoren
+
+Auch Konstruktoren können vererbt werden.
+
+```php
+class Person
+{
+
+    protected string $name;
+
+    public function __construct($name)
+    {
+
+        $this->name = $name;
+
+    }
+
+}
+```
+
+---
+
+Kindklasse
+
+```php
+class Mitarbeiter extends Person
+{
+
+    private int $personalNr;
+
+    public function __construct(
+
+        $name,
+
+        $nr
+
+    ){
+
+        parent::__construct($name);
+
+        $this->personalNr = $nr;
+
+    }
+
+}
+```
+
+---
+
+# Kapitel 214
+
+# protected
+
+Sichtbarkeiten
+
+| Sichtbarkeit | Zugriff |
+|---------------|----------|
+| public | überall |
+| private | nur eigene Klasse |
+| protected | eigene Klasse + Unterklassen |
+
+---
+
+Beispiel
+
+```php
+protected string $name;
+```
+
+Kann in Unterklassen verwendet werden.
+
+---
+
+# Kapitel 215
+
+# Abstrakte Klassen
+
+Manche Klassen sollen niemals direkt erzeugt werden.
+
+```php
+abstract class Tier
+{
+
+}
+```
+
+---
+
+Nicht erlaubt
+
+```php
+$tier = new Tier();
+```
+
+---
+
+Erlaubt
+
+```php
+class Hund extends Tier
+{
+
+}
+
+$hund = new Hund();
+```
+
+---
+
+# Kapitel 216
+
+# Abstrakte Methoden
+
+```php
+abstract class Tier
+{
+
+    abstract public function laut();
+
+}
+```
+
+---
+
+Unterklasse
+
+```php
+class Hund extends Tier
+{
+
+    public function laut()
+    {
+
+        echo "Wuff";
+
+    }
+
+}
+```
+
+---
+
+Alle abstrakten Methoden müssen implementiert werden.
+
+---
+
+# Kapitel 217
+
+# Interfaces
+
+Ein Interface beschreibt nur,
+
+**welche Methoden vorhanden sein müssen.**
+
+---
+
+```php
+interface Fahrbar
+{
+
+    public function fahren();
+
+}
+```
+
+---
+
+Klasse
+
+```php
+class Auto implements Fahrbar
+{
+
+    public function fahren()
+    {
+
+        echo "Auto fährt.";
+
+    }
+
+}
+```
+
+---
+
+Ein Interface enthält
+
+- keine Attribute
+- keine Implementierung (vereinfacht)
+
+Nur Methodensignaturen.
+
+---
+
+# Vorteile
+
+Mehrere Klassen können dieselbe Schnittstelle besitzen.
+
+```
+          Fahrbar
+             ▲
+   ┌─────────┴─────────┐
+   │                   │
+ Auto              Fahrrad
+```
+
+---
+
+# Kapitel 218
+
+# Interface vs. abstrakte Klasse
+
+| Interface       | Abstrakte Klasse          |
+|-----------------|---------------------------|
+| Vertrag         | teilweise Implementierung |
+| mehrere möglich | nur eine Oberklasse       |
+| keine Attribute | Attribute erlaubt         |
+
+---
+
+Merksatz
+
+Interface
+
+↓
+
+**Was kann das Objekt?**
+
+Abstrakte Klasse
+
+↓
+
+**Was ist das Objekt?**
+
+---
+
+# Kapitel 219
+
+# Polymorphismus
+
+Polymorphismus bedeutet
+
+Gleiche Schnittstelle,
+
+unterschiedliches Verhalten.
+
+---
+
+```php
+interface Tier
+{
+
+    public function laut();
+
+}
+```
+
+---
+
+```php
+class Hund implements Tier
+{
+
+    public function laut()
+    {
+
+        echo "Wuff";
+
+    }
+
+}
+```
+
+---
+
+```php
+class Katze implements Tier
+{
+
+    public function laut()
+    {
+
+        echo "Miau";
+
+    }
+
+}
+```
+
+---
+
+Benutzung
+
+```php
+function ausgabe(Tier $tier)
+{
+
+    $tier->laut();
+
+}
+```
+
+---
+
+```php
+ausgabe(new Hund());
+
+ausgabe(new Katze());
+```
+
+Ausgabe
+
+```
+Wuff
+
+Miau
+```
+
+---
+
+# Kapitel 220
+
+# Komposition
+
+Nicht immer ist Vererbung sinnvoll.
+
+Beispiel
+
+```
+Auto
+
+↓
+
+Motor
+```
+
+Ein Auto **hat einen** Motor.
+
+Nicht
+
+```
+Auto ist Motor.
+```
+
+---
+
+PHP
+
+```php
+class Motor
+{
+
+}
+```
+
+---
+
+```php
+class Auto
+{
+
+    private Motor $motor;
+
+    public function __construct()
+    {
+
+        $this->motor = new Motor();
+
+    }
+
+}
+```
+
+---
+
+Merksatz
+
+```
+IS-A
+
+↓
+
+Vererbung
+```
+
+```
+HAS-A
+
+↓
+
+Komposition
+```
+
+---
+
+# Kapitel 221
+
+# SOLID
+
+SOLID beschreibt fünf wichtige OOP-Prinzipien.
+
+---
+
+## S
+
+Single Responsibility Principle
+
+Eine Klasse besitzt genau eine Aufgabe.
+
+---
+
+Schlecht
+
+```php
+class Kunde
+{
+
+    speichern()
+
+    drucken()
+
+    senden()
+
+}
+```
+
+---
+
+Besser
+
+```
+Kunde
+
+↓
+
+KundeRepository
+
+↓
+
+PdfService
+
+↓
+
+MailService
+```
+
+---
+
+## O
+
+Open Closed Principle
+
+Klassen sollen
+
+offen für Erweiterungen,
+
+geschlossen für Änderungen sein.
+
+---
+
+Beispiel
+
+Neue Fahrzeugtypen
+
+↓
+
+neue Klassen
+
+↓
+
+keine Änderung bestehender Klassen.
+
+---
+
+## L
+
+Liskov Substitution Principle
+
+Unterklassen müssen überall
+
+anstelle der Oberklasse funktionieren.
+
+---
+
+## I
+
+Interface Segregation Principle
+
+Viele kleine Interfaces
+
+statt eines riesigen.
+
+---
+
+Schlecht
+
+```php
+interface Worker
+{
+
+    arbeiten();
+
+    fahren();
+
+    fliegen();
+
+    schwimmen();
+
+}
+```
+
+---
+
+Besser
+
+```php
+interface Fahrbar
+```
+
+```php
+interface Schwimmbar
+```
+
+---
+
+## D
+
+Dependency Inversion Principle
+
+Von Abstraktionen abhängig sein,
+
+nicht von konkreten Klassen.
+
+---
+
+Schlecht
+
+```php
+class Auto
+{
+
+    private DieselMotor $motor;
+
+}
+```
+
+---
+
+Besser
+
+```php
+class Auto
+{
+
+    private MotorInterface $motor;
+
+}
+```
+
+---
+
+# Kapitel 222
+
+# UML-Klassendiagramm
+
+```
++----------------------+
+|      Fahrzeug        |
++----------------------+
+| - marke : String     |
++----------------------+
+| + fahren() : void    |
++----------------------+
+```
+
+---
+
+Vererbung
+
+```
+        Fahrzeug
+             ▲
+             │
+          Auto
+```
+
+---
+
+Interface
+
+```
+<<interface>>
+
+Fahrbar
+
+      ▲
+
+      │
+
+    Auto
+```
+
+---
+
+# Kapitel 223
+
+# Mini-Projekt
+
+Erstellen Sie
+
+```
+Person
+
+↑
+
+Mitarbeiter
+
+↑
+
+Azubi
+```
+
+Zusätzlich
+
+```
+interface Arbeitbar
+```
+
+Methoden
+
+```php
+arbeiten()
+
+pause()
+
+```
+
+Erzeugen Sie mehrere Objekte
+
+und speichern Sie diese in einem Array.
+
+Durchlaufen Sie das Array
+
+mit einer Schleife.
+
+---
+
+# Typische IHK-Fragen
+
+## Unterschied Interface und abstrakte Klasse?
+
+Antwort
+
+Ein Interface beschreibt einen Vertrag.
+
+Eine abstrakte Klasse kann bereits Implementierungen enthalten.
+
+---
+
+## Wann Vererbung?
+
+Wenn eine **IS-A**-Beziehung besteht.
+
+---
+
+## Wann Komposition?
+
+Wenn eine **HAS-A**-Beziehung besteht.
+
+---
+
+## Was ist Polymorphismus?
+
+Antwort
+
+Mehrere Klassen reagieren unterschiedlich auf denselben Methodenaufruf.
+
+---
+
+## Was bedeutet SOLID?
+
+Antwort
+
+Fünf Prinzipien für wartbare objektorientierte Software.
+
+---
+
+# Prüfungsfallen
+
+❌ Vererbung statt Komposition verwenden.
+
+❌ Alles als `public` deklarieren.
+
+❌ Interfaces mit Implementierung verwechseln.
+
+❌ Zu große Klassen entwickeln.
+
+❌ Mehrfachvererbung in PHP erwarten (gibt es nicht).
+
+---
+
+# Best Practices
+
+✓ Interfaces für lose Kopplung verwenden.
+
+✓ Komposition gegenüber Vererbung bevorzugen.
+
+✓ Kleine Klassen mit klarer Verantwortung schreiben.
+
+✓ SOLID-Prinzipien berücksichtigen.
+
+✓ UML-Diagramme lesen und zeichnen können.
+
+---
+
+# PHP für Fachinformatiker (IHK AP1/AP2)
+
+---
+
+# Kapitel 224
+
+# Was sind Entwurfsmuster?
+
+Ein Entwurfsmuster ist eine **bewährte Lösung für ein häufig wiederkehrendes Softwareproblem**.
+
+Es ist **kein fertiger Code**, sondern eine Vorlage.
+
+---
+
+## Warum wichtig?
+
+In der AP2 werden häufig gefragt:
+
+- „Welches Pattern würden Sie verwenden?“
+- „Zu welcher Kategorie gehört Observer?“
+- „Warum ist Strategy besser als viele if-else-Blöcke?“
+
+---
+
+# Kategorien
+
+| Kategorie        | Zweck                       |
+|------------------|-----------------------------|
+| Erzeugungsmuster | Objekte erzeugen            |
+| Strukturmuster   | Klassen zusammensetzen      |
+| Verhaltensmuster | Zusammenarbeit von Objekten |
+
+---
+
+## Beispiele
+
+| Pattern        | Kategorie        |
+|----------------|------------------|
+| Singleton      | Erzeugungsmuster |
+| Factory Method | Erzeugungsmuster |
+| Builder        | Erzeugungsmuster |
+| Adapter        | Strukturmuster   |
+| Decorator      | Strukturmuster   |
+| Observer       | Verhaltensmuster |
+| Strategy       | Verhaltensmuster |
+
+---
+
+# Kapitel 225
+
+# Singleton
+
+## Problem
+
+Es soll **genau eine Instanz** existieren.
+
+Beispiel:
+
+- Datenbankverbindung
+- Konfiguration
+- Logger
+
+---
+
+## UML
+
+```
++----------------------+
+|      Database        |
++----------------------+
+| - instance : self    |
++----------------------+
+| - __construct()      |
+| + getInstance()      |
++----------------------+
+```
+
+---
+
+## Implementierung
+
+<CodeBlock language="php" editable interactive content="<?php
+class Database
+{
+private static ?Database $instance = null;
+
+    private function __construct()
+    {
+        echo 'Verbindung erstellt';
+    }
+
+    public static function getInstance(): Database
+    {
+        if (self::$instance === null) {
+            self::$instance = new Database();
+        }
+
+        return self::$instance;
+    }
+}
+
+$db1 = Database::getInstance();
+$db2 = Database::getInstance();
+
+var_dump($db1 === $db2);"/>
+
+Ausgabe
+
+<CodeBlock language="text" content="Verbindung erstellt
+bool(true)"/>
+
+---
+
+## Vorteile
+
+✓ Nur eine Instanz
+
+✓ Gemeinsame Ressource
+
+✓ Speicher sparen
+
+---
+
+## Nachteile
+
+✗ Globaler Zustand
+
+✗ Schwer testbar
+
+✗ Versteckte Abhängigkeiten
+
+---
+
+## IHK-Merksatz
+
+> Singleton gehört zu den **Erzeugungsmustern**.
+
+---
+
+# Kapitel 226
+
+# Factory Method
+
+## Problem
+
+Der Code soll **nicht direkt mit `new` arbeiten**.
+
+---
+
+Ohne Factory
+
+<CodeBlock language="php" editable interactive content="<?php
+$zahlung = new PayPalPayment();"/>
+
+---
+
+Mit Factor
+```php
+<CodeBlock language="php" editable interactive content="<?php
+interface Payment
+{
+public function pay(): void;
+}
+
+class PayPalPayment implements Payment
+{
+public function pay(): void
+{
+echo 'PayPal';
+}
+}
+
+class CreditCardPayment implements Payment
+{
+public function pay(): void
+{
+echo 'Kreditkarte';
+}
+}
+
+class PaymentFactory
+{
+public static function create(string $type): Payment
+{
+return match ($type) {
+'paypal' => new PayPalPayment(),
+'card' => new CreditCardPayment(),
+default => throw new InvalidArgumentException('Unbekannter Typ'),
+};
+}
+}
+
+$payment = PaymentFactory::create('paypal');
+$payment->pay();"/>
+```
+
+---
+
+## Vorteil
+
+Der aufrufende Code kennt nur das Interface.
+
+```
+Controller
+
+↓
+
+Factory
+
+↓
+
+Konkrete Klasse
+```
+
+---
+
+## IHK-Frage
+
+**Warum Factory?**
+
+Antwort:
+
+Zur **Entkopplung der Objekterzeugung vom Anwendungscode**.
+
+---
+
+# Kapitel 227
+
+# Builder
+
+## Problem
+
+Ein Objekt besitzt sehr viele optionale Parameter.
+
+---
+
+Schlecht
+
+<CodeBlock language="php" editable interactive content="<?php
+$haus = new Haus(
+3,
+true,
+false,
+true,
+false,
+true,
+'rot',
+'Ziegel',
+2
+);"/>
+
+Niemand weiß, welcher Parameter wofür steht.
+
+---
+
+## Builder-Lösung
+
+<CodeBlock language="php" editable interactive content="<?php
+class Haus
+{
+public int $zimmer = 0;
+public bool $garage = false;
+public bool $pool = false;
+}
+
+class HausBuilder
+{
+private Haus $haus;
+
+    public function __construct()
+    {
+        $this->haus = new Haus();
+    }
+
+    public function mitZimmern(int $anzahl): self
+    {
+        $this->haus->zimmer = $anzahl;
+        return $this;
+    }
+
+    public function mitGarage(): self
+    {
+        $this->haus->garage = true;
+        return $this;
+    }
+
+    public function mitPool(): self
+    {
+        $this->haus->pool = true;
+        return $this;
+    }
+
+    public function build(): Haus
+    {
+        return $this->haus;
+    }
+}
+
+$haus = (new HausBuilder())
+->mitZimmern(3)
+->mitGarage()
+->mitPool()
+->build();
+
+var_dump($haus);"/>
+
+---
+
+## Vorteil
+
+✓ Lesbarer
+
+✓ Erweiterbar
+
+✓ Keine langen Konstruktoren
+
+---
+
+# Kapitel 228
+
+# Observer
+
+Das Pattern kennst du bereits.
+
+---
+
+## Kategorie
+
+**Verhaltensmuster**.
+
+---
+
+## Problem
+
+Ein Objekt ändert seinen Zustand.
+
+Andere Objekte sollen automatisch informiert werden.
+
+---
+
+## Beispiel
+
+- GUI aktualisieren
+- Aktienkurs
+- Chat
+- Event-System
+
+---
+
+## Struktur
+
+```
+Subject
+
+↓
+
+notify()
+
+↓
+
+Observer 1
+
+Observer 2
+
+Observer 3
+```
+
+---
+
+## PHP-Beispiel
+```php
+<CodeBlock language="php" editable interactive content="<?php
+interface Observer
+{
+public function update(string $message): void;
+}
+
+class UserObserver implements Observer
+{
+public function update(string $message): void
+{
+echo 'Benachrichtigung: ' . $message . PHP_EOL;
+}
+}
+
+class ChatRoom
+{
+private array $observers = [];
+
+    public function attach(Observer $observer): void
+    {
+        $this->observers[] = $observer;
+    }
+
+    public function sendMessage(string $message): void
+    {
+        foreach ($this->observers as $observer) {
+            $observer->update($message);
+        }
+    }
+}
+
+$chat = new ChatRoom();
+$chat->attach(new UserObserver());
+$chat->sendMessage('Neue Nachricht');"/>
+```
+---
+
+## IHK-Merksatz
+
+Observer = **Verhaltensmuster**.
+
+---
+
+# Kapitel 229
+
+# Strategy
+
+## Problem
+
+Viele if-else-Blöcke.
+
+---
+
+Schlecht
+```php
+<CodeBlock language="php" editable interactive content="<?php
+function berechneVersand(string $land, float $gewicht): float
+{
+if ($land === 'DE') {
+return $gewicht * 2;
+} elseif ($land === 'AT') {
+return $gewicht * 3;
+} elseif ($land === 'CH') {
+return $gewicht * 5;
+}
+
+    return 0;
+}
+
+echo berechneVersand('AT', 10);"/>
+```
+Bei jedem neuen Land muss die Funktion geändert werden.
+
+---
+
+## Strategy-Lösung
+```php
+<CodeBlock language="php" editable interactive content="<?php
+interface VersandStrategie
+{
+public function berechne(float $gewicht): float;
+}
+
+class DeutschlandStrategie implements VersandStrategie
+{
+public function berechne(float $gewicht): float
+{
+return $gewicht * 2;
+}
+}
+
+class OesterreichStrategie implements VersandStrategie
+{
+public function berechne(float $gewicht): float
+{
+return $gewicht * 3;
+}
+}
+
+class VersandService
+{
+public function __construct(
+private VersandStrategie $strategie
+) {
+}
+
+    public function preis(float $gewicht): float
+    {
+        return $this->strategie->berechne($gewicht);
+    }
+}
+
+$service = new VersandService(new OesterreichStrategie());
+echo $service->preis(10);"/>
+```
+---
+
+## Vorteil
+
+Neue Strategien können hinzugefügt werden,
+
+ohne bestehenden Code zu ändern.
+
+Das ist ein perfektes Beispiel für das **Open-Closed-Prinzip**.
+
+---
+
+# Kapitel 230
+
+# Decorator
+
+## Problem
+
+Funktionalität soll **dynamisch erweitert** werden.
+
+---
+
+Beispiel
+
+Kaffee + Milch + Zucker + Sirup.
+
+---
+
+## Idee
+
+Objekte werden **eingewickelt**.
+
+```
+Espresso
+
+↓
+
+MilchDecorator
+
+↓
+
+ZuckerDecorator
+
+↓
+
+SirupDecorator
+```
+
+---
+
+## IHK-Merksatz
+
+Decorator gehört zu den **Strukturmustern**.
+
+---
+
+# Kapitel 231
+
+# Adapter
+
+## Problem
+
+Zwei Klassen besitzen inkompatible Schnittstellen.
+
+---
+
+Beispiel
+
+Alte Bibliothek
+```php
+<CodeBlock language="php" editable interactive content="<?php
+class LegacyPrinter
+{
+public function printText(string $text): void
+{
+echo 'Legacy: ' . $text;
+}
+}"/>
+```
+Neue Anwendung erwartet
+```php
+<CodeBlock language="php" editable interactive content="<?php
+interface Printer
+{
+public function print(string $text): void;
+}"/>
+```
+---
+
+## Adapter
+```php
+<CodeBlock language="php" editable interactive content="<?php
+interface Printer
+{
+public function print(string $text): void;
+}
+
+class LegacyPrinter
+{
+public function printText(string $text): void
+{
+echo 'Legacy: ' . $text;
+}
+}
+
+class PrinterAdapter implements Printer
+{
+public function __construct(
+private LegacyPrinter $legacy
+) {
+}
+
+    public function print(string $text): void
+    {
+        $this->legacy->printText($text);
+    }
+}
+
+$printer = new PrinterAdapter(new LegacyPrinter());
+$printer->print('Hallo');"/>
+```
+---
+
+## Zweck
+
+Alte Komponenten weiterverwenden,
+
+ohne sie umzuschreiben.
+
+---
+
+# Kapitel 232
+
+# MVC und Patterns
+
+MVC kombiniert mehrere Entwurfsmuster.
+
+| Teil       | Typisches Pattern |
+|------------|-------------------|
+| Model      | Observer          |
+| Controller | Strategy          |
+| Service    | Factory           |
+| View       | Template          |
+
+---
+
+Beispiel
+
+```
+HTTP Request
+
+↓
+
+Controller
+
+↓
+
+Factory erzeugt Service
+
+↓
+
+Service nutzt Repository
+
+↓
+
+Model benachrichtigt Observer
+
+↓
+
+View rendert HTML
+```
+
+Das ist bereits sehr nah an Laravel oder Symfony.
+
+---
+
+# Kapitel 233
+
+# Wann welches Pattern?
+```php
+<Table columnSizing="equal" rowDivider={1}>
+<Table.Row header>
+<Table.Cell>Problem</Table.Cell>
+<Table.Cell>Pattern</Table.Cell></Table.Row>
+<Table.Row>
+<Table.Cell>Nur eine Instanz</Table.Cell>
+<Table.Cell>Singleton</Table.Cell></Table.Row>
+<Table.Row><Table.Cell>Objekte flexibel erzeugen</Table.Cell>
+<Table.Cell>Factory</Table.Cell></Table.Row>
+<Table.Row><Table.Cell>Viele optionale Parameter</Table.Cell>
+<Table.Cell>Builder</Table.Cell></Table.Row>
+<Table.Row><Table.Cell>Automatische Benachrichtigung</Table.Cell>
+<Table.Cell>Observer</Table.Cell></Table.Row>
+<Table.Row><Table.Cell>Algorithmus austauschbar</Table.Cell>
+<Table.Cell>Strategy</Table.Cell></Table.Row>
+<Table.Row><Table.Cell>Funktionalität erweitern</Table.Cell>
+<Table.Cell>Decorator</Table.Cell></Table.Row>
+<Table.Row><Table.Cell>Alte Schnittstelle anpassen</Table.Cell>
+<Table.Cell>Adapter</Table.Cell></Table.Row></Table>
+```
+---
+
+# Typische IHK-Fragen
+
+## Zu welcher Kategorie gehört Observer?
+
+**Antwort:** Verhaltensmuster.
+
+---
+
+## Wann verwendet man Strategy?
+
+Wenn ein **Algorithmus zur Laufzeit austauschbar** sein soll.
+
+---
+
+## Unterschied Factory und Builder?
+
+- **Factory:** erzeugt Objekte.
+- **Builder:** erzeugt komplexe Objekte schrittweise.
+
+---
+
+## Warum ist Adapter nützlich?
+
+Um **inkompatible Schnittstellen miteinander zu verbinden**.
+
+---
+
+# Prüfungsfallen
+
+❌ Observer als Strukturmuster einordnen.
+
+❌ Singleton überall verwenden.
+
+❌ Factory mit Repository verwechseln.
+
+❌ Strategy nur als „viele Klassen“ beschreiben – wichtig ist der **austauschbare Algorithmus**.
+
+❌ Adapter und Decorator verwechseln.
+
+---
+
+# Best Practices
+
+✓ Patterns nur einsetzen, wenn sie ein echtes Problem lösen.
+
+✓ Nicht „Pattern um des Patterns willen“ verwenden.
+
+✓ Interfaces für lose Kopplung nutzen.
+
+✓ Strategy + Dependency Injection kombinieren.
+
+✓ Singleton sparsam einsetzen.
+
+✓ UML-Diagramme zu den wichtigsten Patterns zeichnen können.
+
+---
+
+# Kapitel 234
+
+# Was ist Softwarearchitektur?
+
+Die Softwarearchitektur beschreibt den **grundlegenden Aufbau** einer Anwendung.
+
+Sie legt fest,
+
+- welche Komponenten existieren,
+- wie sie zusammenarbeiten,
+- welche Verantwortung jede Komponente besitzt.
+
+---
+
+## Beispiel
+
+```
+Browser
+
+↓
+
+Controller
+
+↓
+
+Service
+
+↓
+
+Repository
+
+↓
+
+MySQL
+```
+
+---
+
+Warum?
+
+Eine klare Architektur erleichtert
+
+- Wartung
+- Erweiterung
+- Testbarkeit
+- Zusammenarbeit im Team
+
+---
+
+# Kapitel 235
+
+# Schichtenarchitektur
+
+Eine Anwendung wird in Schichten aufgeteilt.
+
+```
++----------------------+
+| Presentation Layer   |
++----------------------+
+| Business Layer       |
++----------------------+
+| Data Access Layer    |
++----------------------+
+| Database             |
++----------------------+
+```
+
+---
+
+## Aufgaben
+
+### Presentation Layer
+
+- HTML
+- Formulare
+- Benutzeroberfläche
+
+---
+
+### Business Layer
+
+- Geschäftslogik
+- Berechnungen
+- Validierung
+
+---
+
+### Data Access Layer
+
+- SQL
+- PDO
+- Repository
+
+---
+
+### Database
+
+- Speicherung der Daten
+
+---
+
+# Vorteile
+
+✓ klare Verantwortlichkeiten
+
+✓ austauschbare Komponenten
+
+✓ bessere Wartbarkeit
+
+---
+
+# Kapitel 236
+
+# MVC
+
+MVC bedeutet
+
+```
+Model
+
+View
+
+Controller
+```
+
+---
+
+## MVC-Diagramm
+
+```
+Benutzer
+
+↓
+
+View
+
+↓
+
+Controller
+
+↓
+
+Model
+
+↓
+
+Datenbank
+
+↓
+
+Model
+
+↓
+
+View
+
+↓
+
+Benutzer
+```
+
+---
+
+# Model
+
+Enthält
+
+- Daten
+- Geschäftslogik
+- Validierung
+
+Beispiel
+
+```php
+class Kunde
+{
+
+    private string $name;
+
+}
+```
+
+---
+
+# View
+
+Zeigt Daten an.
+
+Beispiele
+
+- HTML
+- CSS
+- Tabellen
+- Formulare
+
+Die View enthält **keine SQL-Abfragen**.
+
+---
+
+# Controller
+
+Der Controller verbindet alles.
+
+Er
+
+- empfängt Requests
+- ruft Services auf
+- wählt Views aus
+
+---
+
+# Kapitel 237
+
+# MVC in PHP
+
+```
+index.php
+
+↓
+
+CustomerController
+
+↓
+
+CustomerService
+
+↓
+
+CustomerRepository
+
+↓
+
+PDO
+
+↓
+
+MySQL
+```
+
+---
+
+## Controller
+
+```php
+class CustomerController
+{
+
+    public function index()
+    {
+
+        $kunden = $this->service->findAll();
+
+        include "kunden.php";
+
+    }
+
+}
+```
+
+---
+
+Controller
+
+↓
+
+keine SQL
+
+↓
+
+keine HTML-Erzeugung
+
+↓
+
+nur Steuerung
+
+---
+
+# Kapitel 238
+
+# Repository Pattern
+
+Bereits bekannt.
+
+Aufgabe
+
+```
+SQL kapseln
+```
+
+---
+
+Beispiel
+
+```php
+class CustomerRepository
+{
+
+    public function findAll()
+    {
+
+    }
+
+    public function save()
+    {
+
+    }
+
+}
+```
+
+---
+
+Controller kennt
+
+keine SQL.
+
+---
+
+# Kapitel 239
+
+# Service Layer
+
+Zwischen Controller und Repository.
+
+```
+Controller
+
+↓
+
+Service
+
+↓
+
+Repository
+```
+
+---
+
+Warum?
+
+Geschäftslogik gehört nicht in den Controller.
+
+---
+
+Beispiel
+
+```php
+class CustomerService
+{
+
+    public function createCustomer()
+
+    {
+
+        // prüfen
+
+        // berechnen
+
+        // speichern
+
+    }
+
+}
+```
+
+---
+
+# Verantwortlichkeiten
+
+| Klasse     | Aufgabe        |
+|------------|----------------|
+| Controller | Ablauf         |
+| Service    | Geschäftslogik |
+| Repository | Datenbank      |
+
+---
+
+# Kapitel 240
+
+# Dependency Injection
+
+Schlecht
+
+```php
+class Service
+{
+
+    private PDO $pdo;
+
+    public function __construct()
+
+    {
+
+        $this->pdo = new PDO(...);
+
+    }
+
+}
+```
+
+---
+
+Problem
+
+Die Klasse erzeugt ihre Abhängigkeiten selbst.
+
+---
+
+Besser
+
+```php
+class Service
+{
+
+    public function __construct(
+
+        private CustomerRepository $repository
+
+    ){
+
+    }
+
+}
+```
+
+---
+
+Objekte werden von außen übergeben.
+
+---
+
+Vorteile
+
+✓ testbar
+
+✓ austauschbar
+
+✓ lose Kopplung
+
+---
+
+# Kapitel 241
+
+# Clean Code
+
+Clean Code bedeutet
+
+```
+leicht lesbarer
+
+wartbarer
+
+verständlicher Code
+```
+
+---
+
+Code wird häufiger gelesen
+
+als geschrieben.
+
+---
+
+# Gute Namen
+
+Schlecht
+
+```php
+$a
+
+$b
+
+$c
+```
+
+---
+
+Besser
+
+```php
+customerName
+
+invoiceTotal
+
+employeeList
+```
+
+---
+
+# Methoden
+
+Schlecht
+
+```php
+doEverything()
+```
+
+---
+
+Besser
+
+```php
+calculatePrice()
+
+saveCustomer()
+
+sendEmail()
+```
+
+---
+
+# Kapitel 242
+
+# Kleine Methoden
+
+Schlecht
+
+```
+300 Zeilen
+```
+
+---
+
+Besser
+
+```
+20–30 Zeilen
+```
+
+---
+
+Eine Methode
+
+↓
+
+eine Aufgabe
+
+---
+
+# Kapitel 243
+
+# Keine doppelten Codes
+
+Schlecht
+
+```php
+preis * 1.19
+
+...
+
+preis * 1.19
+
+...
+
+preis * 1.19
+```
+
+---
+
+Besser
+
+```php
+calculateVat()
+```
+
+---
+
+Merksatz
+
+```
+DRY
+
+Don't Repeat Yourself
+```
+
+---
+
+# Kapitel 244
+
+# Code Smells
+
+Ein Code Smell ist
+
+ein Hinweis auf mögliches schlechtes Design.
+
+---
+
+Typische Code Smells
+
+- lange Methoden
+- riesige Klassen
+- viele Parameter
+- duplizierter Code
+- tiefe Verschachtelungen
+- Magic Numbers
+
+---
+
+Beispiel
+
+```php
+if(a){
+
+    if(b){
+
+        if(c){
+
+            if(d){
+
+            }
+
+        }
+
+    }
+
+}
+```
+
+---
+
+Besser
+
+Früh zurückkehren
+
+```php
+if(!$a){
+
+    return;
+
+}
+```
+
+---
+
+# Kapitel 245
+
+# Refactoring
+
+Refactoring bedeutet
+
+```
+Code verbessern
+
+↓
+
+Funktion bleibt gleich
+```
+
+---
+
+Beispiel
+
+Vorher
+
+```php
+if($kunde == true){
+
+}
+```
+
+---
+
+Nachher
+
+```php
+if($kunde){
+
+}
+```
+
+---
+
+Vorher
+
+```php
+$x = 19;
+```
+
+---
+
+Nachher
+
+```php
+const VAT = 19;
+```
+
+---
+
+Vorher
+
+```php
+if($status == 1)
+```
+
+---
+
+Nachher
+
+```php
+if($status == Status::ACTIVE)
+```
+
+---
+
+# Kapitel 246
+
+# Magic Numbers vermeiden
+
+Schlecht
+
+```php
+if($age >= 18)
+```
+
+---
+
+Besser
+
+```php
+const ADULT_AGE = 18;
+
+if($age >= ADULT_AGE)
+```
+
+---
+
+# Kapitel 247
+
+# Beispielprojekt
+
+```
+src
+
+│
+
+├── Controller
+
+│      CustomerController.php
+
+│
+
+├── Service
+
+│      CustomerService.php
+
+│
+
+├── Repository
+
+│      CustomerRepository.php
+
+│
+
+├── Model
+
+│      Customer.php
+
+│
+
+├── View
+
+│      customerList.php
+
+│
+
+└── config.php
+```
+
+---
+
+Das entspricht dem Aufbau vieler professioneller PHP-Projekte.
+
+---
+
+# Kapitel 248
+
+# Ablauf einer Anfrage
+
+```
+Browser
+
+↓
+
+Controller
+
+↓
+
+Service
+
+↓
+
+Repository
+
+↓
+
+PDO
+
+↓
+
+MySQL
+
+↓
+
+Repository
+
+↓
+
+Service
+
+↓
+
+Controller
+
+↓
+
+View
+
+↓
+
+Browser
+```
+
+---
+
+# Mini-Projekt
+
+Erstellen Sie eine Kundenverwaltung.
+
+Klassen
+
+```
+Customer
+
+CustomerRepository
+
+CustomerService
+
+CustomerController
+```
+
+Methoden
+
+- findAll()
+- findById()
+- save()
+- update()
+- delete()
+
+Verwenden Sie
+
+- MVC
+- PDO
+- Dependency Injection
+
+---
+
+# Typische IHK-Fragen
+
+## Warum MVC?
+
+Antwort
+
+Zur Trennung von Darstellung, Geschäftslogik und Datenhaltung.
+
+---
+
+## Unterschied Repository und Service?
+
+Repository
+
+↓
+
+Datenbankzugriff
+
+Service
+
+↓
+
+Geschäftslogik
+
+---
+
+## Was bedeutet Dependency Injection?
+
+Antwort
+
+Abhängigkeiten werden von außen übergeben und nicht innerhalb der Klasse erzeugt.
+
+---
+
+## Was bedeutet DRY?
+
+Antwort
+
+Code soll nicht mehrfach geschrieben werden.
+
+---
+
+## Was ist Refactoring?
+
+Antwort
+
+Verbesserung der Codequalität ohne Änderung des Verhaltens.
+
+---
+
+# Prüfungsfallen
+
+❌ SQL im Controller.
+
+❌ HTML im Repository.
+
+❌ Geschäftslogik in der View.
+
+❌ Klassen mit mehreren Verantwortlichkeiten.
+
+❌ Verwendung von Magic Numbers.
+
+❌ Lange Methoden mit mehreren Aufgaben.
+
+---
+
+# Best Practices
+
+✓ MVC konsequent einhalten.
+
+✓ Repository für Datenzugriff verwenden.
+
+✓ Geschäftslogik in Services kapseln.
+
+✓ Dependency Injection nutzen.
+
+✓ Aussagekräftige Namen verwenden.
+
+✓ Kleine Methoden schreiben.
+
+✓ DRY beachten.
+
+✓ Regelmäßig refaktorieren.
+
+---
+
+# Zusammenfassung Teil 26
+
+Sie haben gelernt
+
+✓ Softwarearchitektur
+
+✓ Schichtenarchitektur
+
+✓ MVC
+
+✓ Controller
+
+✓ Service
+
+✓ Repository
+
+✓ Dependency Injection
+
+✓ Clean Code
+
+✓ DRY
+
+✓ Code Smells
+
+✓ Refactoring
+
+---
+
+# Kapitel 249
+
+# Was ist Composer?
+
+Composer ist der **Standard-Paketmanager für PHP**.
+
+Vergleich
+
+| Sprache    | Paketmanager |
+|------------|--------------|
+| PHP        | Composer     |
+| Java       | Maven        |
+| JavaScript | npm          |
+| Python     | pip          |
+| .NET       | NuGet        |
+
+---
+
+Mit Composer können Bibliotheken automatisch installiert werden.
+
+Beispiele
+
+- Monolog
+- PHPUnit
+- Twig
+- Symfony
+- Laravel-Komponenten
+
+---
+
+# Kapitel 250
+
+# composer.json
+
+Jedes Composer-Projekt besitzt eine Datei
+
+```
+composer.json
+```
+
+Beispiel
+
+```json
+{
+    "name": "firma/shop",
+    "description": "Online Shop",
+    "require": {
+        "monolog/monolog": "^3.0"
+    }
+}
+```
+
+---
+
+Wichtige Bereiche
+
+| Schlüssel   | Bedeutung                |
+|-------------|--------------------------|
+| name        | Projektname              |
+| description | Beschreibung             |
+| require     | Abhängigkeiten           |
+| require-dev | Entwicklungsbibliotheken |
+| autoload    | Autoloading              |
+| scripts     | Befehle                  |
+
+---
+
+# Kapitel 251
+
+# Bibliothek installieren
+
+Installation
+
+```bash
+composer require monolog/monolog
+```
+
+Composer
+
+↓
+
+lädt automatisch
+
+↓
+
+alle benötigten Pakete herunter.
+
+---
+
+Danach entsteht
+
+```
+vendor/
+```
+
+und
+
+```
+composer.lock
+```
+
+---
+
+Projektstruktur
+
+```
+Projekt
+
+│
+
+├── composer.json
+
+├── composer.lock
+
+├── vendor/
+
+└── src/
+```
+
+---
+
+# Kapitel 252
+
+# vendor-Verzeichnis
+
+Hier liegen
+
+alle installierten Bibliotheken.
+
+```
+vendor/
+
+│
+
+├── autoload.php
+
+├── composer/
+
+├── monolog/
+
+└── ...
+```
+
+---
+
+Wichtig
+
+Dieses Verzeichnis wird **nicht selbst verändert**.
+
+---
+
+# Kapitel 253
+
+# composer.lock
+
+Viele Anfänger löschen diese Datei.
+
+Das ist falsch.
+
+---
+
+Warum?
+
+Sie speichert
+
+die **genauen Versionen** aller Bibliotheken.
+
+---
+
+Beispiel
+
+```
+composer.json
+
+↓
+
+^3.0
+```
+
+Installiert wurde
+
+```
+3.2.1
+```
+
+Diese Version steht anschließend in
+
+```
+composer.lock
+```
+
+---
+
+Dadurch erhalten alle Entwickler dieselben Versionen.
+
+---
+
+# Kapitel 254
+
+# Autoloading
+
+Früher
+
+```php
+require "Auto.php";
+require "Motor.php";
+require "Reifen.php";
+require "Tank.php";
+```
+
+Bei großen Projekten völlig unübersichtlich.
+
+---
+
+Heute
+
+```php
+require "vendor/autoload.php";
+```
+
+Fertig.
+
+Composer lädt Klassen automatisch.
+
+---
+
+# Kapitel 255
+
+# PSR-4
+
+PSR bedeutet
+
+```
+PHP Standard Recommendation
+```
+
+PSR-4 beschreibt,
+
+wie Klassen automatisch gefunden werden.
+
+---
+
+composer.json
+
+```json
+{
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        }
+    }
+}
+```
+
+---
+
+Das bedeutet
+
+```
+Namespace
+
+App
+
+↓
+
+Ordner
+
+src/
+```
+
+---
+
+# Kapitel 256
+
+# Namespace
+
+Ohne Namespace
+
+```php
+class User
+{
+
+}
+```
+
+Problem
+
+Mehrere Bibliotheken besitzen ebenfalls
+
+```
+User
+```
+
+---
+
+Mit Namespace
+
+```php
+namespace App\Models;
+
+class User
+{
+
+}
+```
+
+---
+
+Benutzung
+
+```php
+use App\Models\User;
+
+$user = new User();
+```
+
+---
+
+Ordnerstruktur
+
+```
+src
+
+│
+
+└── Models
+
+      User.php
+```
+
+---
+
+Datei
+
+```php
+namespace App\Models;
+
+class User
+{
+
+}
+```
+
+---
+
+# Kapitel 257
+
+# use
+
+Importiert Klassen.
+
+```php
+use App\Models\User;
+```
+
+Dann genügt
+
+```php
+$user = new User();
+```
+
+Ohne `use`
+
+```php
+$user = new App\Models\User();
+```
+
+---
+
+# Kapitel 258
+
+# Autoload aktualisieren
+
+Nach neuen Klassen
+
+```bash
+composer dump-autoload
+```
+
+Composer erstellt den Autoloader neu.
+
+---
+
+# Kapitel 259
+
+# Packagist
+
+Die größte PHP-Paketplattform.
+
+Beispiele
+
+- Monolog
+- Guzzle
+- PHPUnit
+- Symfony
+- Faker
+
+Fast jede Bibliothek wird über Packagist verteilt.
+
+---
+
+# Kapitel 260
+
+# Semantische Versionierung
+
+Version
+
+```
+2.5.8
+```
+
+besteht aus
+
+```
+Major.Minor.Patch
+```
+
+---
+
+Beispiel
+
+```
+3.2.5
+```
+
+| Zahl | Bedeutung         |
+|------|-------------------|
+| 3    | große Änderungen  |
+| 2    | neue Funktionen   |
+| 5    | Fehlerkorrekturen |
+
+---
+
+# Composer-Versionen
+
+```
+^3.0
+```
+
+bedeutet
+
+Alle Versionen
+
+```
+>=3.0
+
+<4.0
+```
+
+---
+
+Weitere Beispiele
+
+| Angabe | Bedeutung           |
+|--------|---------------------|
+| ^2.3   | bis unter 3.0       |
+| ~2.3   | bis unter 2.4       |
+| 3.1.4  | exakt diese Version |
+
+---
+
+# Kapitel 261
+
+# require vs require-dev
+
+Normale Bibliotheken
+
+```json
+"require"
+```
+
+---
+
+Entwicklungswerkzeuge
+
+```json
+"require-dev"
+```
+
+---
+
+Beispiele
+
+| require | require-dev  |
+|---------|--------------|
+| Monolog | PHPUnit      |
+| Twig    | PHPStan      |
+| Symfony | PHP-CS-Fixer |
+
+---
+
+# Kapitel 262
+
+# Praktisches Beispiel
+
+Projekt
+
+```
+shop/
+
+│
+
+├── src/
+
+│      Product.php
+
+│
+
+├── composer.json
+
+│
+
+└── vendor/
+```
+
+---
+
+composer.json
+
+```json
+{
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        }
+    }
+}
+```
+
+---
+
+Product.php
+
+```php
+namespace App;
+
+class Product
+{
+    public function getName(): string
+    {
+        return "Notebook";
+    }
+}
+```
+
+---
+
+index.php
+
+```php
+require "vendor/autoload.php";
+
+use App\Product;
+
+$product = new Product();
+
+echo $product->getName();
+```
+
+Ausgabe
+
+```
+Notebook
+```
+
+---
+
+# Kapitel 263
+
+# Häufige PSR-Standards
+
+| Standard | Bedeutung     |
+|----------|---------------|
+| PSR-1    | Grundregeln   |
+| PSR-4    | Autoloading   |
+| PSR-7    | HTTP Messages |
+| PSR-12   | Coding Style  |
+| PSR-18   | HTTP Client   |
+
+---
+
+Für die IHK besonders wichtig
+
+✓ PSR-4
+
+✓ PSR-12
+
+---
+
+# Mini-Projekt
+
+Erstellen Sie
+
+```
+src/
+
+Customer.php
+
+Order.php
+
+Invoice.php
+```
+
+Nutzen Sie
+
+- Namespace
+- Composer
+- PSR-4
+- Autoloading
+
+Erzeugen Sie anschließend alle Klassen im `index.php`, ohne `require` für jede einzelne Datei zu verwenden.
+
+---
+
+# Typische IHK-Fragen
+
+## Wozu dient Composer?
+
+Antwort
+
+Zur Verwaltung von Bibliotheken und Abhängigkeiten.
+
+---
+
+## Was macht `vendor/autoload.php`?
+
+Antwort
+
+Es lädt Klassen automatisch anhand der Composer-Konfiguration.
+
+---
+
+## Warum `composer.lock` nicht löschen?
+
+Antwort
+
+Damit alle Entwickler dieselben Bibliotheksversionen verwenden.
+
+---
+
+## Was ist ein Namespace?
+
+Antwort
+
+Ein Namespace verhindert Namenskonflikte zwischen Klassen.
+
+---
+
+## Was beschreibt PSR-4?
+
+Antwort
+
+Den Standard für automatisches Laden von Klassen anhand ihrer Namespaces und Ordnerstruktur.
+
+---
+
+# Prüfungsfallen
+
+❌ `vendor/` manuell bearbeiten.
+
+❌ `composer.lock` aus dem Repository löschen.
+
+❌ Klassen ohne Namespace erstellen.
+
+❌ Nach neuen Klassen `dump-autoload` vergessen.
+
+❌ `require` für jede Klasse verwenden statt Composer-Autoloading.
+
+---
+
+# Best Practices
+
+✓ Composer für jedes neue Projekt verwenden.
+
+✓ PSR-4 konsequent einsetzen.
+
+✓ Aussagekräftige Namespaces wählen.
+
+✓ `vendor/` nicht verändern.
+
+✓ `composer.lock` mit versionieren.
+
+✓ Entwicklungswerkzeuge unter `require-dev` installieren.
+
+---
+
+# Kapitel 264
+
+# Warum testen?
+
+Jede Software enthält Fehler.
+
+Tests helfen dabei,
+
+Fehler früh zu erkennen.
+
+---
+
+## Vorteile
+
+✓ weniger Bugs
+
+✓ sicheres Refactoring
+
+✓ bessere Wartbarkeit
+
+✓ höhere Qualität
+
+✓ Dokumentation des Verhaltens
+
+---
+
+Ohne Tests
+
+```
+Code ändern
+
+↓
+
+Hoffen
+```
+
+---
+
+Mit Tests
+
+```
+Code ändern
+
+↓
+
+Tests ausführen
+
+↓
+
+Sofort sehen,
+
+ob etwas kaputt gegangen ist
+```
+
+---
+
+# Kapitel 265
+
+# Testarten
+
+| Test             | Was wird getestet?              |
+|------------------|---------------------------------|
+| Unit Test        | einzelne Klasse oder Methode    |
+| Integrationstest | Zusammenarbeit mehrerer Klassen |
+| Systemtest       | komplette Anwendung             |
+| Akzeptanztest    | Anforderungen des Kunden        |
+
+---
+
+Für PHP ist PHPUnit hauptsächlich für **Unit Tests** gedacht.
+
+---
+
+# Kapitel 266
+
+# PHPUnit
+
+PHPUnit ist das Standard-Testframework für PHP.
+
+Installation
+
+```bash
+composer require --dev phpunit/phpunit
+```
+
+---
+
+Projektstruktur
+
+```
+Projekt
+
+│
+
+├── src
+
+│
+
+├── tests
+
+│
+
+├── vendor
+
+└── composer.json
+```
+
+---
+
+# Kapitel 267
+
+# Erster Test
+
+Klasse
+
+```php
+class Calculator
+{
+    public function add(int $a, int $b): int
+    {
+        return $a + $b;
+    }
+}
+```
+
+---
+
+Test
+
+```php
+use PHPUnit\Framework\TestCase;
+
+class CalculatorTest extends TestCase
+{
+    public function testAddition()
+    {
+        $calculator = new Calculator();
+
+        $this->assertEquals(
+            5,
+            $calculator->add(2, 3)
+        );
+    }
+}
+```
+
+---
+
+Ablauf
+
+```
+Calculator
+
+↓
+
+Test
+
+↓
+
+assertEquals()
+
+↓
+
+OK oder Fehler
+```
+
+---
+
+# Kapitel 268
+
+# Assertions
+
+Assertions vergleichen
+
+**Soll**
+
+mit
+
+**Ist**
+
+---
+
+Wichtige Assertions
+
+| Methode            | Bedeutung           |
+|--------------------|---------------------|
+| assertEquals()     | Werte gleich        |
+| assertSame()       | Typ und Wert gleich |
+| assertTrue()       | true erwartet       |
+| assertFalse()      | false erwartet      |
+| assertNull()       | null erwartet       |
+| assertNotNull()    | nicht null          |
+| assertCount()      | Anzahl Elemente     |
+| assertEmpty()      | leer                |
+| assertInstanceOf() | Objekt-Typ          |
+
+---
+
+Beispiele
+
+```php
+$this->assertTrue(true);
+
+$this->assertFalse(false);
+
+$this->assertNull(null);
+
+$this->assertCount(3, $array);
+```
+
+---
+
+# Kapitel 269
+
+# Testmethoden
+
+Jede Testmethode beginnt mit
+
+```
+test...
+```
+
+oder erhält das Attribut
+
+```php
+#[Test]
+```
+
+(Beides ist in aktuellen PHPUnit-Versionen möglich.)
+
+---
+
+Beispiel
+
+```php
+public function testSubtraction()
+{
+
+}
+```
+
+---
+
+Jede Testmethode prüft
+
+**genau eine Funktionalität**.
+
+---
+
+# Kapitel 270
+
+# AAA-Prinzip
+
+Ein guter Test besitzt drei Bereiche.
+
+```
+Arrange
+
+↓
+
+Act
+
+↓
+
+Assert
+```
+
+---
+
+Beispiel
+
+```php
+public function testMultiply()
+{
+    // Arrange
+    $calc = new Calculator();
+
+    // Act
+    $result = $calc->multiply(3, 4);
+
+    // Assert
+    $this->assertEquals(12, $result);
+}
+```
+
+---
+
+Merksatz
+
+```
+Vorbereiten
+
+↓
+
+Ausführen
+
+↓
+
+Prüfen
+```
+
+---
+
+# Kapitel 271
+
+# Gute Testfälle
+
+Nicht nur Standardfälle testen.
+
+---
+
+Beispiel
+
+Addition
+
+```php
+2 + 3
+```
+
+---
+
+Auch
+
+```php
+0 + 0
+
+-5 + 5
+
+999999 + 1
+```
+
+---
+
+Grenzwerte testen.
+
+---
+
+# Kapitel 272
+
+# Exceptions testen
+
+Klasse
+
+```php
+class Calculator
+{
+    public function divide($a, $b)
+    {
+        if ($b == 0) {
+            throw new InvalidArgumentException();
+        }
+
+        return $a / $b;
+    }
+}
+```
+
+---
+
+Test
+
+```php
+public function testDivisionByZero()
+{
+    $calc = new Calculator();
+
+    $this->expectException(
+        InvalidArgumentException::class
+    );
+
+    $calc->divide(10, 0);
+}
+```
+
+---
+
+# Kapitel 273
+
+# Test Doubles
+
+Manchmal sollen echte Objekte ersetzt werden.
+
+Dafür gibt es Test Doubles.
+
+---
+
+Arten
+
+| Typ  | Aufgabe                  |
+|------|--------------------------|
+| Stub | liefert feste Werte      |
+| Mock | überprüft Aufrufe        |
+| Fake | einfache Implementierung |
+| Spy  | merkt sich Aufrufe       |
+
+---
+
+# Kapitel 274
+
+# Stub
+
+Beispiel
+
+Repository liefert immer denselben Kunden.
+
+```php
+$stub = $this->createStub(
+    CustomerRepository::class
+);
+
+$stub->method("findById")
+     ->willReturn(
+        new Customer("Max")
+     );
+```
+
+---
+
+Kein Zugriff
+
+auf die Datenbank nötig.
+
+---
+
+# Kapitel 275
+
+# Mock
+
+Ein Mock überprüft,
+
+ob Methoden aufgerufen wurden.
+
+```php
+$mock = $this->createMock(
+    MailService::class
+);
+
+$mock->expects($this->once())
+     ->method("send");
+```
+
+---
+
+Der Test schlägt fehl,
+
+wenn `send()` nicht aufgerufen wird.
+
+---
+
+# Kapitel 276
+
+# Code Coverage
+
+Code Coverage zeigt,
+
+wie viel Code getestet wurde.
+
+---
+
+Beispiel
+
+```
+Klasse
+
+100 Zeilen
+
+↓
+
+80 getestet
+
+↓
+
+80 %
+```
+
+---
+
+Hohe Coverage bedeutet
+
+nicht automatisch gute Tests.
+
+---
+
+# Kapitel 277
+
+# Test Driven Development
+
+TDD bedeutet
+
+```
+Erst Test
+
+Dann Code
+```
+
+---
+
+Der Zyklus
+
+```
+Red
+
+↓
+
+Green
+
+↓
+
+Refactor
+```
+
+---
+
+Red
+
+↓
+
+Test schlägt fehl
+
+---
+
+Green
+
+↓
+
+Minimalen Code schreiben
+
+---
+
+Refactor
+
+↓
+
+Code verbessern
+
+↓
+
+Tests bleiben grün
+
+---
+
+# Kapitel 278
+
+# Testbarer Code
+
+Schlecht
+
+```php
+class Service
+{
+    private PDO $pdo =
+        new PDO(...);
+}
+```
+
+---
+
+Besser
+
+```php
+class Service
+{
+    public function __construct(
+        private Repository $repository
+    ) {
+    }
+}
+```
+
+---
+
+Dependency Injection
+
+macht Klassen leicht testbar.
+
+---
+
+# Kapitel 279
+
+# Was sollte getestet werden?
+
+✓ Berechnungen
+
+✓ Geschäftslogik
+
+✓ Validierungen
+
+✓ Services
+
+✓ Repository (oft Integrationstest)
+
+---
+
+Nicht unbedingt
+
+- Getter
+- Setter
+- Framework-Code
+
+---
+
+# Kapitel 280
+
+# Mini-Projekt
+
+Schreiben Sie
+
+```
+Calculator
+```
+
+Methoden
+
+- add()
+- subtract()
+- multiply()
+- divide()
+
+---
+
+Erstellen Sie
+
+```
+CalculatorTest
+```
+
+mit mindestens
+
+- positiver Test
+- negativer Test
+- Exception-Test
+- Grenzwert-Test
+
+---
+
+# Typische IHK-Fragen
+
+## Was ist ein Unit Test?
+
+Antwort
+
+Ein automatisierter Test für eine einzelne Klasse oder Methode.
+
+---
+
+## Was prüft `assertEquals()`?
+
+Antwort
+
+Ob Soll- und Ist-Wert gleich sind.
+
+---
+
+## Unterschied Mock und Stub?
+
+Stub
+
+↓
+
+liefert Werte.
+
+Mock
+
+↓
+
+überprüft Methodenaufrufe.
+
+---
+
+## Was bedeutet TDD?
+
+Antwort
+
+Zuerst wird der Test geschrieben, anschließend die Implementierung.
+
+---
+
+## Was ist Code Coverage?
+
+Antwort
+
+Der Anteil des Codes, der durch Tests ausgeführt wird.
+
+---
+
+# Prüfungsfallen
+
+❌ Getter und Setter übermäßig testen.
+
+❌ Zu viele Dinge in einem Test prüfen.
+
+❌ Tests voneinander abhängig machen.
+
+❌ Datenbank in jedem Unit Test verwenden.
+
+❌ Keine Grenzfälle testen.
+
+---
+
+# Best Practices
+
+✓ Eine Funktion pro Test.
+
+✓ Aussagekräftige Testnamen.
+
+✓ AAA-Prinzip verwenden.
+
+✓ Dependency Injection einsetzen.
+
+✓ Tests regelmäßig ausführen.
+
+✓ Kleine, unabhängige Tests schreiben.
+
+---
+
+# Kapitel 281
+
+# Das Client-Server-Modell
+
+Fast jede Webanwendung arbeitet nach dem Client-Server-Prinzip.
+
+```
+Browser
+
+↓
+
+HTTP Request
+
+↓
+
+Webserver
+
+↓
+
+PHP
+
+↓
+
+Datenbank
+
+↓
+
+Antwort
+
+↓
+
+Browser
+```
+
+---
+
+## Client
+
+Der Client ist das Programm,
+
+das eine Anfrage sendet.
+
+Beispiele
+
+- Chrome
+- Firefox
+- Edge
+- Smartphone-App
+
+---
+
+## Server
+
+Der Server verarbeitet die Anfrage.
+
+Beispiele
+
+- Apache
+- Nginx
+- IIS
+
+---
+
+PHP läuft auf dem Server.
+
+---
+
+# Kapitel 282
+
+# HTTP
+
+HTTP bedeutet
+
+```
+HyperText Transfer Protocol
+```
+
+Es ist das wichtigste Protokoll des Webs.
+
+---
+
+Eigenschaften
+
+✓ zustandslos
+
+✓ textbasiert
+
+✓ Request → Response
+
+---
+
+Jede Kommunikation besteht aus
+
+```
+Request
+
+↓
+
+Response
+```
+
+---
+
+# Kapitel 283
+
+# HTTP Request
+
+Ein Request besteht aus
+
+```
+Methode
+
+URL
+
+Header
+
+Body
+```
+
+---
+
+Beispiel
+
+```
+GET /kunden HTTP/1.1
+
+Host: localhost
+
+User-Agent: Chrome
+```
+
+---
+
+PHP verarbeitet diesen Request.
+
+---
+
+# Kapitel 284
+
+# HTTP Response
+
+Antwort des Servers
+
+```
+Statuscode
+
+Header
+
+Body
+```
+
+---
+
+Beispiel
+
+```
+HTTP/1.1 200 OK
+
+Content-Type: text/html
+
+<html>...</html>
+```
+
+---
+
+# Kapitel 285
+
+# HTTP-Methoden
+
+| Methode | Bedeutung        |
+|---------|------------------|
+| GET     | Daten lesen      |
+| POST    | Daten senden     |
+| PUT     | Daten ändern     |
+| PATCH   | teilweise ändern |
+| DELETE  | löschen          |
+
+---
+
+Merkhilfe
+
+```
+GET
+
+↓
+
+Read
+```
+
+```
+POST
+
+↓
+
+Create
+```
+
+```
+PUT
+
+↓
+
+Update
+```
+
+```
+DELETE
+
+↓
+
+Delete
+```
+
+---
+
+# Kapitel 286
+
+# GET
+
+GET überträgt Daten in der URL.
+
+```
+https://shop.de/product?id=15
+```
+
+PHP
+
+```php
+$id = $_GET["id"];
+```
+
+---
+
+Eigenschaften
+
+✓ sichtbar
+
+✓ bookmarkfähig
+
+✓ nicht für Passwörter
+
+---
+
+# Kapitel 287
+
+# POST
+
+POST sendet Daten im Request Body.
+
+HTML
+
+```html
+<form method="post">
+
+<input name="username">
+
+</form>
+```
+
+PHP
+
+```php
+$username = $_POST["username"];
+```
+
+---
+
+Vorteile
+
+✓ große Datenmengen
+
+✓ Passwörter nicht in URL
+
+✓ Formulare
+
+---
+
+# Kapitel 288
+
+# PUT
+
+PUT ersetzt eine Ressource.
+
+REST-Beispiel
+
+```
+PUT
+
+/api/customer/15
+```
+
+---
+
+Oft verwendet
+
+bei APIs.
+
+---
+
+# DELETE
+
+Löscht Ressourcen.
+
+```
+DELETE
+
+/api/customer/15
+```
+
+---
+
+# PATCH
+
+Ändert nur einzelne Felder.
+
+```
+PATCH
+
+/customer/15
+```
+
+---
+
+# Kapitel 289
+
+# HTTP-Statuscodes
+
+Statuscodes bestehen aus drei Ziffern.
+
+---
+
+## 2xx
+
+Erfolg
+
+| Code | Bedeutung  |
+|------|------------|
+| 200  | OK         |
+| 201  | Created    |
+| 204  | No Content |
+
+---
+
+## 3xx
+
+Weiterleitung
+
+| Code | Bedeutung          |
+|------|--------------------|
+| 301  | Permanent Redirect |
+| 302  | Temporary Redirect |
+
+---
+
+## 4xx
+
+Clientfehler
+
+| Code | Bedeutung    |
+|------|--------------|
+| 400  | Bad Request  |
+| 401  | Unauthorized |
+| 403  | Forbidden    |
+| 404  | Not Found    |
+
+---
+
+## 5xx
+
+Serverfehler
+
+| Code | Bedeutung             |
+|------|-----------------------|
+| 500  | Internal Server Error |
+| 502  | Bad Gateway           |
+| 503  | Service Unavailable   |
+
+---
+
+Merkhilfe
+
+```
+2xx
+
+↓
+
+alles OK
+```
+
+```
+3xx
+
+↓
+
+weiterleiten
+```
+
+```
+4xx
+
+↓
+
+Benutzerfehler
+```
+
+```
+5xx
+
+↓
+
+Serverfehler
+```
+
+---
+
+# Kapitel 290
+
+# Header
+
+Header enthalten Zusatzinformationen.
+
+Beispiele
+
+```
+Content-Type
+
+Content-Length
+
+Authorization
+
+Accept
+
+Cookie
+
+User-Agent
+```
+
+---
+
+PHP
+
+```php
+header("Location: login.php");
+```
+
+Weiterleitung.
+
+---
+
+JSON senden
+
+```php
+header(
+
+"Content-Type: application/json"
+
+);
+```
+
+---
+
+# Kapitel 291
+
+# Cookies
+
+Cookies werden
+
+im Browser gespeichert.
+
+---
+
+Beispiel
+
+```php
+setcookie(
+
+"username",
+
+"Max",
+
+time()+3600
+
+);
+```
+
+---
+
+Lesen
+
+```php
+echo $_COOKIE["username"];
+```
+
+---
+
+Typische Anwendungen
+
+- Sprache
+- Theme
+- Login merken
+
+---
+
+# Kapitel 292
+
+# Sessions
+
+Sessions liegen
+
+auf dem Server.
+
+---
+
+Start
+
+```php
+session_start();
+```
+
+---
+
+Speichern
+
+```php
+$_SESSION["user"] = "Max";
+```
+
+---
+
+Lesen
+
+```php
+echo $_SESSION["user"];
+```
+
+---
+
+Session löschen
+
+```php
+session_destroy();
+```
+
+---
+
+# Cookies vs Sessions
+
+| Cookies                 | Sessions                     |
+|-------------------------|------------------------------|
+| Browser                 | Server                       |
+| Benutzer kann sie sehen | Benutzer sieht Inhalte nicht |
+| begrenzte Größe         | deutlich größer              |
+| weniger sicher          | sicherer                     |
+
+---
+
+# Kapitel 293
+
+# Login mit Session
+
+```
+Login
+
+↓
+
+Passwort prüfen
+
+↓
+
+session_start()
+
+↓
+
+$_SESSION["user"]
+
+↓
+
+geschützte Seiten
+```
+
+---
+
+Logout
+
+```php
+session_destroy();
+```
+
+---
+
+# Kapitel 294
+
+# REST
+
+REST ist ein Architekturstil
+
+für Webservices.
+
+---
+
+Beispiel
+
+```
+GET
+
+/customers
+```
+
+liefert
+
+alle Kunden.
+
+---
+
+```
+GET
+
+/customers/5
+```
+
+liefert
+
+einen Kunden.
+
+---
+
+```
+POST
+
+/customers
+```
+
+legt Kunden an.
+
+---
+
+```
+PUT
+
+/customers/5
+```
+
+ändert Kunden.
+
+---
+
+```
+DELETE
+
+/customers/5
+```
+
+löscht Kunden.
+
+---
+
+# REST und JSON
+
+Meistens
+
+```
+Request
+
+↓
+
+JSON
+
+↓
+
+Server
+
+↓
+
+JSON
+
+↓
+
+Client
+```
+
+---
+
+# Kapitel 295
+
+# HTTP ist zustandslos
+
+HTTP merkt sich nichts.
+
+Deshalb benötigt man
+
+Sessions oder Tokens.
+
+---
+
+Beispiel
+
+```
+Request 1
+
+↓
+
+Server kennt Benutzer
+
+nicht mehr
+
+↓
+
+Request 2
+
+↓
+
+erneut unbekannt
+```
+
+---
+
+Sessions lösen dieses Problem.
+
+---
+
+# Kapitel 296
+
+# Mini-Projekt
+
+Erstellen Sie
+
+eine Login-Seite.
+
+Nach erfolgreichem Login
+
+- Session starten
+- Benutzer speichern
+- geschützte Seite anzeigen
+- Logout implementieren
+
+Zusätzlich
+
+eine API
+
+```
+GET /products
+
+POST /products
+```
+
+mit JSON-Ausgabe.
+
+---
+
+# Typische IHK-Fragen
+
+## Unterschied GET und POST?
+
+GET
+
+↓
+
+URL
+
+POST
+
+↓
+
+Body
+
+---
+
+## Unterschied Cookies und Sessions?
+
+Cookies liegen im Browser.
+
+Sessions auf dem Server.
+
+---
+
+## Wann verwendet man 404?
+
+Wenn die angeforderte Ressource nicht existiert.
+
+---
+
+## Wann verwendet man 500?
+
+Bei einem internen Serverfehler.
+
+---
+
+## Warum sind Sessions sicherer?
+
+Weil die eigentlichen Daten auf dem Server gespeichert werden.
+
+---
+
+## Welche HTTP-Methode löscht Daten?
+
+DELETE.
+
+---
+
+# Prüfungsfallen
+
+❌ Passwörter über GET senden.
+
+❌ Session ohne `session_start()` verwenden.
+
+❌ Cookies mit Sessions verwechseln.
+
+❌ 404 und 500 vertauschen.
+
+❌ Nach `header("Location: ...")` das Skript weiterlaufen lassen (üblich ist anschließend `exit;`).
+
+---
+
+# Best Practices
+
+✓ Formulare mit POST senden.
+
+✓ REST-konforme HTTP-Methoden verwenden.
+
+✓ Sessions für Logins nutzen.
+
+✓ Cookies nur für unkritische Informationen verwenden.
+
+✓ Statuscodes korrekt zurückgeben.
+
+✓ JSON für APIs verwenden.
+
+✓ Header vor der ersten Ausgabe senden.
+
+---
+
+# Kapitel 297
+
+# Was ist eine REST-API?
+
+REST steht für
+
+```
+Representational State Transfer
+```
+
+Eine REST-API ermöglicht die Kommunikation zwischen Programmen über HTTP.
+
+Beispiele
+
+- Webshop ↔ App
+- Frontend ↔ Backend
+- Mobile App ↔ Server
+- Angular ↔ PHP
+- React ↔ Laravel
+
+---
+
+## Kommunikation
+
+```
+Client
+
+↓
+
+HTTP
+
+↓
+
+REST API
+
+↓
+
+Business Logic
+
+↓
+
+Datenbank
+```
+
+---
+
+# Eigenschaften
+
+✓ HTTP
+
+✓ JSON
+
+✓ Statuscodes
+
+✓ Ressourcen
+
+✓ zustandslos
+
+---
+
+# Kapitel 298
+
+# Ressourcen
+
+REST arbeitet mit Ressourcen.
+
+Beispiele
+
+```
+/customers
+
+/products
+
+/orders
+
+/invoices
+```
+
+Nicht
+
+```
+/getCustomers
+
+/deleteCustomer
+
+/createCustomer
+```
+
+---
+
+Merksatz
+
+REST verwendet **Substantive** statt Verben.
+
+---
+
+# Kapitel 299
+
+# CRUD
+
+CRUD beschreibt die vier Grundoperationen.
+
+| CRUD   | HTTP      | Beispiel      |
+|--------|-----------|---------------|
+| Create | POST      | Kunde anlegen |
+| Read   | GET       | Kunde lesen   |
+| Update | PUT/PATCH | Kunde ändern  |
+| Delete | DELETE    | Kunde löschen |
+
+---
+
+REST
+
+```
+POST
+
+/customers
+```
+
+↓
+
+neuer Kunde
+
+---
+
+```
+GET
+
+/customers
+```
+
+↓
+
+alle Kunden
+
+---
+
+```
+GET
+
+/customers/12
+```
+
+↓
+
+ein Kunde
+
+---
+
+```
+PUT
+
+/customers/12
+```
+
+↓
+
+Kunde ersetzen
+
+---
+
+```
+PATCH
+
+/customers/12
+```
+
+↓
+
+einzelne Felder ändern
+
+---
+
+```
+DELETE
+
+/customers/12
+```
+
+↓
+
+löschen
+
+---
+
+# Kapitel 300
+
+# JSON Response
+
+PHP
+
+```php
+$customer = [
+
+    "id" => 1,
+
+    "name" => "Max",
+
+    "city" => "München"
+
+];
+
+header("Content-Type: application/json");
+
+echo json_encode($customer);
+```
+
+---
+
+Ausgabe
+
+```json
+{
+    "id":1,
+    "name":"Max",
+    "city":"München"
+}
+```
+
+---
+
+# Kapitel 301
+
+# JSON empfangen
+
+Der Body einer Anfrage wird gelesen.
+
+```php
+$json = file_get_contents(
+
+"php://input"
+
+);
+
+$data = json_decode(
+
+$json,
+
+true
+
+);
+```
+
+---
+
+Beispiel
+
+Client sendet
+
+```json
+{
+    "name":"Lisa",
+    "city":"Berlin"
+}
+```
+
+---
+
+PHP
+
+```php
+echo $data["name"];
+```
+
+Ausgabe
+
+```
+Lisa
+```
+
+---
+
+# Kapitel 302
+
+# Routing
+
+Routing entscheidet,
+
+welcher Code ausgeführt wird.
+
+---
+
+Beispiel
+
+```
+GET
+
+/products
+```
+
+↓
+
+ProductController::index()
+
+---
+
+```
+POST
+
+/products
+```
+
+↓
+
+ProductController::store()
+
+---
+
+```
+DELETE
+
+/products/5
+```
+
+↓
+
+ProductController::delete()
+
+---
+
+# Einfaches Routing
+
+```php
+$method = $_SERVER["REQUEST_METHOD"];
+
+switch($method){
+
+    case "GET":
+
+        ...
+
+        break;
+
+    case "POST":
+
+        ...
+
+        break;
+
+}
+```
+
+---
+
+# Kapitel 303
+
+# REST Controller
+
+```php
+class CustomerController
+{
+
+    public function index(){}
+
+    public function show(){}
+
+    public function store(){}
+
+    public function update(){}
+
+    public function delete(){}
+
+}
+```
+
+---
+
+Typische Methoden
+
+| Methode  | Aufgabe             |
+|----------|---------------------|
+| index()  | Liste               |
+| show()   | einzelner Datensatz |
+| store()  | neu                 |
+| update() | ändern              |
+| delete() | löschen             |
+
+---
+
+# Kapitel 304
+
+# Statuscodes
+
+Erfolgreiches Lesen
+
+```
+200 OK
+```
+
+---
+
+Erfolgreiches Anlegen
+
+```
+201 Created
+```
+
+---
+
+Erfolgreiches Löschen
+
+```
+204 No Content
+```
+
+---
+
+Ungültige Eingabe
+
+```
+400 Bad Request
+```
+
+---
+
+Nicht angemeldet
+
+```
+401 Unauthorized
+```
+
+---
+
+Keine Berechtigung
+
+```
+403 Forbidden
+```
+
+---
+
+Nicht gefunden
+
+```
+404 Not Found
+```
+
+---
+
+Serverfehler
+
+```
+500 Internal Server Error
+```
+
+---
+
+PHP
+
+```php
+http_response_code(404);
+
+echo json_encode([
+
+    "error"=>"Nicht gefunden"
+
+]);
+```
+
+---
+
+# Kapitel 305
+
+# Fehlerobjekte
+
+Statt
+
+```
+Fehler
+```
+
+liefert REST
+
+JSON.
+
+---
+
+Beispiel
+
+```json
+{
+    "error":"Customer not found"
+}
+```
+
+---
+
+Oder
+
+```json
+{
+    "message":"Validation failed"
+}
+```
+
+---
+
+# Kapitel 306
+
+# Validierung
+
+Vor dem Speichern
+
+immer prüfen.
+
+```php
+if(
+
+empty($data["name"])
+
+){
+
+    http_response_code(400);
+
+}
+```
+
+---
+
+Besser
+
+```json
+{
+    "errors":[
+        "Name fehlt"
+    ]
+}
+```
+
+---
+
+# Kapitel 307
+
+# API testen
+
+Werkzeuge
+
+- Postman
+- Insomnia
+- curl
+- Bruno
+
+---
+
+Beispiel
+
+```
+GET
+
+/api/customers
+```
+
+↓
+
+JSON
+
+---
+
+POST
+
+```
+/api/customers
+```
+
+↓
+
+JSON
+
+↓
+
+201
+
+---
+
+# Kapitel 308
+
+# REST-Projektstruktur
+
+```
+src
+
+│
+
+├── Controller
+
+│
+
+├── Service
+
+│
+
+├── Repository
+
+│
+
+├── Model
+
+│
+
+├── Routes
+
+│
+
+└── Config
+```
+
+---
+
+Ablauf
+
+```
+HTTP
+
+↓
+
+Router
+
+↓
+
+Controller
+
+↓
+
+Service
+
+↓
+
+Repository
+
+↓
+
+PDO
+
+↓
+
+MySQL
+
+↓
+
+JSON
+```
+
+---
+
+# Kapitel 309
+
+# REST und MVC
+
+```
+Browser
+
+↓
+
+Router
+
+↓
+
+Controller
+
+↓
+
+Service
+
+↓
+
+Repository
+
+↓
+
+Datenbank
+```
+
+Controller
+
+↓
+
+JSON erzeugen
+
+↓
+
+HTTP Response
+
+---
+
+# Kapitel 310
+
+# Mini-Projekt
+
+Erstellen Sie
+
+eine REST-API
+
+für Produkte.
+
+Endpoints
+
+```
+GET
+
+/products
+```
+
+---
+
+```
+GET
+
+/products/{id}
+```
+
+---
+
+```
+POST
+
+/products
+```
+
+---
+
+```
+PUT
+
+/products/{id}
+```
+
+---
+
+```
+DELETE
+
+/products/{id}
+```
+
+---
+
+Antwort
+
+immer JSON.
+
+---
+
+# Typische IHK-Fragen
+
+## Was ist REST?
+
+Antwort
+
+Ein Architekturstil für Webservices auf Basis von HTTP.
+
+---
+
+## Was bedeutet CRUD?
+
+Create
+
+Read
+
+Update
+
+Delete
+
+---
+
+## Welche HTTP-Methode erzeugt Daten?
+
+POST.
+
+---
+
+## Welche Methode liest Daten?
+
+GET.
+
+---
+
+## Welche Methode löscht Daten?
+
+DELETE.
+
+---
+
+## Warum JSON?
+
+JSON ist leichtgewichtig, sprachunabhängig und wird von nahezu allen Programmiersprachen unterstützt.
+
+---
+
+## Was macht Routing?
+
+Es ordnet eine URL und HTTP-Methode einer Controller-Methode zu.
+
+---
+
+# Prüfungsfallen
+
+❌ Verben in URLs verwenden.
+
+```
+/deleteCustomer
+```
+
+---
+
+Besser
+
+```
+DELETE
+
+/customers/5
+```
+
+---
+
+❌ Immer Statuscode 200 senden.
+
+---
+
+❌ HTML statt JSON zurückgeben.
+
+---
+
+❌ Daten ungeprüft speichern.
+
+---
+
+❌ Fehlermeldungen als Klartext statt JSON senden.
+
+---
+
+# Best Practices
+
+✓ Ressourcen statt Aktionen verwenden.
+
+✓ HTTP-Methoden korrekt einsetzen.
+
+✓ JSON für Requests und Responses nutzen.
+
+✓ Aussagekräftige Statuscodes zurückgeben.
+
+✓ Eingaben validieren.
+
+✓ Controller schlank halten.
+
+✓ Geschäftslogik in Services auslagern.
+
+✓ Datenzugriffe im Repository kapseln.
+
+---
+
+# Kapitel 311
+
+# Authentifizierung vs. Autorisierung
+
+Diese beiden Begriffe werden häufig verwechselt.
+
+---
+
+## Authentifizierung
+
+**Wer bist du?**
+
+Der Benutzer weist seine Identität nach.
+
+Beispiele
+
+- Benutzername + Passwort
+- Fingerabdruck
+- Face-ID
+- Smartcard
+
+---
+
+## Autorisierung
+
+**Was darfst du?**
+
+Nachdem der Benutzer angemeldet ist, werden seine Berechtigungen geprüft.
+
+---
+
+Merksatz
+
+```
+Authentifizierung
+
+↓
+
+Identität prüfen
+
+↓
+
+Autorisierung
+
+↓
+
+Berechtigungen prüfen
+```
+
+---
+
+# Kapitel 312
+
+# Login-Ablauf
+
+Ein typischer Login besteht aus mehreren Schritten.
+
+```
+Benutzer
+
+↓
+
+Loginformular
+
+↓
+
+Benutzername + Passwort
+
+↓
+
+Datenbank
+
+↓
+
+Passwort prüfen
+
+↓
+
+Session starten
+
+↓
+
+Geschützte Bereiche
+```
+
+---
+
+Nach erfolgreichem Login
+
+```php
+session_start();
+
+$_SESSION["user"] = $user->getId();
+```
+
+---
+
+# Kapitel 313
+
+# Passwörter niemals speichern
+
+Falsch
+
+```php
+$password = "geheim";
+```
+
+oder
+
+```sql
+password = 'geheim'
+```
+
+---
+
+Auch falsch
+
+```php
+md5($password)
+
+sha1($password)
+```
+
+Diese Verfahren gelten als unsicher.
+
+---
+
+Richtig
+
+```php
+password_hash()
+```
+
+---
+
+# Kapitel 314
+
+# password_hash()
+
+```php
+$password = "MeinPasswort";
+
+$hash = password_hash(
+
+    $password,
+
+    PASSWORD_DEFAULT
+
+);
+
+echo $hash;
+```
+
+Beispiel
+
+```
+$2y$10$...
+```
+
+---
+
+Eigenschaften
+
+✓ Salt automatisch enthalten
+
+✓ moderner Algorithmus
+
+✓ sicher
+
+---
+
+Jeder Aufruf erzeugt einen anderen Hash.
+
+Das ist gewollt.
+
+---
+
+# Kapitel 315
+
+# Passwort prüfen
+
+Nicht
+
+```php
+if($password == $hash)
+```
+
+---
+
+Richtig
+
+```php
+if(
+
+password_verify(
+
+    $password,
+
+    $hash
+
+)
+
+){
+
+    echo "Login erfolgreich";
+
+}
+```
+
+---
+
+Merksatz
+
+```
+Hash erzeugen
+
+↓
+
+password_hash()
+
+Hash prüfen
+
+↓
+
+password_verify()
+```
+
+---
+
+# Kapitel 316
+
+# Passwort ändern
+
+Beim Ändern eines Passworts
+
+niemals den alten Hash verändern.
+
+Immer
+
+```php
+password_hash()
+
+↓
+
+neuen Hash speichern
+```
+
+---
+
+# Kapitel 317
+
+# Rollen
+
+Nicht jeder Benutzer darf alles.
+
+Beispiele
+
+| Rolle | Rechte |
+|--------|---------|
+| Gast | lesen |
+| Benutzer | lesen, bestellen |
+| Mitarbeiter | bearbeiten |
+| Administrator | alles |
+
+---
+
+PHP
+
+```php
+if(
+
+$_SESSION["role"] === "admin"
+
+){
+
+    // Zugriff erlaubt
+
+}
+```
+
+---
+
+# Kapitel 318
+
+# Rollenmodell
+
+```
+Benutzer
+
+↓
+
+Role
+
+↓
+
+Permissions
+```
+
+---
+
+Beispiel
+
+```
+Admin
+
+↓
+
+create
+
+update
+
+delete
+
+read
+```
+
+---
+
+```
+Gast
+
+↓
+
+read
+```
+
+---
+
+# Kapitel 319
+
+# API-Key
+
+Ein API-Key identifiziert
+
+eine Anwendung.
+
+Beispiel
+
+```
+GET /products
+
+Authorization:
+
+Api-Key xxxxxxxxx
+```
+
+---
+
+Vorteile
+
+✓ einfach
+
+✓ schnell
+
+---
+
+Nachteile
+
+✗ Benutzerrechte eingeschränkt
+
+✗ Schlüssel muss geheim bleiben
+
+---
+
+# Kapitel 320
+
+# JWT
+
+JWT bedeutet
+
+```
+JSON Web Token
+```
+
+---
+
+Ein JWT besteht aus
+
+```
+Header
+
+.
+
+Payload
+
+.
+
+Signature
+```
+
+---
+
+Schema
+
+```
+xxxxx
+
+.
+
+yyyyy
+
+.
+
+zzzzz
+```
+
+---
+
+Der Server prüft
+
+die Signatur.
+
+---
+
+Typischer Ablauf
+
+```
+Login
+
+↓
+
+JWT erzeugen
+
+↓
+
+Client speichert Token
+
+↓
+
+Token bei jeder Anfrage senden
+
+↓
+
+Server prüft Token
+```
+
+---
+
+# Kapitel 321
+
+# Authorization Header
+
+JWT wird meist so übertragen
+
+```
+Authorization:
+
+Bearer eyJhbGc...
+```
+
+---
+
+PHP liest den Header aus
+
+und prüft das Token.
+
+---
+
+# Kapitel 322
+
+# OAuth 2.0
+
+OAuth dient dazu,
+
+Anwendungen Zugriff zu gewähren,
+
+ohne das Passwort weiterzugeben.
+
+---
+
+Beispiele
+
+```
+Login mit Google
+
+Login mit GitHub
+
+Login mit Microsoft
+
+Login mit Apple
+```
+
+---
+
+Ablauf
+
+```
+Benutzer
+
+↓
+
+Google Login
+
+↓
+
+Token
+
+↓
+
+eigene Anwendung
+```
+
+---
+
+Die Anwendung kennt
+
+das Google-Passwort nie.
+
+---
+
+# Kapitel 323
+
+# Häufige Sicherheitsfehler
+
+❌ Passwörter im Klartext speichern
+
+❌ MD5 verwenden
+
+❌ SHA1 verwenden
+
+❌ Session-ID in URLs übertragen
+
+❌ Passwörter protokollieren
+
+❌ API-Key veröffentlichen
+
+---
+
+# Kapitel 324
+
+# Session Hijacking
+
+Angreifer stiehlt
+
+die Session-ID.
+
+---
+
+Schutz
+
+✓ HTTPS
+
+✓ neue Session-ID nach Login
+
+```php
+session_regenerate_id(true);
+```
+
+---
+
+✓ Session nach Logout löschen
+
+```php
+session_destroy();
+```
+
+---
+
+# Kapitel 325
+
+# Brute-Force-Angriffe
+
+Ein Angreifer probiert
+
+tausende Passwörter aus.
+
+---
+
+Schutz
+
+✓ Rate Limiting
+
+✓ Captcha
+
+✓ Kontosperre
+
+✓ starke Passwörter
+
+---
+
+# Kapitel 326
+
+# Passwortregeln
+
+Empfehlungen
+
+✓ mindestens 12 Zeichen
+
+✓ Groß- und Kleinbuchstaben
+
+✓ Zahlen
+
+✓ Sonderzeichen
+
+✓ keine Wörterbuchbegriffe
+
+✓ Passwortmanager verwenden
+
+---
+
+# Kapitel 327
+
+# Beispielprojekt
+
+Login-System
+
+```
+Login
+
+↓
+
+password_verify()
+
+↓
+
+Session
+
+↓
+
+Rolle prüfen
+
+↓
+
+Dashboard
+```
+
+---
+
+Administrator
+
+↓
+
+Benutzerverwaltung
+
+---
+
+Benutzer
+
+↓
+
+Profil
+
+---
+
+Gast
+
+↓
+
+Startseite
+
+---
+
+# Kapitel 328
+
+# Mini-Projekt
+
+Erstellen Sie
+
+eine Benutzerverwaltung.
+
+Funktionen
+
+- Registrierung
+- Login
+- Logout
+- Passwort ändern
+- Rollenverwaltung
+
+Verwenden Sie
+
+- `password_hash()`
+- `password_verify()`
+- Sessions
+- Rollenprüfung
+
+---
+
+# Typische IHK-Fragen
+
+## Unterschied Authentifizierung und Autorisierung?
+
+Authentifizierung
+
+↓
+
+Identität prüfen.
+
+Autorisierung
+
+↓
+
+Berechtigungen prüfen.
+
+---
+
+## Warum niemals MD5?
+
+MD5 gilt als kryptografisch gebrochen und ist für Passwortspeicherung ungeeignet.
+
+---
+
+## Welche PHP-Funktion erzeugt sichere Passwort-Hashes?
+
+```php
+password_hash()
+```
+
+---
+
+## Welche Funktion prüft Passwörter?
+
+```php
+password_verify()
+```
+
+---
+
+## Wozu dient JWT?
+
+Zur Authentifizierung bei Webanwendungen und REST-APIs, insbesondere bei zustandslosen Anwendungen.
+
+---
+
+## Was ist OAuth?
+
+Ein Autorisierungsverfahren, mit dem Anwendungen auf Ressourcen zugreifen können, ohne das Passwort des Benutzers zu kennen.
+
+---
+
+# Prüfungsfallen
+
+❌ Authentifizierung und Autorisierung verwechseln.
+
+❌ Passwörter im Klartext speichern.
+
+❌ MD5 oder SHA1 verwenden.
+
+❌ Sessions ohne HTTPS einsetzen.
+
+❌ Rollen nur im Frontend prüfen.
+
+❌ API-Keys öffentlich im Quellcode speichern.
+
+---
+
+# Best Practices
+
+✓ Immer `password_hash()` verwenden.
+
+✓ Passwörter ausschließlich mit `password_verify()` prüfen.
+
+✓ HTTPS einsetzen.
+
+✓ Session-ID nach erfolgreichem Login erneuern.
+
+✓ Rollen serverseitig prüfen.
+
+✓ Tokens zeitlich begrenzen.
+
+✓ Fehlermeldungen nicht zu detailliert ausgeben (z. B. nicht verraten, ob Benutzername oder Passwort falsch war).
+
+---
+
+# Kapitel 329
+
+# Warum ist Sicherheit wichtig?
+
+Fast jede Webanwendung verarbeitet
+
+- Benutzerdaten
+- Passwörter
+- Zahlungsinformationen
+- personenbezogene Daten
+
+Ein einziger Fehler kann
+
+- Datenverlust
+- Datenmanipulation
+- Imageschäden
+- hohe Kosten
+
+verursachen.
+
+---
+
+# Grundregel
+
+**Vertraue niemals Benutzereingaben.**
+
+Jede Eingabe muss
+
+- validiert
+- geprüft
+- abgesichert
+
+werden.
+
+---
+
+# Kapitel 330
+
+# SQL Injection
+
+Eine SQL Injection entsteht,
+
+wenn Benutzereingaben direkt in SQL übernommen werden.
+
+---
+
+## Unsicher
+
+```php
+$sql = "SELECT * FROM kunden
+WHERE name = '" . $_GET["name"] . "'";
+```
+
+Benutzer gibt ein
+
+```
+' OR 1=1 --
+```
+
+---
+
+Ergebnis
+
+```sql
+SELECT *
+
+FROM kunden
+
+WHERE name = ''
+
+OR 1=1
+```
+
+Jetzt werden
+
+alle Kunden ausgegeben.
+
+---
+
+# Sicher
+
+Immer Prepared Statements verwenden.
+
+```php
+$stmt = $pdo->prepare(
+
+"SELECT * FROM kunden
+
+WHERE name = ?"
+
+);
+
+$stmt->execute([
+
+$_GET["name"]
+
+]);
+```
+
+---
+
+Oder mit benannten Parametern
+
+```php
+$stmt = $pdo->prepare(
+
+"SELECT *
+
+FROM kunden
+
+WHERE name = :name"
+
+);
+
+$stmt->execute([
+
+":name" => $_GET["name"]
+
+]);
+```
+
+---
+
+# Merksatz
+
+**Benutzereingaben niemals direkt in SQL einfügen.**
+
+---
+
+# Kapitel 331
+
+# Cross-Site Scripting (XSS)
+
+Beim XSS wird
+
+JavaScript
+
+in Webseiten eingeschleust.
+
+---
+
+Benutzer speichert
+
+```html
+<script>
+
+alert("Hacker")
+
+</script>
+```
+
+---
+
+Die Anwendung gibt dies ungefiltert aus.
+
+Der Browser führt das Script aus.
+
+---
+
+Gefahren
+
+- Session-Diebstahl
+- Weiterleitungen
+- Manipulation der Seite
+- Datendiebstahl
+
+---
+
+# Schutz
+
+Vor der Ausgabe
+
+```php
+echo htmlspecialchars(
+
+$text,
+
+ENT_QUOTES,
+
+"UTF-8"
+
+);
+```
+
+---
+
+Beispiel
+
+Eingabe
+
+```html
+<b>Hallo</b>
+```
+
+---
+
+Ausgabe
+
+```html
+&lt;b&gt;Hallo&lt;/b&gt;
+```
+
+Das Script wird
+
+nicht ausgeführt.
+
+---
+
+# Kapitel 332
+
+# Input vs Output
+
+Viele Anfänger filtern
+
+beim Speichern.
+
+Das reicht nicht.
+
+---
+
+Merksatz
+
+```
+Input
+
+↓
+
+validieren
+
+↓
+
+speichern
+
+↓
+
+Output
+
+↓
+
+escapen
+```
+
+---
+
+Validieren
+
+↓
+
+Prüfen
+
+---
+
+Escapen
+
+↓
+
+sicher ausgeben
+
+---
+
+# Kapitel 333
+
+# CSRF
+
+Cross-Site Request Forgery
+
+---
+
+Problem
+
+Ein Benutzer
+
+ist angemeldet.
+
+Ein Angreifer bringt ihn dazu,
+
+eine fremde Anfrage auszuführen.
+
+---
+
+Beispiel
+
+```
+Überweisung
+
+↓
+
+1000 €
+
+↓
+
+ohne Wissen des Benutzers
+```
+
+---
+
+# Lösung
+
+CSRF-Token
+
+Beim Formular
+
+```php
+$_SESSION["token"]
+
+=
+
+bin2hex(
+
+random_bytes(32)
+
+);
+```
+
+---
+
+HTML
+
+```html
+<input
+
+type="hidden"
+
+name="token"
+
+value="...">
+```
+
+---
+
+Beim Absenden
+
+Token vergleichen.
+
+---
+
+# Kapitel 334
+
+# Command Injection
+
+Gefährlich
+
+```php
+system(
+
+"ping ".$_GET["host"]
+
+);
+```
+
+---
+
+Benutzer gibt ein
+
+```
+google.de
+
+&& del *
+```
+
+oder unter Linux
+
+```
+google.de; rm -rf /
+```
+
+---
+
+Folge
+
+beliebige Systembefehle.
+
+---
+
+Schutz
+
+Keine Benutzereingaben
+
+direkt an
+
+```
+system()
+
+exec()
+
+shell_exec()
+```
+
+übergeben.
+
+---
+
+# Kapitel 335
+
+# Directory Traversal
+
+Problem
+
+```php
+$file = $_GET["file"];
+
+include($file);
+```
+
+---
+
+Benutzer
+
+```
+../../config.php
+```
+
+---
+
+Jetzt können
+
+beliebige Dateien gelesen werden.
+
+---
+
+Schutz
+
+Whitelist verwenden.
+
+```php
+$allowed = [
+
+"home",
+
+"kontakt",
+
+"impressum"
+
+];
+```
+
+---
+
+# Kapitel 336
+
+# Datei-Uploads
+
+Gefährlich
+
+```php
+move_uploaded_file(...)
+```
+
+ohne Prüfung.
+
+---
+
+Angreifer lädt hoch
+
+```
+shell.php
+```
+
+---
+
+Danach
+
+```
+https://seite.de/uploads/shell.php
+```
+
+---
+
+Folgen
+
+Komplette Serverübernahme.
+
+---
+
+# Sicherer Upload
+
+Prüfen
+
+✓ Dateityp
+
+✓ MIME-Type
+
+✓ Dateigröße
+
+✓ Dateiendung
+
+✓ zufälliger Dateiname
+
+✓ Speicherort außerhalb des Webroots (wenn möglich)
+
+---
+
+# Kapitel 337
+
+# Sicherheits-Header
+
+Wichtige Header
+
+```
+Content-Security-Policy
+
+X-Frame-Options
+
+X-Content-Type-Options
+
+Referrer-Policy
+```
+
+---
+
+PHP
+
+```php
+header(
+
+"X-Frame-Options: DENY"
+
+);
+```
+
+---
+
+oder
+
+```php
+header(
+
+"X-Content-Type-Options: nosniff"
+
+);
+```
+
+---
+
+# Kapitel 338
+
+# HTTPS
+
+HTTPS
+
+verschlüsselt
+
+die Kommunikation.
+
+---
+
+Ohne HTTPS
+
+```
+Browser
+
+↓
+
+Internet
+
+↓
+
+Server
+```
+
+Passwörter können abgefangen werden.
+
+---
+
+Mit HTTPS
+
+```
+Browser
+
+↓
+
+TLS
+
+↓
+
+Server
+```
+
+---
+
+HTTPS ist heute
+
+Pflicht.
+
+---
+
+# Kapitel 339
+
+# OWASP Top 10
+
+OWASP
+
+=
+
+Open Worldwide Application Security Project
+
+---
+
+Wichtige Risiken
+
+| Risiko                      | Bedeutung                   |
+|-----------------------------|-----------------------------|
+| Broken Access Control       | falsche Berechtigungen      |
+| Cryptographic Failures      | schwache Verschlüsselung    |
+| Injection                   | SQL Injection               |
+| Insecure Design             | schlechtes Design           |
+| Security Misconfiguration   | falsche Serverkonfiguration |
+| Vulnerable Components       | veraltete Bibliotheken      |
+| Authentication Failures     | Login-Probleme              |
+| Software Integrity Failures | manipulierte Software       |
+| Logging Failures            | fehlende Protokollierung    |
+| SSRF                        | Server Side Request Forgery |
+
+---
+
+Für die IHK besonders wichtig
+
+✓ SQL Injection
+
+✓ XSS
+
+✓ CSRF
+
+---
+
+# Kapitel 340
+
+# Validierung
+
+Immer prüfen
+
+```php
+$email = filter_input(
+
+INPUT_POST,
+
+"email",
+
+FILTER_VALIDATE_EMAIL
+
+);
+```
+
+---
+
+Zahl
+
+```php
+$age = filter_input(
+
+INPUT_POST,
+
+"age",
+
+FILTER_VALIDATE_INT
+
+);
+```
+
+---
+
+Nie
+
+nur auf HTML verlassen.
+
+---
+
+# Kapitel 341
+
+# Beispielprojekt
+
+Login
+
+↓
+
+Prepared Statements
+
+↓
+
+password_hash()
+
+↓
+
+CSRF-Token
+
+↓
+
+Session
+
+↓
+
+Rollenprüfung
+
+↓
+
+HTML-Ausgabe
+
+↓
+
+htmlspecialchars()
+
+---
+
+Damit werden
+
+die häufigsten Angriffe verhindert.
+
+---
+
+# Kapitel 342
+
+# Mini-Projekt
+
+Erstellen Sie
+
+ein Kontaktformular.
+
+Anforderungen
+
+✓ Prepared Statements
+
+✓ CSRF-Schutz
+
+✓ XSS-Schutz
+
+✓ Validierung
+
+✓ Sessions
+
+✓ HTTPS
+
+---
+
+# Typische IHK-Fragen
+
+## Wie verhindert man SQL Injection?
+
+Durch Prepared Statements mit Platzhaltern.
+
+---
+
+## Wie verhindert man XSS?
+
+Durch Escaping der Ausgabe mit
+
+```php
+htmlspecialchars()
+```
+
+---
+
+## Was schützt ein CSRF-Token?
+
+Vor unerlaubten Formularanfragen im Namen eines angemeldeten Benutzers.
+
+---
+
+## Warum HTTPS?
+
+Zur Verschlüsselung der Datenübertragung.
+
+---
+
+## Was ist Directory Traversal?
+
+Ein Angriff,
+
+bei dem über Pfadangaben unberechtigt auf Dateien zugegriffen wird.
+
+---
+
+## Was prüft `FILTER_VALIDATE_EMAIL`?
+
+Ob eine Eingabe eine gültige E-Mail-Adresse ist.
+
+---
+
+# Prüfungsfallen
+
+❌ SQL per String-Verkettung erstellen.
+
+❌ HTML ungefiltert ausgeben.
+
+❌ Formulare ohne CSRF-Schutz.
+
+❌ Dateiendungen ungeprüft akzeptieren.
+
+❌ Benutzerrechte nur im Frontend prüfen.
+
+❌ Nur clientseitige Validierung verwenden.
+
+---
+
+# Best Practices
+
+✓ Prepared Statements verwenden.
+
+✓ Ausgaben mit `htmlspecialchars()` escapen.
+
+✓ Eingaben serverseitig validieren.
+
+✓ HTTPS erzwingen.
+
+✓ Sicherheits-Header setzen.
+
+✓ Starke Passwörter und `password_hash()` verwenden.
+
+✓ Bibliotheken regelmäßig aktualisieren.
+
+✓ Prinzip der geringsten Rechte (Least Privilege) anwenden.
+
+---
+
+# Kapitel 343
+
+# Arbeiten mit Dateien
+
+Viele Anwendungen speichern Daten in Dateien.
+
+Beispiele
+
+- Log-Dateien
+- CSV-Exporte
+- Konfigurationsdateien
+- JSON
+- XML
+- Uploads
+
+---
+
+Typischer Ablauf
+
+```
+Datei öffnen
+
+↓
+
+lesen oder schreiben
+
+↓
+
+Datei schließen
+```
+
+---
+
+# Kapitel 344
+
+# fopen()
+
+Mit `fopen()` wird eine Datei geöffnet.
+
+```php
+$file = fopen("kunden.txt", "r");
+```
+
+---
+
+## Wichtige Modi
+
+| Modus | Bedeutung                         |
+|-------|-----------------------------------|
+| r     | Lesen                             |
+| w     | Schreiben (Datei überschreiben)   |
+| a     | Anhängen                          |
+| x     | Neu erstellen                     |
+| r+    | Lesen und Schreiben               |
+| w+    | Lesen und Schreiben, Datei leeren |
+
+---
+
+Merksatz
+
+```
+r
+
+↓
+
+read
+
+w
+
+↓
+
+write
+
+a
+
+↓
+
+append
+```
+
+---
+
+# Kapitel 345
+
+# Datei lesen
+
+```php
+$file = fopen("kunden.txt", "r");
+
+$content = fread(
+
+    $file,
+
+    filesize("kunden.txt")
+
+);
+
+fclose($file);
+
+echo $content;
+```
+
+---
+
+Ablauf
+
+```
+öffnen
+
+↓
+
+lesen
+
+↓
+
+schließen
+```
+
+---
+
+# Kapitel 346
+
+# Zeilenweise lesen
+
+Besser für große Dateien.
+
+```php
+$file = fopen("kunden.txt", "r");
+
+while(
+
+    ($line = fgets($file)) !== false
+
+){
+
+    echo $line;
+
+}
+
+fclose($file);
+```
+
+---
+
+Vorteil
+
+Der Speicherverbrauch bleibt gering.
+
+---
+
+# Kapitel 347
+
+# Datei schreiben
+
+```php
+$file = fopen("test.txt", "w");
+
+fwrite(
+
+    $file,
+
+    "Hallo Welt"
+
+);
+
+fclose($file);
+```
+
+---
+
+Existiert die Datei bereits,
+
+wird sie überschrieben.
+
+---
+
+Anhängen
+
+```php
+$file = fopen("log.txt", "a");
+
+fwrite(
+
+    $file,
+
+    "Neue Zeile\n"
+
+);
+
+fclose($file);
+```
+
+---
+
+# Kapitel 348
+
+# file()
+
+Alle Zeilen auf einmal lesen.
+
+```php
+$lines = file("kunden.txt");
+
+foreach($lines as $line){
+
+    echo $line;
+
+}
+```
+
+---
+
+Jede Zeile
+
+wird zu einem Array-Element.
+
+---
+
+# Kapitel 349
+
+# file_get_contents()
+
+Sehr praktisch.
+
+```php
+$content = file_get_contents(
+
+    "text.txt"
+
+);
+
+echo $content;
+```
+
+---
+
+Speichern
+
+```php
+file_put_contents(
+
+    "test.txt",
+
+    "Hallo"
+
+);
+```
+
+---
+
+Anhängen
+
+```php
+file_put_contents(
+
+    "test.txt",
+
+    "Neue Zeile\n",
+
+    FILE_APPEND
+
+);
+```
+
+---
+
+# Kapitel 350
+
+# CSV-Dateien
+
+CSV bedeutet
+
+```
+Comma Separated Values
+```
+
+Beispiel
+
+```
+Max,25,München
+
+Lisa,31,Hamburg
+
+Tom,28,Köln
+```
+
+---
+
+# CSV lesen
+
+```php
+$file = fopen(
+
+    "kunden.csv",
+
+    "r"
+
+);
+
+while(
+
+    ($row = fgetcsv($file)) !== false
+
+){
+
+    print_r($row);
+
+}
+
+fclose($file);
+```
+
+---
+
+Ergebnis
+
+```php
+[
+    "Max",
+    "25",
+    "München"
+]
+```
+
+---
+
+# CSV schreiben
+
+```php
+$file = fopen(
+
+    "kunden.csv",
+
+    "w"
+
+);
+
+fputcsv(
+
+    $file,
+
+    ["Max",25,"München"]
+
+);
+
+fclose($file);
+```
+
+---
+
+# Kapitel 351
+
+# Praktisches CSV-Beispiel
+
+Datei
+
+```
+Name,Alter
+
+Max,25
+
+Lisa,31
+```
+
+---
+
+PHP
+
+```php
+$file = fopen(
+
+    "personen.csv",
+
+    "r"
+
+);
+
+while(
+
+    ($person = fgetcsv($file)) !== false
+
+){
+
+    echo $person[0];
+
+}
+
+fclose($file);
+```
+
+---
+
+# Kapitel 352
+
+# JSON
+
+JSON ist heute
+
+das wichtigste Datenaustauschformat.
+
+---
+
+PHP → JSON
+
+```php
+$data = [
+
+    "name"=>"Max",
+
+    "age"=>25
+
+];
+
+echo json_encode($data);
+```
+
+---
+
+Ausgabe
+
+```json
+{
+    "name":"Max",
+    "age":25
+}
+```
+
+---
+
+# JSON lesen
+
+```php
+$json = file_get_contents(
+
+    "kunde.json"
+
+);
+
+$data = json_decode(
+
+    $json,
+
+    true
+
+);
+
+echo $data["name"];
+```
+
+---
+
+# Kapitel 353
+
+# XML
+
+Früher sehr verbreitet.
+
+Heute häufig
+
+- Konfiguration
+- Office-Dateien
+- ältere Schnittstellen
+
+---
+
+Beispiel
+
+```xml
+<kunde>
+    <name>Max</name>
+</kunde>
+```
+
+---
+
+Lesen
+
+```php
+$xml = simplexml_load_file(
+
+    "kunde.xml"
+
+);
+
+echo $xml->name;
+```
+
+---
+
+# Kapitel 354
+
+# Verzeichnisse
+
+Ordner erstellen
+
+```php
+mkdir("backup");
+```
+
+---
+
+Existiert?
+
+```php
+if(
+
+is_dir("backup")
+
+){
+
+}
+```
+
+---
+
+Datei vorhanden?
+
+```php
+if(
+
+file_exists("kunden.csv")
+
+){
+
+}
+```
+
+---
+
+Datei löschen
+
+```php
+unlink(
+
+"test.txt"
+
+);
+```
+
+---
+
+# Kapitel 355
+
+# flock()
+
+Mehrere Benutzer
+
+könnten gleichzeitig schreiben.
+
+---
+
+Lösung
+
+Dateisperre.
+
+```php
+$file = fopen(
+
+"log.txt",
+
+"a"
+
+);
+
+flock(
+
+$file,
+
+LOCK_EX
+
+);
+
+fwrite(
+
+$file,
+
+"Eintrag"
+
+);
+
+flock(
+
+$file,
+
+LOCK_UN
+
+);
+
+fclose($file);
+```
+
+---
+
+LOCK_EX
+
+↓
+
+exklusive Sperre
+
+---
+
+LOCK_UN
+
+↓
+
+Sperre freigeben
+
+---
+
+# Kapitel 356
+
+# Log-Dateien
+
+Sehr häufig
+
+in Unternehmen.
+
+```php
+file_put_contents(
+
+"log.txt",
+
+date("c")
+
+." Login\n",
+
+FILE_APPEND
+
+);
+```
+
+---
+
+Ausgabe
+
+```
+2025-08-05T14:30:11
+
+Login
+```
+
+---
+
+# Kapitel 357
+
+# Fehlerbehandlung
+
+Vor dem Lesen prüfen.
+
+```php
+if(
+
+!file_exists("kunden.txt")
+
+){
+
+    die(
+
+        "Datei fehlt"
+
+    );
+
+}
+```
+
+---
+
+Oder
+
+```php
+try{
+
+    ...
+
+}catch(Exception $e){
+
+}
+```
+
+---
+
+# Kapitel 358
+
+# Mini-Projekt
+
+Erstellen Sie
+
+eine Kundenverwaltung.
+
+Import
+
+```
+kunden.csv
+```
+
+↓
+
+Objekte erzeugen
+
+↓
+
+Array
+
+↓
+
+JSON speichern
+
+↓
+
+Export
+
+```
+kunden_export.csv
+```
+
+---
+
+Zusätzlich
+
+Log-Datei
+
+```
+import.log
+```
+
+---
+
+# Typische IHK-Fragen
+
+## Wozu dient `fopen()`?
+
+Zum Öffnen einer Datei.
+
+---
+
+## Unterschied `w` und `a`?
+
+`w`
+
+↓
+
+überschreibt.
+
+`a`
+
+↓
+
+hängt an.
+
+---
+
+## Welche Funktion liest CSV?
+
+```php
+fgetcsv()
+```
+
+---
+
+## Welche Funktion schreibt CSV?
+
+```php
+fputcsv()
+```
+
+---
+
+## Welche Funktion liest komplette Dateien?
+
+```php
+file_get_contents()
+```
+
+---
+
+## Welche Funktion schreibt komplette Dateien?
+
+```php
+file_put_contents()
+```
+
+---
+
+## Wozu dient `flock()`?
+
+Zum Sperren einer Datei, damit mehrere Prozesse nicht gleichzeitig schreiben.
+
+---
+
+# Prüfungsfallen
+
+❌ Datei nicht schließen (`fclose()` vergessen).
+
+❌ Modus `w` statt `a` verwenden und dadurch Daten überschreiben.
+
+❌ CSV mit `explode()` statt `fgetcsv()` lesen (Probleme bei Anführungszeichen und Trennzeichen).
+
+❌ Keine Fehlerprüfung bei Dateioperationen.
+
+❌ Gleichzeitige Schreibzugriffe ohne `flock()`.
+
+---
+
+# Best Practices
+
+✓ Immer `fclose()` aufrufen.
+
+✓ Vor dem Lesen `file_exists()` prüfen.
+
+✓ Für CSV `fgetcsv()` und `fputcsv()` verwenden.
+
+✓ Für komplette Dateien `file_get_contents()` und `file_put_contents()` nutzen.
+
+✓ Log-Dateien immer im Modus `a` öffnen.
+
+✓ Bei mehreren Schreibzugriffen `flock()` einsetzen.
+
+✓ Fehler sauber behandeln.
+
+---
+
+# Kapitel 359
+
+# Wiederholung der OOP
+
+Eine Klasse beschreibt den Bauplan.
+
+Ein Objekt ist eine Instanz dieser Klasse.
+
+```php
+class Auto
+{
+    public string $marke;
+}
+
+$auto = new Auto();
+```
+
+---
+
+# Die vier Säulen der OOP
+
+| Prinzip     | Bedeutung                      |
+|-------------|--------------------------------|
+| Kapselung   | Daten schützen                 |
+| Vererbung   | Eigenschaften übernehmen       |
+| Polymorphie | verschiedene Implementierungen |
+| Abstraktion | Wesentliches beschreiben       |
+
+Diese vier Begriffe gehören zu den häufigsten IHK-Fragen.
+
+---
+
+# Kapitel 360
+
+# Abstrakte Klassen
+
+Manche Klassen sollen niemals direkt erzeugt werden.
+
+Dann verwendet man
+
+```php
+abstract class
+```
+
+---
+
+Beispiel
+
+```php
+abstract class Tier
+{
+    abstract public function laut(): string;
+}
+```
+
+Folgendes ist nicht erlaubt
+
+```php
+$tier = new Tier();
+```
+
+---
+
+Abgeleitete Klasse
+
+```php
+class Hund extends Tier
+{
+    public function laut(): string
+    {
+        return "Wuff";
+    }
+}
+```
+
+---
+
+Vorteile
+
+✓ gemeinsame Funktionalität
+
+✓ gemeinsamer Bauplan
+
+✓ teilweise Implementierung möglich
+
+---
+
+# Kapitel 361
+
+# Interfaces
+
+Ein Interface beschreibt ausschließlich
+
+**was**
+
+eine Klasse können muss.
+
+Nicht
+
+**wie**
+
+---
+
+```php
+interface Fahrzeug
+{
+    public function fahren(): void;
+}
+```
+
+---
+
+Implementierung
+
+```php
+class Auto implements Fahrzeug
+{
+    public function fahren(): void
+    {
+        echo "Auto fährt";
+    }
+}
+```
+
+---
+
+# Interface vs. abstrakte Klasse
+
+| Interface | Abstrakte Klasse |
+|------------|------------------|
+| nur Vertrag | Vertrag + Code |
+| keine Attribute | Attribute erlaubt |
+| mehrere Interfaces möglich | nur eine Basisklasse |
+| keine Implementierung (bis auf Default-Methoden ab PHP 8.4 nicht relevant) | Implementierung möglich |
+
+---
+
+# Kapitel 362
+
+# Wann Interface?
+
+Wenn verschiedene Klassen
+
+dieselbe Fähigkeit besitzen.
+
+Beispiel
+
+```
+Auto
+
+Fahrrad
+
+Motorrad
+```
+
+Alle können
+
+```
+fahren()
+```
+
+---
+
+Nicht sinnvoll
+
+```
+Auto
+
+Haus
+
+Baum
+```
+
+---
+
+# Kapitel 363
+
+# Traits
+
+PHP besitzt keine Mehrfachvererbung.
+
+Stattdessen gibt es Traits.
+
+---
+
+Trait
+
+```php
+trait Logger
+{
+    public function log(string $text)
+    {
+        echo $text;
+    }
+}
+```
+
+---
+
+Benutzung
+
+```php
+class Service
+{
+    use Logger;
+}
+```
+
+---
+
+Jetzt besitzt die Klasse
+
+```
+log()
+```
+
+---
+
+Mehrere Traits
+
+```php
+class Service
+{
+    use Logger;
+
+    use Mailer;
+}
+```
+
+---
+
+# Wann Traits?
+
+Gemeinsamer Code
+
+für mehrere Klassen.
+
+---
+
+# Kapitel 364
+
+# final
+
+Mit
+
+```php
+final
+```
+
+kann Vererbung verhindert werden.
+
+---
+
+Klasse
+
+```php
+final class Config
+{
+
+}
+```
+
+Nicht möglich
+
+```php
+class MyConfig extends Config
+{
+
+}
+```
+
+---
+
+Methoden
+
+```php
+class Tier
+{
+    final public function schlafen()
+    {
+
+    }
+}
+```
+
+Diese Methode darf
+
+nicht überschrieben werden.
+
+---
+
+# Kapitel 365
+
+# static
+
+Normal
+
+```php
+$kunde->name;
+```
+
+---
+
+Statisch
+
+```php
+Config::$version;
+```
+
+---
+
+Beispiel
+
+```php
+class Config
+{
+    public static string $version = "1.0";
+}
+
+echo Config::$version;
+```
+
+---
+
+Statische Methoden
+
+```php
+class Math
+{
+    public static function add($a,$b)
+    {
+        return $a+$b;
+    }
+}
+
+echo Math::add(2,3);
+```
+
+---
+
+# Wann static?
+
+Wenn keine Objektinformationen benötigt werden.
+
+---
+
+# Kapitel 366
+
+# self und static
+
+```php
+self::
+```
+
+bezieht sich
+
+auf die aktuelle Klasse.
+
+---
+
+```php
+static::
+```
+
+unterstützt
+
+Late Static Binding.
+
+---
+
+Beispiel
+
+```php
+class A
+{
+    public static function who()
+    {
+        echo "A";
+    }
+
+    public static function test()
+    {
+        static::who();
+    }
+}
+
+class B extends A
+{
+    public static function who()
+    {
+        echo "B";
+    }
+}
+
+B::test();
+```
+
+Ausgabe
+
+```
+B
+```
+
+---
+
+# Kapitel 367
+
+# Magic Methods
+
+PHP besitzt spezielle Methoden,
+
+die automatisch aufgerufen werden.
+
+---
+
+Wichtige Magic Methods
+
+| Methode | Aufgabe |
+|----------|----------|
+| `__construct()` | Konstruktor |
+| `__destruct()` | Destruktor |
+| `__toString()` | Objekt als String |
+| `__get()` | unbekannte Eigenschaft lesen |
+| `__set()` | unbekannte Eigenschaft schreiben |
+| `__call()` | unbekannte Methode |
+| `__invoke()` | Objekt wie Funktion aufrufen |
+| `__clone()` | Klonen |
+
+---
+
+# Kapitel 368
+
+# __toString()
+
+```php
+class Kunde
+{
+    public function __toString()
+    {
+        return "Max";
+    }
+}
+
+$kunde = new Kunde();
+
+echo $kunde;
+```
+
+Ausgabe
+
+```
+Max
+```
+
+---
+
+# Kapitel 369
+
+# __get() und __set()
+
+```php
+class Person
+{
+    private array $daten = [];
+
+    public function __set($name, $wert)
+    {
+        $this->daten[$name] = $wert;
+    }
+
+    public function __get($name)
+    {
+        return $this->daten[$name] ?? null;
+    }
+}
+
+$p = new Person();
+
+$p->stadt = "Berlin";
+
+echo $p->stadt;
+```
+
+---
+
+# Kapitel 370
+
+# __clone()
+
+Standardmäßig kopiert PHP Objekte flach.
+
+```php
+$a = new Kunde();
+
+$b = clone $a;
+```
+
+---
+
+Eigene Logik
+
+```php
+public function __clone()
+{
+    echo "Objekt kopiert";
+}
+```
+
+---
+
+# Kapitel 371
+
+# Objektvergleich
+
+```php
+$a == $b
+```
+
+Vergleicht
+
+die Inhalte.
+
+---
+
+```php
+$a === $b
+```
+
+Vergleicht
+
+die Identität.
+
+---
+
+Beispiel
+
+```php
+$a = new Kunde();
+$b = new Kunde();
+$c = $a;
+```
+
+```
+$a == $b
+
+true
+```
+
+```
+$a === $b
+
+false
+```
+
+```
+$a === $c
+
+true
+```
+
+---
+
+# Kapitel 372
+
+# UML-Klassendiagramm
+
+```
++----------------------+
+| Kunde                |
++----------------------+
+| - id : int           |
+| - name : string      |
++----------------------+
+| + getName()          |
+| + setName()          |
++----------------------+
+```
+
+---
+
+Sichtbarkeit
+
+| Symbol | Bedeutung |
+|---------|-----------|
+| + | public |
+| - | private |
+| # | protected |
+
+---
+
+Beziehungen
+
+```
+Vererbung
+
+Tier
+
+▲
+
+|
+
+Hund
+```
+
+---
+
+Interface
+
+```
+<<interface>>
+
+Fahrzeug
+
+▲
+
+|
+
+Auto
+```
+
+---
+
+Assoziation
+
+```
+Kunde
+
+──── Bestellung
+```
+
+---
+
+Komposition
+
+```
+Haus
+
+◆──── Zimmer
+```
+
+Zimmer existiert
+
+nicht ohne Haus.
+
+---
+
+Aggregation
+
+```
+Verein
+
+◇──── Mitglied
+```
+
+Mitglied existiert
+
+auch ohne Verein.
+
+---
+
+# Kapitel 373
+
+# Mini-Projekt
+
+Erstellen Sie folgende Struktur.
+
+```
+interface Exportable
+
+abstract class Dokument
+
+class Rechnung
+
+class Angebot
+
+trait Logger
+
+class PDFExporter
+```
+
+Anforderungen
+
+- `Dokument` ist abstrakt
+- `Exportable` definiert `export()`
+- `Rechnung` implementiert `Exportable`
+- `Logger` wird per Trait eingebunden
+- `PDFExporter` nutzt statische Methoden
+
+---
+
+# Typische IHK-Fragen
+
+## Unterschied Interface und abstrakte Klasse?
+
+Interface
+
+↓
+
+definiert einen Vertrag.
+
+Abstrakte Klasse
+
+↓
+
+liefert zusätzlich gemeinsame Implementierungen.
+
+---
+
+## Wann verwendet man ein Trait?
+
+Wenn mehrere Klassen dieselbe Funktionalität teilen sollen, ohne zu vererben.
+
+---
+
+## Wozu dient `final`?
+
+Zum Verhindern von Vererbung oder Überschreiben von Methoden.
+
+---
+
+## Unterschied `==` und `===` bei Objekten?
+
+`==`
+
+↓
+
+vergleicht Inhalte.
+
+`===`
+
+↓
+
+vergleicht, ob beide Variablen auf dasselbe Objekt zeigen.
+
+---
+
+## Wann verwendet man `static`?
+
+Wenn Methoden oder Eigenschaften unabhängig von einer Objektinstanz verwendet werden.
+
+---
+
+# Prüfungsfallen
+
+❌ Interface mit abstrakter Klasse verwechseln.
+
+❌ Traits als Vererbung ansehen.
+
+❌ `static` für objektabhängige Daten verwenden.
+
+❌ `==` und `===` bei Objekten verwechseln.
+
+❌ `final` übersehen.
+
+---
+
+# Best Practices
+
+✓ Interfaces für Verträge verwenden.
+
+✓ Abstrakte Klassen für gemeinsame Logik.
+
+✓ Traits sparsam einsetzen.
+
+✓ Statische Methoden nur bei zustandslosen Funktionen.
+
+✓ Magic Methods nur verwenden, wenn sie echten Mehrwert bieten.
+
+✓ UML-Diagramme lesen und zeichnen können.
+
+---
+
+# Kapitel 374
+
+# Vom kleinen Script zur Anwendung
+
+Anfänger schreiben häufig alles in eine Datei.
+
+```php
+<?php
+
+$pdo = new PDO(...);
+
+$sql = "...";
+
+echo "...";
+
+?>
+```
+
+---
+
+Probleme
+
+❌ unübersichtlich
+
+❌ schlecht testbar
+
+❌ schwer wartbar
+
+❌ viel doppelter Code
+
+---
+
+Professionelle Anwendungen bestehen aus vielen Klassen.
+
+---
+
+# Kapitel 375
+
+# Projektstruktur
+
+Eine typische Struktur
+
+```
+project/
+
+│
+
+├── public/
+
+│      index.php
+
+│
+
+├── src/
+
+│      Controller/
+
+│      Service/
+
+│      Repository/
+
+│      Model/
+
+│      Config/
+
+│
+
+├── templates/
+
+│
+
+├── vendor/
+
+│
+
+└── composer.json
+```
+
+---
+
+Jeder Ordner besitzt eine Aufgabe.
+
+---
+
+# Kapitel 376
+
+# MVC wiederholt
+
+```
+Browser
+
+↓
+
+Router
+
+↓
+
+Controller
+
+↓
+
+Service
+
+↓
+
+Repository
+
+↓
+
+Datenbank
+
+↓
+
+Controller
+
+↓
+
+View
+
+↓
+
+Browser
+```
+
+---
+
+Aufgaben
+
+Model
+
+↓
+
+Daten
+
+---
+
+View
+
+↓
+
+Darstellung
+
+---
+
+Controller
+
+↓
+
+Steuerung
+
+---
+
+# Kapitel 377
+
+# Repository Pattern
+
+Repository kapselt
+
+alle Datenbankzugriffe.
+
+---
+
+Nicht
+
+```
+Controller
+
+↓
+
+SQL
+```
+
+---
+
+Sondern
+
+```
+Controller
+
+↓
+
+Repository
+
+↓
+
+SQL
+```
+
+---
+
+Beispiel
+
+```php
+class CustomerRepository
+{
+    public function findAll()
+    {
+
+    }
+
+    public function findById(int $id)
+    {
+
+    }
+
+    public function save(Customer $customer)
+    {
+
+    }
+
+    public function delete(int $id)
+    {
+
+    }
+}
+```
+
+---
+
+Vorteile
+
+✓ SQL an einer Stelle
+
+✓ leicht austauschbar
+
+✓ gut testbar
+
+---
+
+# Kapitel 378
+
+# Service Layer
+
+Geschäftslogik gehört
+
+nicht in den Controller.
+
+---
+
+Falsch
+
+```
+Controller
+
+↓
+
+Validierung
+
+↓
+
+Berechnung
+
+↓
+
+SQL
+```
+
+---
+
+Richtig
+
+```
+Controller
+
+↓
+
+Service
+
+↓
+
+Repository
+```
+
+---
+
+Beispiel
+
+```php
+class CustomerService
+{
+
+    public function createCustomer()
+
+    {
+
+    }
+
+}
+```
+
+---
+
+Service
+
+übernimmt
+
+- Validierung
+
+- Berechnungen
+
+- Regeln
+
+---
+
+# Kapitel 379
+
+# Zusammenspiel
+
+```
+Browser
+
+↓
+
+Controller
+
+↓
+
+Service
+
+↓
+
+Repository
+
+↓
+
+PDO
+
+↓
+
+MySQL
+```
+
+---
+
+Controller
+
+kennt
+
+keine SQL-Befehle.
+
+---
+
+Repository
+
+kennt
+
+keine HTML-Ausgabe.
+
+---
+
+Saubere Trennung.
+
+---
+
+# Kapitel 380
+
+# Factory Pattern
+
+Factory erzeugt Objekte.
+
+---
+
+Ohne Factory
+
+```php
+$pdo = new PDO(...);
+```
+
+---
+
+Mit Factory
+
+```php
+$pdo = DatabaseFactory::create();
+```
+
+---
+
+Beispiel
+
+```php
+class DatabaseFactory
+{
+
+    public static function create()
+
+    {
+
+        return new PDO(...);
+
+    }
+
+}
+```
+
+---
+
+Vorteile
+
+✓ zentrale Erzeugung
+
+✓ Änderungen nur an einer Stelle
+
+---
+
+# Kapitel 381
+
+# Dependency Injection
+
+Schlechte Lösung
+
+```php
+class Service
+{
+
+    private $pdo;
+
+    public function __construct()
+
+    {
+
+        $this->pdo = new PDO(...);
+
+    }
+
+}
+```
+
+---
+
+Besser
+
+```php
+class Service
+{
+
+    public function __construct(
+
+        PDO $pdo
+
+    ){
+
+        $this->pdo = $pdo;
+
+    }
+
+}
+```
+
+---
+
+Jetzt
+
+wird die Abhängigkeit
+
+von außen geliefert.
+
+---
+
+Merksatz
+
+```
+Nicht selbst erzeugen
+
+↓
+
+übergeben lassen
+```
+
+---
+
+# Kapitel 382
+
+# Front Controller
+
+Alle Anfragen
+
+landen
+
+in einer Datei.
+
+```
+public/index.php
+```
+
+---
+
+Ablauf
+
+```
+Browser
+
+↓
+
+index.php
+
+↓
+
+Router
+
+↓
+
+Controller
+
+↓
+
+Response
+```
+
+---
+
+Vorteile
+
+✓ zentrale Kontrolle
+
+✓ Middleware
+
+✓ Routing
+
+✓ Authentifizierung
+
+---
+
+# Kapitel 383
+
+# Router
+
+Router entscheidet
+
+welcher Controller
+
+aufgerufen wird.
+
+---
+
+Beispiel
+
+```
+GET
+
+/products
+```
+
+↓
+
+ProductController
+
+---
+
+```
+GET
+
+/customers
+```
+
+↓
+
+CustomerController
+
+---
+
+Einfaches Beispiel
+
+```php
+switch($url){
+
+case "/customers":
+
+...
+
+break;
+
+}
+```
+
+---
+
+# Kapitel 384
+
+# Konfiguration
+
+Nicht
+
+```php
+$host="localhost";
+
+$user="root";
+```
+
+überall verteilen.
+
+---
+
+Besser
+
+```
+config/
+
+database.php
+```
+
+---
+
+Beispiel
+
+```php
+return [
+
+"host"=>"localhost",
+
+"db"=>"shop"
+
+];
+```
+
+---
+
+Benutzung
+
+```php
+$config = require
+
+"config/database.php";
+```
+
+---
+
+# Kapitel 385
+
+# Entity
+
+Model
+
+```php
+class Customer
+{
+
+    private int $id;
+
+    private string $name;
+
+}
+```
+
+---
+
+Entity
+
+enthält
+
+nur Daten.
+
+---
+
+Keine SQL.
+
+---
+
+Keine HTML.
+
+---
+
+# Kapitel 386
+
+# Repository arbeitet mit Entity
+
+```php
+$customer =
+
+$repository->findById(5);
+
+echo
+
+$customer->getName();
+```
+
+---
+
+Nicht
+
+```php
+echo
+
+$row["name"];
+```
+
+---
+
+Objekte
+
+statt Arrays.
+
+---
+
+# Kapitel 387
+
+# Vollständiger Ablauf
+
+```
+Browser
+
+↓
+
+Router
+
+↓
+
+CustomerController
+
+↓
+
+CustomerService
+
+↓
+
+CustomerRepository
+
+↓
+
+PDO
+
+↓
+
+MySQL
+
+↓
+
+Customer
+
+↓
+
+View
+
+↓
+
+Browser
+```
+
+---
+
+# Kapitel 388
+
+# Mini-Projekt
+
+Erstellen Sie
+
+eine Kundenverwaltung.
+
+Ordner
+
+```
+Controller
+
+Service
+
+Repository
+
+Model
+
+Config
+
+Views
+```
+
+---
+
+Klassen
+
+```
+Customer
+
+CustomerRepository
+
+CustomerService
+
+CustomerController
+
+DatabaseFactory
+```
+
+---
+
+Controller
+
+ruft
+
+Service
+
+auf.
+
+---
+
+Service
+
+ruft
+
+Repository
+
+auf.
+
+---
+
+Repository
+
+arbeitet
+
+mit PDO.
+
+---
+
+# Kapitel 389
+
+# Typische IHK-Fragen
+
+## Warum Repository?
+
+SQL befindet sich an einer zentralen Stelle und ist leichter wartbar.
+
+---
+
+## Warum Service Layer?
+
+Geschäftslogik wird vom Controller getrennt.
+
+---
+
+## Warum Dependency Injection?
+
+Klassen werden unabhängiger, testbarer und leichter austauschbar.
+
+---
+
+## Warum Factory?
+
+Objekterzeugung wird zentralisiert.
+
+---
+
+## Warum Front Controller?
+
+Alle Anfragen laufen über einen zentralen Einstiegspunkt.
+
+---
+
+## Welche Aufgabe besitzt der Router?
+
+Er ordnet URLs den passenden Controllern zu.
+
+---
+
+# Kapitel 390
+
+# Architekturübersicht
+
+```
+Browser
+
+↓
+
+Front Controller
+
+↓
+
+Router
+
+↓
+
+Controller
+
+↓
+
+Service
+
+↓
+
+Repository
+
+↓
+
+PDO
+
+↓
+
+MySQL
+
+↓
+
+Repository
+
+↓
+
+Service
+
+↓
+
+Controller
+
+↓
+
+View
+
+↓
+
+Browser
+```
+
+---
+
+# Prüfungsfallen
+
+❌ SQL direkt im Controller.
+
+❌ HTML im Repository.
+
+❌ Businesslogik im Model.
+
+❌ Mehrfaches Erzeugen derselben Datenbankverbindung.
+
+❌ Konfigurationsdaten im Quellcode verteilen.
+
+❌ Controller mit zu vielen Aufgaben überladen.
+
+---
+
+# Best Practices
+
+✓ MVC konsequent einhalten.
+
+✓ Repository für Datenzugriffe verwenden.
+
+✓ Geschäftslogik in Services auslagern.
+
+✓ Dependency Injection nutzen.
+
+✓ Konfiguration zentral speichern.
+
+✓ Entities schlank halten.
+
+✓ Controller möglichst klein halten.
+
+---

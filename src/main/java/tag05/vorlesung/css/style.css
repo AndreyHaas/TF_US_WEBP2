@@ -1,0 +1,79 @@
+/* Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #f9f9f9;
+    color: #333;
+    line-height: 1.5;
+}
+
+header {
+    background-color: #4CAF50;
+    color: white;
+    padding: 20px;
+    text-align: center;
+}
+
+.subtitle {
+    font-size: 1.2em;
+    margin-top: 10px;
+}
+
+main {
+    padding: 20px;
+}
+
+.calendar-container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+table.calendar {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.calendar th,
+.calendar td {
+    border: 1px solid #ddd;
+    text-align: center;
+    vertical-align: top;
+    padding: 10px;
+    min-height: 60px;
+}
+
+.calendar th {
+    background-color: #f0f0f0;
+    font-weight: bold;
+}
+
+.calendar td.birthday {
+    background-color: #ffe5e5;
+    font-weight: bold;
+    color: #a00;
+}
+
+.day-number {
+    font-size: 1.2em;
+}
+
+.name {
+    font-size: 0.9em;
+    margin-top: 5px;
+}
+
+footer {
+    margin-top: 40px;
+    text-align: center;
+    padding: 20px;
+    background-color: #4CAF50;
+    color: white;
+    font-size: 0.9em;
+}

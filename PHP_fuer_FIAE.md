@@ -26225,3 +26225,3885 @@ Browser
 ✓ Controller möglichst klein halten.
 
 ---
+
+# Composer, Namespaces und Autoloading
+
+# Kapitel 391
+
+# Was ist Composer?
+
+Composer ist der Standard-Paketmanager für PHP.
+
+Vergleich
+
+| Sprache    | Paketmanager   |
+|------------|----------------|
+| Java       | Maven / Gradle |
+| JavaScript | npm            |
+| Python     | pip            |
+| PHP        | Composer       |
+
+---
+
+Mit Composer können
+
+- Bibliotheken installieren
+- Abhängigkeiten verwalten
+- Klassen automatisch laden
+- Versionen verwalten
+
+---
+
+# Kapitel 392
+
+# Warum Composer?
+
+Früher
+
+```php
+require "A.php";
+require "B.php";
+require "C.php";
+require "D.php";
+```
+
+Bei großen Projekten wurden daraus hunderte Dateien.
+
+---
+
+Heute
+
+```php
+require "vendor/autoload.php";
+```
+
+Fertig.
+
+---
+
+# Kapitel 393
+
+# Installation
+
+Von
+
+https://getcomposer.org
+
+(oder über den Paketmanager des Betriebssystems).
+
+---
+
+Prüfen
+
+```bash
+composer --version
+```
+
+Beispiel
+
+```
+Composer version 2.8.4
+```
+
+---
+
+# Kapitel 394
+
+# composer.json
+
+Jedes Projekt besitzt
+
+```
+composer.json
+```
+
+Beispiel
+
+```json
+{
+    "name": "firma/shop",
+
+    "description": "Webshop",
+
+    "require": {
+
+    }
+
+}
+```
+
+---
+
+Hier stehen
+
+- Projektinformationen
+- Abhängigkeiten
+- Autoload
+- PHP-Version
+
+---
+
+# Kapitel 395
+
+# Paket installieren
+
+Beispiel
+
+```bash
+composer require monolog/monolog
+```
+
+Composer
+
+↓
+
+lädt Paket
+
+↓
+
+installiert Abhängigkeiten
+
+↓
+
+erstellt Autoloader
+
+---
+
+Projekt
+
+```
+vendor/
+
+composer.json
+
+composer.lock
+```
+
+---
+
+# Kapitel 396
+
+# vendor-Verzeichnis
+
+Nach der Installation entsteht
+
+```
+vendor/
+```
+
+Dort befinden sich
+
+```
+vendor/
+
+autoload.php
+
+composer/
+
+monolog/
+
+...
+```
+
+---
+
+Eigene Änderungen im vendor-Ordner sollte man vermeiden.
+
+---
+
+# Kapitel 397
+
+# Autoloading
+
+Früher
+
+```php
+require
+
+"Kunde.php";
+```
+
+---
+
+Heute
+
+```php
+require
+
+"vendor/autoload.php";
+```
+
+---
+
+Danach genügt
+
+```php
+$kunde = new Kunde();
+```
+
+Composer lädt die Klasse automatisch.
+
+---
+
+# Kapitel 398
+
+# Namespaces
+
+Große Projekte besitzen tausende Klassen.
+
+---
+
+Problem
+
+```
+Customer
+
+Customer
+
+Customer
+```
+
+Mehrere Bibliotheken können dieselben Klassennamen besitzen.
+
+---
+
+Lösung
+
+Namespaces.
+
+---
+
+# Kapitel 399
+
+# Namespace definieren
+
+```php
+namespace App\Model;
+
+class Customer
+{
+
+}
+```
+
+---
+
+Benutzung
+
+```php
+use App\Model\Customer;
+
+$c = new Customer();
+```
+
+---
+
+Oder
+
+```php
+$c = new App\Model\Customer();
+```
+
+---
+
+# Kapitel 400
+
+# use
+
+```php
+use App\Service\OrderService;
+```
+
+Jetzt genügt
+
+```php
+$order = new OrderService();
+```
+
+---
+
+Mehrere Klassen
+
+```php
+use App\Model\Customer;
+use App\Model\Order;
+use App\Service\MailService;
+```
+
+---
+
+# Kapitel 401
+
+# PSR-4
+
+PSR bedeutet
+
+```
+PHP Standards Recommendation
+```
+
+PSR-4 beschreibt den Standard für Autoloading.
+
+---
+
+Beispiel
+
+```
+src/
+
+Customer.php
+```
+
+Namespace
+
+```php
+namespace App;
+```
+
+---
+
+Composer weiß dadurch, wo sich Klassen befinden.
+
+---
+
+# Kapitel 402
+
+# composer.json mit PSR-4
+
+```json
+{
+
+    "autoload": {
+
+        "psr-4": {
+
+            "App\\": "src/"
+
+        }
+
+    }
+
+}
+```
+
+---
+
+Danach
+
+```bash
+composer dump-autoload
+```
+
+---
+
+Jetzt werden alle Klassen automatisch gefunden.
+
+---
+
+# Kapitel 403
+
+# Projektstruktur
+
+```
+project
+
+│
+
+├── src
+
+│      Customer.php
+
+│      Order.php
+
+│
+
+├── vendor
+
+│
+
+├── public
+
+│      index.php
+
+│
+
+├── composer.json
+
+└── composer.lock
+```
+
+---
+
+Customer.php
+
+```php
+namespace App;
+
+class Customer
+{
+
+}
+```
+
+---
+
+index.php
+
+```php
+require
+
+"../vendor/autoload.php";
+
+use App\Customer;
+
+$c = new Customer();
+```
+
+---
+
+# Kapitel 404
+
+# composer.lock
+
+Neben
+
+```
+composer.json
+```
+
+existiert
+
+```
+composer.lock
+```
+
+---
+
+composer.json
+
+↓
+
+gewünschte Versionen
+
+---
+
+composer.lock
+
+↓
+
+tatsächlich installierte Versionen
+
+---
+
+Für Teams
+
+wird
+
+```
+composer.lock
+```
+
+mit versioniert.
+
+---
+
+# Kapitel 405
+
+# Semantic Versioning
+
+Versionen
+
+```
+2.5.7
+```
+
+bestehen aus
+
+```
+Major
+
+Minor
+
+Patch
+```
+
+---
+
+Beispiel
+
+```
+1.2.3
+```
+
+↓
+
+```
+1
+
+2
+
+3
+```
+
+---
+
+Bedeutung
+
+| Teil  | Bedeutung               |
+|-------|-------------------------|
+| Major | inkompatible Änderungen |
+| Minor | neue Funktionen         |
+| Patch | Fehlerbehebungen        |
+
+---
+
+# Kapitel 406
+
+# Versionsangaben
+
+```json
+"php": "^8.2"
+```
+
+---
+
+Bedeutung
+
+```
+>=8.2
+
+<9.0
+```
+
+---
+
+Weitere Beispiele
+
+```
+8.2.*
+
+```
+
+↓
+
+alle Patch-Versionen.
+
+---
+
+```
+>=8.2
+```
+
+↓
+
+mindestens 8.2.
+
+---
+
+# Kapitel 407
+
+# Wichtige Composer-Befehle
+
+Installation
+
+```bash
+composer install
+```
+
+---
+
+Update
+
+```bash
+composer update
+```
+
+---
+
+Paket hinzufügen
+
+```bash
+composer require paket/name
+```
+
+---
+
+Paket entfernen
+
+```bash
+composer remove paket/name
+```
+
+---
+
+Autoloader neu erzeugen
+
+```bash
+composer dump-autoload
+```
+
+---
+
+# Kapitel 408
+
+# Packagist
+
+Packagist ist das offizielle Paketarchiv.
+Bekannte Pakete
+
+- Monolog
+- PHPUnit
+- Twig
+- Guzzle
+- Doctrine
+- Symfony Components
+
+---
+
+Installation
+
+```bash
+composer require guzzlehttp/guzzle
+```
+
+---
+
+# Kapitel 409
+
+# Mini-Projekt
+
+Erstellen Sie eine neue Anwendung.
+
+Ordner
+
+```
+src
+
+public
+```
+
+---
+
+composer.json
+
+↓
+
+PSR-4
+
+↓
+
+Namespace
+
+↓
+
+Autoload
+
+↓
+
+Customer-Klasse
+
+↓
+
+Order-Klasse
+
+↓
+
+Controller
+
+↓
+
+Autoload testen
+
+---
+
+# Typische IHK-Fragen
+
+## Was ist Composer?
+
+Ein Paketmanager und Abhängigkeitsverwalter für PHP.
+
+---
+
+## Wozu dient `composer.json`?
+
+Zur Beschreibung des Projekts und seiner Abhängigkeiten.
+
+---
+
+## Unterschied zwischen `composer.json` und `composer.lock`?
+
+`composer.json`
+
+↓
+
+gewünschte Abhängigkeiten.
+
+`composer.lock`
+
+↓
+
+exakt installierte Versionen.
+
+---
+
+## Wozu dient PSR-4?
+
+Zum standardisierten automatischen Laden von Klassen.
+
+---
+
+## Was macht `vendor/autoload.php`?
+
+Es lädt Klassen automatisch, ohne dass jede Datei per `require` eingebunden werden muss.
+
+---
+
+## Was bedeutet `use`?
+
+Importiert Klassen oder Namespaces, damit deren vollqualifizierter Name nicht jedes Mal ausgeschrieben werden muss.
+
+---
+
+# Prüfungsfallen
+
+❌ `vendor/` manuell bearbeiten.
+
+❌ `composer.lock` mit `composer.json` verwechseln.
+
+❌ Namespace und Ordnerstruktur passen nicht zusammen.
+
+❌ `vendor/autoload.php` vergessen.
+
+❌ Klassen ohne Namespace in größeren Projekten verwenden.
+
+---
+
+# Best Practices
+
+✓ Composer für jedes neue Projekt verwenden.
+
+✓ PSR-4 konsequent einsetzen.
+
+✓ Klassen logisch nach Funktionen organisieren.
+
+✓ `composer.lock` im Team versionieren.
+
+✓ Bibliotheken aktuell halten.
+
+✓ Nur benötigte Pakete installieren.
+
+✓ `vendor/` nicht manuell verändern.
+
+---
+
+# PHPUnit, Unit-Tests und Test-Driven Development (TDD)
+
+---
+
+
+# Kapitel 410
+
+# Warum testen?
+
+Software enthält Fehler. Je früher Fehler erkannt werden, desto günstiger ist ihre Behebung.
+
+---
+
+Ohne Tests
+
+```
+Code
+
+↓
+
+Deployment
+
+↓
+
+Kunde findet Fehler
+```
+
+---
+
+Mit Tests
+
+```
+Code
+
+↓
+
+Test
+
+↓
+
+Fehler erkennen
+
+↓
+
+Deployment
+```
+
+---
+
+# Vorteile
+
+✓ höhere Qualität
+
+✓ weniger Fehler
+
+✓ sichere Änderungen
+
+✓ einfachere Wartung
+
+✓ bessere Dokumentation
+
+---
+
+# Kapitel 411
+
+# Testarten
+
+| Test             | Zweck                          |
+|------------------|--------------------------------|
+| Unit-Test        | einzelne Klasse testen         |
+| Integrationstest | Zusammenspiel mehrerer Klassen |
+| Systemtest       | komplette Anwendung            |
+| Akzeptanztest    | Anforderungen prüfen           |
+
+---
+
+Merksatz
+
+```
+Unit
+
+↓
+
+eine Klasse
+
+Integration
+
+↓
+
+mehrere Klassen
+
+System
+
+↓
+
+gesamtes System
+```
+
+---
+
+# Kapitel 412
+
+# Unit-Test
+
+Ein Unit-Test prüft
+eine kleine Einheit.
+
+Beispiel
+
+```php
+class Calculator
+{
+    public function add(int $a, int $b): int
+    {
+        return $a + $b;
+    }
+}
+```
+
+---
+
+Test
+
+```php
+$calculator = new Calculator();
+
+$result = $calculator->add(2,3);
+
+echo $result;
+```
+
+Soll
+
+```
+5
+```
+
+sein.
+
+---
+
+# Kapitel 413
+
+# PHPUnit
+
+PHPUnit ist
+das Standard-Testframework
+für PHP.
+
+Installation
+
+```bash
+composer require --dev phpunit/phpunit
+```
+
+---
+
+Projekt
+
+```
+src/
+
+tests/
+
+vendor/
+```
+
+---
+
+Tests liegen
+im Ordner
+
+```
+tests
+```
+
+---
+
+# Kapitel 414
+
+# Erste Testklasse
+
+```php
+use PHPUnit\Framework\TestCase;
+
+class CalculatorTest extends TestCase
+{
+
+}
+```
+
+---
+
+Testmethode
+
+```php
+public function testAdd()
+{
+
+}
+```
+
+---
+
+Namenskonvention
+
+```
+test...
+```
+
+oder
+
+```php
+#[Test]
+```
+
+(ab PHP 8 mit Attributen möglich)
+
+---
+
+# Kapitel 415
+
+# assertEquals()
+
+```php
+public function testAdd()
+{
+    $calculator = new Calculator();
+
+    $this->assertEquals(
+
+        5,
+
+        $calculator->add(2,3)
+
+    );
+}
+```
+
+---
+
+Erwartung
+
+```
+5
+```
+
+↓
+
+Testergebnis
+
+```
+OK
+```
+
+---
+
+# Kapitel 416
+
+# Wichtige Assertions
+
+| Methode          | Bedeutung           |
+|------------------|---------------------|
+| assertEquals()   | Werte gleich        |
+| assertSame()     | Wert und Typ gleich |
+| assertTrue()     | muss wahr sein      |
+| assertFalse()    | muss falsch sein    |
+| assertNull()     | null erwartet       |
+| assertNotNull()  | nicht null          |
+| assertCount()    | Anzahl prüfen       |
+| assertContains() | Element vorhanden   |
+| assertEmpty()    | leer                |
+| assertNotEmpty() | nicht leer          |
+
+---
+
+Beispiele
+
+```php
+$this->assertTrue(true);
+```
+
+---
+
+```php
+$this->assertFalse(false);
+```
+
+---
+
+```php
+$this->assertNull(null);
+```
+
+---
+
+```php
+$this->assertCount(3,$array);
+```
+
+---
+
+# Kapitel 417
+
+# assertEquals() vs assertSame()
+
+```php
+$this->assertEquals(
+
+5,
+
+"5"
+
+);
+```
+
+Ergebnis
+
+```
+OK
+```
+
+---
+
+```php
+$this->assertSame(
+
+5,
+
+"5"
+
+);
+```
+
+Ergebnis
+
+```
+Fehler
+```
+
+---
+
+Merksatz
+
+```
+Equals
+
+↓
+
+Wert
+
+Same
+
+↓
+
+Wert + Typ
+```
+
+---
+
+# Kapitel 418
+
+# Exceptions testen
+
+Klasse
+
+```php
+throw new Exception(
+
+"Fehler"
+
+);
+```
+
+---
+
+Test
+
+```php
+$this->expectException(
+
+Exception::class
+
+);
+```
+
+---
+
+Danach
+
+```php
+$service->save();
+```
+
+---
+
+# Kapitel 419
+
+# Setup
+
+Gemeinsame Initialisierung.
+
+```php
+protected function setUp(): void
+{
+    $this->calculator = new Calculator();
+}
+```
+
+---
+
+Nun
+kann jeder Test
+denselben Rechner benutzen.
+
+---
+
+# Kapitel 420
+
+# Test Doubles
+
+Große Anwendungen
+verwenden oft
+Datenbanken
+oder Webservices.
+Diese sollen
+im Unit-Test
+nicht verwendet werden.
+
+---
+
+Stattdessen
+werden Test Doubles eingesetzt.
+
+---
+
+Arten
+
+- Dummy
+- Stub
+- Mock
+- Fake
+- Spy
+
+---
+
+Für die IHK
+reichen meist
+Stub und Mock.
+
+---
+
+# Kapitel 421
+
+# Stub
+
+Ein Stub
+liefert feste Werte.
+
+```php
+class CustomerRepositoryStub
+{
+    public function findById($id)
+    {
+        return new Customer();
+    }
+}
+```
+
+---
+
+Damit
+ist keine Datenbank nötig.
+
+---
+
+# Kapitel 422
+
+# Mock
+
+Ein Mock prüft,
+ob Methoden aufgerufen wurden.
+
+Beispiel
+
+```
+MailService
+
+↓
+
+send()
+```
+
+↓
+
+wurde genau einmal aufgerufen.
+
+---
+
+PHPUnit erzeugt Mocks automatisch.
+
+---
+
+# Kapitel 423
+
+# Test Driven Development
+
+TDD arbeitet
+nach folgendem Zyklus.
+
+```
+Red
+
+↓
+
+Green
+
+↓
+
+Refactor
+```
+
+---
+
+Red
+
+↓
+
+Test schlägt fehl.
+
+---
+
+Green
+
+↓
+
+Minimalen Code schreiben.
+
+---
+
+Refactor
+
+↓
+
+Code verbessern.
+
+---
+
+# Beispiel
+
+1. Test schreiben.
+
+↓
+
+Fehler.
+
+---
+
+2. Methode implementieren.
+
+↓
+
+Test erfolgreich.
+
+---
+
+3. Code verbessern.
+
+↓
+
+Test bleibt grün.
+
+---
+
+# Kapitel 424
+
+# Code Coverage
+
+Code Coverage
+zeigt,
+wie viel Code
+durch Tests ausgeführt wurde.
+
+---
+
+Beispiel
+
+```
+80%
+```
+
+bedeutet, 80 %
+des Codes
+wurden getestet.
+
+---
+
+100 %
+bedeutet
+nicht automatisch
+fehlerfreie Software.
+
+---
+
+# Kapitel 425
+
+# Beispielprojekt
+
+```
+Calculator
+
+↓
+
+CalculatorTest
+
+↓
+
+assertEquals()
+
+↓
+
+assertSame()
+
+↓
+
+assertThrows()
+```
+
+---
+
+Erweitern Sie
+den Rechner
+um
+- Subtraktion
+- Multiplikation
+- Division
+
+und schreiben Sie
+für jede Methode
+Tests.
+
+---
+
+# Kapitel 426
+
+# Testen mit Composer
+
+Tests starten
+
+```bash
+vendor/bin/phpunit
+```
+
+---
+
+Oder
+
+```bash
+php vendor/bin/phpunit
+```
+
+---
+
+Einzelnen Test starten
+
+```bash
+vendor/bin/phpunit tests/CalculatorTest.php
+```
+
+---
+
+# Kapitel 427
+
+# Teststruktur
+
+```
+project/
+│
+├── src/
+│
+├── tests/
+│      CalculatorTest.php
+│
+├── vendor/
+│
+└── composer.json
+```
+
+---
+
+Namensregel
+
+```
+Customer
+↓
+CustomerTest
+```
+
+---
+
+# Typische IHK-Fragen
+
+## Was ist ein Unit-Test?
+
+Ein Test,
+der eine einzelne Klasse oder Methode isoliert prüft.
+
+---
+
+## Wozu dient PHPUnit?
+
+Zum automatisierten Testen von PHP-Anwendungen.
+
+---
+
+## Unterschied `assertEquals()` und `assertSame()`?
+
+`assertEquals()`
+
+↓
+
+gleicher Wert.
+
+`assertSame()`
+
+↓
+
+gleicher Wert und gleicher Datentyp.
+
+---
+
+## Was ist ein Mock?
+
+Ein Testobjekt,
+das das Verhalten anderer Objekte simuliert und überprüft.
+
+---
+
+## Was bedeutet TDD?
+
+Test-Driven Development:
+Zuerst den Test schreiben,
+danach den Code implementieren.
+
+---
+
+## Was misst Code Coverage?
+
+Den Anteil des Codes,
+der durch Tests ausgeführt wurde.
+
+---
+
+# Prüfungsfallen
+
+❌ `assertEquals()` und `assertSame()` verwechseln.
+
+❌ Unit-Tests greifen auf echte Datenbanken zu.
+
+❌ Mehrere Funktionen gleichzeitig testen.
+
+❌ Tests voneinander abhängig machen.
+
+❌ Keine eindeutigen Testnamen verwenden.
+
+---
+
+# Best Practices
+
+✓ Kleine, unabhängige Tests schreiben.
+
+✓ Eine Funktion pro Test prüfen.
+
+✓ Aussagekräftige Testnamen verwenden.
+
+✓ Tests regelmäßig automatisiert ausführen.
+
+✓ Mocks und Stubs für externe Abhängigkeiten verwenden.
+
+✓ Fehlerfälle ebenfalls testen.
+
+✓ Tests zusammen mit dem Produktionscode pflegen.
+
+---
+
+# Clean Code, SOLID und professionelle Softwareentwicklung
+
+---
+
+# Kapitel 428
+
+# Was ist Clean Code?
+
+Clean Code bedeutet
+**gut lesbarer, verständlicher und wartbarer Code.**
+Programme werden häufiger gelesen als geschrieben.
+
+---
+
+Merksatz
+
+```
+Code wird einmal geschrieben, aber hundertmal gelesen.
+```
+
+---
+
+**Schlechter** Code kostet Zeit.
+**Guter** Code spart Zeit.
+
+---
+
+# Kapitel 429
+
+# Eigenschaften von Clean Code
+
+Guter Code ist
+
+✓ verständlich
+
+✓ einfach
+
+✓ testbar
+
+✓ wartbar
+
+✓ erweiterbar
+
+✓ eindeutig
+
+---
+
+Schlechter Code ist
+
+❌ kompliziert
+
+❌ doppelt
+
+❌ unübersichtlich
+
+❌ schwer testbar
+
+---
+
+# Kapitel 430
+
+# Aussagekräftige Namen
+
+Schlecht
+
+```php
+$a = 5;
+$b = 10;
+$c = $a + $b;
+```
+
+---
+
+Besser
+
+```php
+$price = 5;
+$tax = 10;
+$totalPrice = $price + $tax;
+```
+
+---
+
+Auch Klassen
+
+```php
+CustomerService
+```
+
+statt
+
+```php
+Service1
+```
+
+---
+
+Methoden
+
+```php
+calculateTotalPrice()
+```
+
+statt
+
+```php
+calc()
+```
+
+---
+
+# Kapitel 431
+
+# Kleine Funktionen
+
+Schlecht
+
+```php
+processEverything()
+```
+
+- Login
+- Datenbank
+- PDF
+- Mail
+- Log
+
+alles in einer Methode.
+
+---
+
+Besser
+
+```php
+login()
+createInvoice()
+sendMail()
+writeLog()
+```
+
+---
+
+Eine Methode
+
+↓
+
+eine Aufgabe.
+
+---
+
+# Kapitel 432
+
+# Kommentare
+
+Kommentare erklären
+
+**Warum**
+nicht
+**Was**.
+
+---
+
+Schlecht
+
+```php
+$i++;
+```
+
+```php
+// Erhöhe i
+```
+
+---
+
+Besser
+
+```php
+// Rabatt erst nach erfolgreicher Zahlung berechnen
+```
+
+---
+
+Noch besser
+
+```php
+$numberOfCustomers++;
+```
+
+Kein Kommentar nötig.
+
+---
+
+# Kapitel 433
+
+# DRY
+
+DRY bedeutet
+
+```
+Don't Repeat Yourself
+```
+
+---
+
+Schlecht
+
+```php
+echo $price * 1.19;
+
+echo $amount * 1.19;
+
+echo $cost * 1.19;
+```
+
+---
+
+Besser
+
+```php
+function calculateVAT($value)
+{
+    return $value * 1.19;
+}
+```
+
+---
+
+Vorteile
+
+✓ weniger Fehler
+
+✓ einfacher wartbar
+
+---
+
+# Kapitel 434
+
+# KISS
+
+KISS bedeutet
+
+```
+Keep It Simple, Stupid
+```
+
+---
+
+Nicht
+komplizierte Lösungen.
+
+---
+
+Beispiel
+
+Schlecht
+
+```php
+if(($a==true)?true:false)
+```
+
+---
+
+Besser
+
+```php
+if($a)
+```
+
+---
+
+Einfach gewinnt.
+
+---
+
+# Kapitel 435
+
+# YAGNI
+
+YAGNI bedeutet
+
+```
+You Aren't Gonna Need It
+```
+
+---
+
+Nicht programmieren,
+was vielleicht
+irgendwann
+gebraucht wird.
+
+---
+
+Schlecht
+
+```
+100 Funktionen
+für spätere Erweiterungen
+```
+
+---
+
+Besser
+
+```
+Nur das entwickeln,
+was heute benötigt wird.
+```
+
+---
+
+# Kapitel 436
+
+# SOLID
+
+SOLID besteht aus
+fünf Prinzipien.
+
+---
+
+| Buchstabe | Bedeutung             |
+|-----------|-----------------------|
+| S         | Single Responsibility |
+| O         | Open Closed           |
+| L         | Liskov Substitution   |
+| I         | Interface Segregation |
+| D         | Dependency Inversion  |
+
+---
+
+Diese fünf Prinzipien gehören
+zu den wichtigsten Architekturregeln.
+
+---
+
+# Kapitel 437
+
+# S
+
+Single Responsibility Principle
+
+---
+
+Jede Klasse
+hat genau
+eine Aufgabe.
+
+---
+
+Schlecht
+
+```php
+Customer
+```
+
+macht
+
+- Login
+- Rechnung
+- PDF
+- Datenbank
+- Mail
+---
+
+Besser
+
+```
+CustomerRepository
+CustomerService
+MailService
+InvoiceService
+```
+---
+
+# Kapitel 438
+
+# O
+
+Open Closed Principle
+
+---
+
+Software soll
+offen
+für Erweiterungen,
+aber
+geschlossen
+für Änderungen sein.
+
+---
+
+Beispiel
+
+Neue Zahlungsart
+
+↓
+
+neue Klasse
+
+↓
+
+bestehender Code bleibt unverändert.
+
+---
+
+# Kapitel 439
+
+# L
+
+Liskov Substitution Principle
+
+---
+
+Unterklassen
+müssen
+Basisklassen
+vollständig ersetzen können.
+
+---
+
+Beispiel
+
+```
+Tier
+
+↓
+
+Hund
+
+↓
+
+Katze
+```
+
+Beide
+können überall
+als
+Tier
+verwendet werden.
+
+---
+
+# Kapitel 440
+
+# I
+
+Interface Segregation Principle
+
+---
+
+Lieber
+mehrere kleine Interfaces
+als
+ein riesiges.
+
+---
+
+Schlecht
+
+```php
+interface Everything
+{
+    save();
+    print();
+    mail();
+    export();
+    ...
+}
+```
+
+---
+
+Besser
+
+```php
+Printable
+```
+
+```php
+Exportable
+```
+
+```php
+MailSender
+```
+
+---
+
+# Kapitel 441
+
+# D
+
+Dependency Inversion Principle
+
+---
+
+Nicht
+von konkreten Klassen
+abhängen.
+
+---
+
+Schlecht
+
+```php
+class Service
+{
+    private MySQLDatabase $db;
+}
+```
+
+---
+
+Besser
+
+```php
+class Service
+{
+    private DatabaseInterface $db;
+}
+```
+
+---
+
+Dadurch
+kann später
+MySQL
+gegen PostgreSQL
+getauscht werden.
+
+---
+
+# Kapitel 442
+
+# Code Smells
+
+Ein Code Smell
+ist
+ein Hinweis
+auf schlechten Code.
+
+---
+
+Typische Code Smells
+
+- lange Methoden
+- riesige Klassen
+- doppelter Code
+- viele Parameter
+- verschachtelte ifs
+- Magic Numbers
+- globale Variablen
+
+---
+
+# Magic Numbers
+
+Schlecht
+
+```php
+$total = $price * 1.19;
+```
+
+---
+
+Besser
+
+```php
+const VAT = 1.19;
+
+$total = $price * VAT;
+```
+
+---
+
+# Kapitel 443
+
+# Refactoring
+
+Refactoring
+verbessert
+den Code,
+ohne
+das Verhalten zu ändern.
+
+---
+
+Vorher
+
+```
+lange Methode
+```
+
+↓
+
+Nachher
+
+```
+mehrere kleine Methoden
+```
+
+---
+
+Vorher
+
+```
+doppelter Code
+```
+
+↓
+
+Nachher
+
+```
+gemeinsame Methode
+```
+
+---
+
+# Kapitel 444
+
+# Beispiel Refactoring
+
+Vorher
+
+```php
+if($customer != null)
+{
+    echo $customer->getName();
+}
+```
+
+---
+
+Nachher
+
+```php
+if($customer === null)
+{
+    return;
+}
+
+echo $customer->getName();
+```
+
+---
+
+        Guard Clause
+
+            ↓
+
+    weniger Verschachtelung.
+
+---
+
+# Kapitel 445
+
+# Guard Clauses
+
+Schlecht
+
+```php
+if($user != null)
+{
+    if($user->isActive())
+    {
+        ...
+    }
+}
+```
+
+---
+
+Besser
+
+```php
+if($user === null)
+{
+    return;
+}
+
+if(!$user->isActive())
+{
+    return;
+}
+
+...
+```
+
+---
+
+# Kapitel 446
+
+# Projektstruktur
+
+```
+Controller
+↓
+Service
+↓
+Repository
+↓
+Model
+```
+
+---
+
+Jede Klasse
+kennt
+nur ihre Aufgabe.
+
+---
+
+# Kapitel 447
+
+# Mini-Projekt
+
+Refaktorieren Sie
+eine Anwendung.
+Vorher
+
+```
+Customer.php
+1200 Zeilen
+```
+
+---
+
+Nachher
+
+```
+CustomerController
+CustomerService
+CustomerRepository
+CustomerValidator
+CustomerMailer
+```
+
+---
+
+# Typische IHK-Fragen
+
+## Was bedeutet DRY?
+
+Code soll nicht mehrfach geschrieben werden.
+
+---
+
+## Was bedeutet KISS?
+
+Lösungen möglichst einfach halten.
+
+---
+
+## Was bedeutet YAGNI?
+
+Nur Funktionen entwickeln,
+die aktuell benötigt werden.
+
+---
+
+## Was bedeutet SOLID?
+
+Fünf Prinzipien
+für wartbare Software.
+
+---
+
+## Was ist Refactoring?
+
+Verbesserung der Codequalität,
+ohne das Verhalten zu verändern.
+
+---
+
+## Was ist ein Code Smell?
+
+Ein Hinweis darauf,
+dass der Code verbessert werden sollte.
+
+---
+
+# Prüfungsfallen
+
+❌ Kommentare statt sprechender Namen.
+
+❌ Riesige Klassen.
+
+❌ SQL im Controller.
+
+❌ Lange Methoden.
+
+❌ Doppelte Logik.
+
+❌ Viele verschachtelte `if`-Blöcke.
+
+❌ Harte Zahlenwerte (Magic Numbers).
+
+---
+
+# Best Practices
+
+✓ Klassen klein halten.
+
+✓ Eine Aufgabe pro Klasse.
+
+✓ Eine Aufgabe pro Methode.
+
+✓ Aussagekräftige Namen verwenden.
+
+✓ Konstanten statt Magic Numbers.
+
+✓ Refactoring regelmäßig durchführen.
+
+✓ SOLID-Prinzipien beachten.
+
+✓ Code immer so schreiben, dass Kollegen ihn leicht verstehen können.
+
+---
+
+# IHK-Prüfungsvorbereitung I – Typische Prüfungsaufgaben und Lösungsstrategien
+
+---
+
+# Kapitel 448
+
+# Wie sind IHK-Aufgaben aufgebaut?
+
+Die IHK prüft nicht nur,
+ob Sie programmieren können,
+sondern auch,
+ob Sie Code verstehen.
+
+---
+
+Typische Aufgabentypen
+
+✓ Code analysieren
+
+✓ Fehler finden
+
+✓ Ausgabe bestimmen
+
+✓ Code ergänzen
+
+✓ SQL schreiben
+
+✓ UML lesen
+
+✓ Netzwerk berechnen
+
+✓ Architektur erklären
+
+---
+
+Nicht geprüft wird
+
+❌ Auswendiglernen großer Programme
+
+---
+
+# Kapitel 449
+
+# Lösungsstrategie
+
+Bearbeiten Sie Aufgaben immer in derselben Reihenfolge.
+
+```
+1.Aufgabe vollständig lesen
+
+↓
+
+2.Schlüsselbegriffe markieren
+
+↓
+
+3.Benötigtes Wissen bestimmen
+
+↓
+
+4.Lösung entwickeln
+
+↓
+
+5.Kontrollieren
+```
+
+---
+
+Viele Punkte gehen verloren,
+weil Aufgaben
+zu schnell gelesen werden.
+
+---
+
+# Kapitel 450
+
+# Code lesen
+
+Beispiel
+
+```php
+$x = 5;
+
+$y = 8;
+
+echo $x + $y;
+```
+
+Frage
+
+```
+Ausgabe?
+```
+
+---
+
+Lösung
+
+```
+13
+```
+
+---
+
+Nicht raten.
+Immer Schritt für Schritt.
+
+---
+
+# Kapitel 451
+
+# Variablen verfolgen
+
+Beispiel
+
+```php
+$a = 5;
+
+$b = $a;
+
+$a = 8;
+
+echo $b;
+```
+
+---
+
+Analyse
+
+```
+a = 5
+↓
+b = 5
+↓
+a = 8
+↓
+b bleibt 5
+```
+
+---
+
+Antwort
+
+```
+5
+```
+
+---
+
+# Kapitel 452
+
+# Schleifen analysieren
+
+```php
+for($i=1;$i<=3;$i++)
+{
+    echo $i;
+}
+```
+
+---
+
+Durchlauf
+
+```
+i=1
+↓
+1
+↓
+i=2
+↓
+2
+↓
+i=3
+↓
+3
+```
+
+Ausgabe
+
+```
+123
+```
+
+---
+
+# Kapitel 453
+
+# Arrays
+
+```php
+$farben = [
+
+"Rot",
+
+"Blau",
+
+"Grün"
+
+];
+
+echo $farben[1];
+```
+
+---
+
+Antwort
+
+```
+Blau
+```
+
+---
+
+Typische Falle
+Index beginnt
+bei
+
+```
+0
+```
+
+---
+
+# Kapitel 454
+
+# Funktionen
+
+```php
+function quad($x)
+{
+    return $x * $x;
+}
+
+echo quad(4);
+```
+
+---
+
+Antwort
+
+```
+16
+```
+
+---
+
+Frage:
+
+    Wann endet die Funktion?
+
+Antwort
+    
+Bei:
+```php
+return
+```
+
+---
+
+# Kapitel 455
+
+# OOP-Aufgabe
+
+```php
+class Hund
+{
+    public function bellen()
+    {
+        echo "Wuff";
+    }
+}
+
+$hund = new Hund();
+
+$hund->bellen();
+```
+
+---
+
+Ausgabe
+
+```
+Wuff
+```
+
+---
+
+Frage
+Was macht
+
+```
+new
+```
+
+Antwort
+
+    Ein Objekt erzeugen.
+
+---
+
+# Kapitel 456
+
+# Vererbung
+
+```php
+class Tier
+{
+    public function essen()
+    {
+        echo "isst";
+    }
+}
+
+class Hund extends Tier
+{
+
+}
+
+$hund = new Hund();
+
+$hund->essen();
+```
+
+---
+
+Antwort
+
+```
+isst
+```
+
+---
+
+Merksatz:
+Unterklassen
+erben
+Methoden der Oberklasse.
+
+---
+
+# Kapitel 457
+
+# SQL-Aufgabe
+
+Tabelle
+
+```
+Kunde
+    ID
+    Name
+    Ort
+```
+
+---
+
+Frage
+
+Alle Kunden aus Berlin.
+
+---
+
+Antwort
+
+```sql
+SELECT *
+FROM Kunde
+WHERE Ort='Berlin';
+```
+
+---
+
+Typische Fehler
+
+❌ = vergessen.
+
+---
+
+❌ Spaltenname falsch.
+
+---
+
+# Kapitel 458
+
+# JOIN-Aufgabe
+
+Tabellen
+
+```
+Kunde
+Bestellung
+```
+
+---
+
+Gesucht
+Name + Bestellnummer.
+
+---
+
+Antwort
+
+```sql
+SELECT k.Name, b.Bestellnummer
+FROM Kunde k
+JOIN Bestellung b
+ON k.ID=b.Kunde_ID;
+```
+
+---
+
+# Kapitel 459
+
+# WHERE
+
+```sql
+SELECT *
+FROM Kunde
+WHERE Ort='Hamburg';
+```
+
+---
+
+Frage
+
+    Welche Datensätze?
+
+---
+
+Antwort
+Nur Kunden
+mit
+```
+Hamburg
+```
+
+---
+
+# Kapitel 460
+
+# COUNT()
+
+```sql
+SELECT COUNT(*)
+FROM Kunde;
+```
+---
+Antwort:
+
+    Anzahl aller Kunden.
+
+---
+
+Nicht
+
+    Datensätze ausgeben.
+
+---
+
+# Kapitel 461
+
+# GROUP BY
+
+```sql
+SELECT Ort, COUNT(*)
+FROM Kunde
+GROUP BY Ort;
+```
+
+---
+
+Frage
+
+Ergebnis?
+
+---
+
+    Für jeden Ort die Anzahl der Kunden.
+
+---
+
+# Kapitel 462
+
+# if
+
+```php
+$x = 10;
+
+if($x > 5)
+{
+    echo "Ja";
+}
+```
+
+---
+
+Antwort
+
+```
+Ja
+```
+
+---
+
+# Kapitel 463
+
+# switch
+
+```php
+$tag = 2;
+
+switch($tag)
+{
+case 1:
+echo "Mo";
+break;
+
+case 2:
+echo "Di";
+break;
+}
+```
+
+Antwort
+
+```
+Di
+```
+
+---
+
+# Kapitel 464
+
+# while
+
+```php
+$i=1;
+
+while($i<=3)
+{
+    echo $i;
+    $i++;
+}
+```
+
+Antwort
+
+```
+123
+```
+
+---
+
+# Kapitel 465
+
+# foreach
+
+```php
+$zahlen=[1,2,3];
+
+foreach($zahlen as $z)
+{
+    echo $z;
+}
+```
+
+Antwort
+
+```
+123
+```
+
+---
+
+# Kapitel 466
+
+# String
+
+```php
+$text="Hallo";
+
+echo strlen($text);
+```
+
+Antwort
+
+```
+5
+```
+
+---
+
+Frage
+
+    Welche Funktion liefert die Stringlänge?
+
+Antwort
+
+```php
+strlen()
+```
+
+---
+
+# Kapitel 467
+
+# Dateizugriff
+
+```php
+file_get_contents(
+    "test.txt"
+);
+```
+
+---
+
+Frage
+
+    Was passiert?
+
+Antwort
+
+    Komplette Datei wird gelesen.
+
+---
+
+# Kapitel 468
+
+# PDO
+
+```php
+$stmt=$pdo->prepare(
+"..."
+);
+
+$stmt->execute();
+```
+
+---
+
+Frage
+
+    Warum prepare?
+
+---
+
+Antwort
+
+    Schutz vor SQL Injection.
+
+---
+
+# Kapitel 469
+
+# HTML
+
+```html
+<form method="post">
+```
+---
+
+Frage
+
+    Welche PHP-Variable?
+
+---
+
+Antwort
+
+```php
+$_POST
+```
+
+---
+
+GET?
+
+```php
+$_GET
+```
+
+---
+
+# Kapitel 470
+
+# Cookies
+
+```php
+setcookie(
+"name",
+"Max"
+);
+```
+
+---
+
+Frage
+
+    Wo gespeichert?
+
+Antwort
+
+    Im Browser.
+
+---
+
+Session?
+
+Antwort
+
+    Auf dem Server.
+
+---
+
+# Kapitel 471
+
+# HTTP
+
+```
+404
+```
+
+Antwort
+
+```
+Nicht gefunden
+```
+
+---
+
+```
+500
+```
+
+↓
+
+    Serverfehler
+
+---
+
+```
+200
+```
+
+↓
+
+    OK
+
+---
+
+# Kapitel 472
+
+# Mini-IHK-Test
+
+## Aufgabe 1
+
+```php
+$x=3;
+$x++;
+
+echo $x;
+```
+
+Antwort?
+
+---
+
+Lösung
+
+```
+4
+```
+
+---
+
+## Aufgabe 2
+
+```php
+$arr=[10,20,30];
+
+echo $arr[2];
+```
+
+Antwort?
+
+---
+
+Lösung
+
+```
+30
+```
+
+---
+
+## Aufgabe 3
+
+```sql
+SELECT COUNT(*)
+FROM Kunde;
+```
+
+---
+
+Antwort?
+
+---
+
+Anzahl aller Kunden.
+
+---
+
+## Aufgabe 4
+
+```php
+echo strlen("PHP");
+```
+
+---
+
+Antwort?
+
+```
+3
+```
+
+---
+
+## Aufgabe 5
+
+Welche HTTP-Methode
+legt Datensätze an?
+
+---
+
+Antwort
+
+```
+POST
+```
+
+---
+
+# Kapitel 473
+
+# Zeitmanagement
+
+Empfehlung
+
+```
+Leichte Aufgaben
+↓
+zuerst
+↓
+schwere Aufgaben
+↓
+zum Schluss
+```
+
+---
+
+Nicht
+20 Minuten
+an einer Aufgabe
+festhängen.
+
+---
+
+# Kapitel 474
+
+# Typische IHK-Fallen
+
+❌ Arrayindex beginnt bei 1.
+
+---
+
+❌
+
+```
+==
+```
+
+und
+
+```
+=
+```
+
+verwechseln.
+
+---
+
+❌
+
+```
+&&
+
+||
+
+```
+
+verwechseln.
+
+---
+
+❌ SQL ohne WHERE.
+
+---
+
+❌ `=` statt `==` im `if`.
+
+---
+
+❌ `COUNT(*)` mit `SUM()` verwechseln.
+
+---
+
+❌ `private` und `protected` vertauschen.
+
+---
+
+❌ Prepared Statements vergessen.
+
+---
+
+# Kapitel 475
+
+# Prüfungsstrategie
+
+Bei jeder Aufgabe fragen
+
+```
+Was wird gefragt?
+↓
+Welche Technik?
+↓
+Welche Funktion?
+↓
+Welche Ausgabe?
+↓
+Kontrolle
+```
+
+---
+
+Nie
+blind programmieren.
+
+---
+
+# Große IHK-Musterprüfung I – PHP, OOP und SQL
+
+# Hinweise
+
+Diese Musterprüfung orientiert sich am Stil der IHK.
+Bearbeitungszeit:
+**90 Minuten**
+Maximal erreichbare Punkte:
+**100 Punkte**
+
+---
+
+# Aufgabe 1 – Datentypen (5 Punkte)
+
+Gegeben ist folgender Code:
+
+```php
+$a = 10;
+$b = "20";
+$c = $a + $b;
+
+echo $c;
+```
+
+## Fragen
+
+1. Welchen Datentyp besitzt `$a`?
+2. Welchen Datentyp besitzt `$b`?
+3. Welchen Wert besitzt `$c`?
+4. Warum tritt kein Fehler auf?
+
+---
+
+## Lösung
+
+1.
+
+```
+int
+```
+
+2.
+
+```
+string
+```
+
+3.
+
+```
+30
+```
+
+4.
+
+PHP konvertiert numerische Strings bei arithmetischen Operationen automatisch in Zahlen (Type Juggling).
+
+---
+
+# Aufgabe 2 – Operatoren (5 Punkte)
+
+Welche Ausgabe entsteht?
+
+```php
+$x = 7;
+
+echo ++$x;
+echo $x++;
+echo $x;
+```
+
+---
+
+## Lösung
+
+```
+889
+```
+
+Erklärung:
+
+```
+x=7
+
+++x → 8
+
+Ausgabe 8
+
+x++ → Ausgabe 8
+
+danach x=9
+
+Ausgabe 9
+```
+
+---
+
+# Aufgabe 3 – Schleifen (8 Punkte)
+
+Welche Ausgabe entsteht?
+
+```php
+for($i=1;$i<=5;$i++)
+{
+    if($i % 2 == 0)
+    {
+        continue;
+    }
+
+    echo $i;
+}
+```
+
+---
+
+## Lösung
+
+```
+135
+```
+
+Gerade Zahlen werden durch `continue` übersprungen.
+
+---
+
+# Aufgabe 4 – Arrays (8 Punkte)
+
+Gegeben:
+
+```php
+$farben = [
+    "Rot",
+    "Blau",
+    "Grün",
+    "Gelb"
+];
+```
+
+Beantworten Sie:
+
+1.
+
+```php
+echo $farben[2];
+```
+
+2.
+
+Wie viele Elemente besitzt das Array?
+
+3.
+
+Welche Funktion liefert die Anzahl?
+
+---
+
+## Lösung
+
+1.
+
+```
+Grün
+```
+
+2.
+
+```
+4
+```
+
+3.
+
+```php
+count()
+```
+
+---
+
+# Aufgabe 5 – Funktionen (8 Punkte)
+
+Schreiben Sie eine Funktion
+
+```php
+summe()
+```
+
+die zwei Zahlen addiert und das Ergebnis zurückgibt.
+
+---
+
+## Musterlösung
+
+```php
+function summe(int $a, int $b): int
+{
+    return $a + $b;
+}
+```
+
+---
+
+# Aufgabe 6 – OOP (10 Punkte)
+
+Erstellen Sie eine Klasse
+
+```
+Produkt
+```
+
+mit
+
+- Name
+- Preis
+
+sowie
+
+- Konstruktor
+- Getter
+- Setter
+
+---
+
+## Musterlösung
+
+```php
+class Produkt
+{
+    private string $name;
+    private float $preis;
+
+    public function __construct(
+        string $name,
+        float $preis
+    ){
+        $this->name = $name;
+        $this->preis = $preis;
+    }
+
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    public function setName(string $name): void
+    {
+        $this->name = $name;
+    }
+
+    public function getPreis(): float
+    {
+        return $this->preis;
+    }
+
+    public function setPreis(float $preis): void
+    {
+        $this->preis = $preis;
+    }
+}
+```
+
+---
+
+# Aufgabe 7 – Vererbung (8 Punkte)
+
+Gegeben
+
+```php
+class Tier
+{
+    public function laut()
+    {
+        echo "Tier";
+    }
+}
+```
+
+Erstellen Sie
+
+```
+Hund
+```
+
+welcher
+
+```
+Wuff
+```
+
+ausgibt.
+
+---
+
+## Lösung
+
+```php
+class Hund extends Tier
+{
+    public function laut()
+    {
+        echo "Wuff";
+    }
+}
+```
+
+---
+
+# Aufgabe 8 – SQL SELECT (10 Punkte)
+
+Tabelle
+
+```
+Kunde
+ID
+Name
+Ort
+```
+
+Schreiben Sie eine SQL-Abfrage,
+welche alle Kunden aus München liefert.
+
+---
+
+## Lösung
+
+```sql
+SELECT *
+FROM Kunde
+WHERE Ort='München';
+```
+
+---
+
+# Aufgabe 9 – SQL JOIN (10 Punkte)
+
+Tabellen
+
+```
+Kunde
+ID
+Name
+```
+
+```
+Bestellung
+ID
+Kunde_ID
+Datum
+```
+
+Geben Sie
+
+Name
+und
+Datum
+aus.
+
+---
+
+## Lösung
+
+```sql
+SELECT k.Name, b.Datum
+FROM Kunde k
+JOIN Bestellung b
+ON k.ID=b.Kunde_ID;
+```
+
+---
+
+# Aufgabe 10 – Prepared Statement (8 Punkte)
+
+Warum verwendet man
+
+```php
+prepare()
+```
+
+anstelle eines normalen SQL-Strings?
+
+---
+
+## Lösung
+
+Prepared Statements
+
+- verhindern SQL-Injection
+- trennen Daten und SQL
+- verbessern häufig die Performance bei mehrfacher Ausführung
+- erhöhen die Sicherheit
+
+---
+
+# Aufgabe 11 – Fehler finden (10 Punkte)
+
+```php
+$name = "Max"
+
+echo $name
+```
+
+---
+
+## Fehler
+
+1. Semikolon fehlt
+
+```php
+$name = "Max";
+```
+
+2. Semikolon fehlt
+
+```php
+echo $name;
+```
+
+---
+
+# Aufgabe 12 – Codeanalyse (10 Punkte)
+
+```php
+$x = 1;
+
+while($x < 5)
+{
+    echo $x;
+    $x++;
+}
+```
+
+Welche Ausgabe entsteht?
+
+---
+
+## Lösung
+
+```
+1234
+```
+
+---
+
+# Aufgabe 13 – PDO (10 Punkte)
+
+Vervollständigen Sie den Code.
+
+```php
+$stmt = $pdo->____("SELECT * FROM Kunde");
+
+$stmt->____();
+```
+
+---
+
+## Lösung
+
+```php
+$stmt = $pdo->prepare(...);
+
+$stmt->execute();
+```
+
+---
+
+# Zusatzaufgabe (Bonus)
+
+Warum sollte man SQL nicht direkt mit Benutzereingaben zusammensetzen?
+
+Beispiel
+
+```php
+$sql =
+"SELECT * FROM Kunde
+WHERE Name='$name'";
+```
+
+---
+
+## Lösung
+
+Dies ermöglicht SQL-Injection.
+Benutzer könnten eigene SQL-Befehle einschleusen.
+Deshalb immer
+
+```php
+prepare()
++
+execute()
+```
+verwenden.
+
+---
+
+# Punkteverteilung
+
+| Aufgabe | Punkte |
+|---------|-------:|
+| 1       |      5 |
+| 2       |      5 |
+| 3       |      8 |
+| 4       |      8 |
+| 5       |      8 |
+| 6       |     10 |
+| 7       |      8 |
+| 8       |     10 |
+| 9       |     10 |
+| 10      |      8 |
+| 11      |     10 |
+| 12      |     10 |
+| 13      |     10 |
+| Bonus   |     +5 |
+
+Maximal:
+
+**100 Punkte (+5 Bonus)**
+
+---
+
+# Bewertungsvorschlag
+
+| Punkte   | Note            |
+|----------|-----------------|
+| 92–100   | Sehr gut        |
+| 81–91    | Gut             |
+| 67–80    | Befriedigend    |
+| 50–66    | Ausreichend     |
+| unter 50 | Nicht bestanden |
+
+---
+
+# Häufige Fehler
+
+❌ Semikolons vergessen
+
+❌ Arrayindex bei 1 beginnen
+
+❌ `=` und `==` verwechseln
+
+❌ `prepare()` vergessen
+
+❌ Getter und Setter falsch schreiben
+
+❌ `extends` mit `implements` verwechseln
+
+❌ `count()` statt `sizeof()` nicht kennen (beides funktioniert, `count()` ist Standard)
+
+---
+
+# Lerntipps
+
+- Lesen Sie jede Aufgabe vollständig.
+- Markieren Sie Schlüsselwörter wie **implementieren**, **begründen**, **ausgeben**, **ergänzen**.
+- Testen Sie Code gedanklich Zeile für Zeile.
+- Schreiben Sie bei SQL zuerst `SELECT`, dann `FROM`, anschließend `JOIN` und zuletzt `WHERE`.
+- Nutzen Sie bei OOP immer die Reihenfolge: Attribute → Konstruktor → Getter → Setter.

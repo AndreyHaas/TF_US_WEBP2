@@ -1,0 +1,192 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    max-width: 800px;
+    margin: 20px auto;
+    background-color: #fafafa;
+}
+
+h1 {
+    color: #2c3e50;
+    border-bottom: 3px solid #3498db;
+    padding-bottom: 10px;
+}
+
+h2 {
+    color: #2c3e50;
+    margin-top: 30px;
+    border-bottom: 2px solid #ddd;
+    padding-bottom: 8px;
+}
+
+h3 {
+    color: #34495e;
+    margin-top: 0;
+}
+
+/* Formular-Stile */
+form {
+    background-color: #ffffff;
+    padding: 25px;
+    border-radius: 10px;
+    border: 1px solid #e0e0e0;
+    margin-bottom: 25px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.form-group {
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+label {
+    display: inline-block;
+    width: 200px;
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+input[type="text"],
+input[type="number"],
+select {
+    padding: 10px 12px;
+    width: 250px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+    transition: border-color 0.3s;
+    background-color: #fcfcfc;
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus,
+select:focus {
+    border-color: #3498db;
+    outline: none;
+    box-shadow: 0 0 5px rgba(52, 152, 219, 0.3);
+    background-color: #ffffff;
+}
+
+.button {
+    background-color: #3498db;
+    color: white;
+    padding: 12px 30px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600;
+    transition: background-color 0.3s, transform 0.1s;
+    margin-top: 5px;
+    margin-left: 200px;
+}
+
+.button:hover {
+    background-color: #2980b9;
+}
+
+.button:active {
+    transform: scale(0.97);
+}
+
+/* Nachrichten */
+.message {
+    margin: 15px 0 5px 200px;
+    padding: 10px 15px;
+    border-radius: 5px;
+}
+
+.message-success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.message-error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+.message-info {
+    background-color: #d1ecf1;
+    color: #0c5460;
+    border: 1px solid #bee5eb;
+}
+
+/* Ausgabe-Bereich */
+.output {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    border: 1px solid #e0e0e0;
+    white-space: pre-wrap;
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-size: 14px;
+    max-height: 450px;
+    overflow-y: auto;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    line-height: 1.6;
+}
+
+.output-empty {
+    color: #7f8c8d;
+    font-style: italic;
+}
+
+.hinweis {
+    color: #7f8c8d;
+    font-style: italic;
+    margin-top: 10px;
+    font-size: 14px;
+    background-color: #f8f9fa;
+    padding: 8px 15px;
+    border-radius: 5px;
+    border-left: 3px solid #3498db;
+}
+
+/* Responsive Anpassungen */
+@media (max-width: 700px) {
+    label {
+        width: 100%;
+        margin-bottom: 5px;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    select {
+        width: 100%;
+    }
+
+    .button {
+        margin-left: 0;
+        width: 100%;
+    }
+
+    .message {
+        margin-left: 0;
+    }
+}
+
+.output::-webkit-scrollbar {
+    width: 8px;
+}
+
+.output::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 5px;
+}
+
+.output::-webkit-scrollbar-thumb {
+    background: #bdc3c7;
+    border-radius: 5px;
+}
+
+.output::-webkit-scrollbar-thumb:hover {
+    background: #95a5a6;
+}

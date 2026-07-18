@@ -1,0 +1,162 @@
+﻿<!DOCTYPE html>
+<!-- Der Validator vor dem Herrn -->
+<!-- https://validator.w3.org/ -->
+<html lang="de">
+	<head>
+		<title>Formulare</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link href="WEBP2-04-Loesung1.css" type="text/css" rel="stylesheet">
+		<script>
+			function ausgeben(ev) {
+				document.getElementById('rangeout').value = ev.target.value;
+			}
+			function ausgeben2(ev) {
+				document.getElementById('colorout').value = ev.target.value;
+			}
+		</script>
+	</head>
+
+	<body onload="document.getElementById('rangefeld').addEventListener('input', ausgeben);
+				  document.getElementById('colorfeld').addEventListener('input', ausgeben2);">
+		<p></p>
+		<form id="formular" action="WEBP2-05-Loesung1.php" target="_blank" method="post">
+			<label for="formular">Formularelemente:</label><br><br>
+
+			<label>Option-Gruppe:</label><br><br>
+			<input type="radio" id="mc" name="Zahlmethode" value="Mastercard">
+			<label for="mc"> Mastercard</label><br>
+			<input type="radio" id="vi" name="Zahlmethode" value="Visa" checked>
+			<label for="vi"> Visa</label><br>
+			<input type="radio" id="ae" name="Zahlmethode" value="AmericanExpress" disabled>
+			<label for="ae"> American Express</label><br>
+			<input type="radio" id="ec" name="Zahlmethode" value="EC Karte">
+			<label for="ec"> EC Karte</label><br>
+
+			<br><hr><br>
+
+			<label>Option-Standalone:</label><br><br>
+			<input type="radio" id="a1" name="option_1" value="Schnitzel">
+			<label for="a1"> Schnitzel</label><br>
+			<input type="radio" id="a2" name="option_2" value="Burger">
+			<label for="a2"> Burger</label><br>
+			<input type="radio" id="a3" name="option_3" value="Fritten">
+			<label for="a3"> Fritten</label><br>
+			<input type="radio" id="a4" name="option_4" value="Currywurst">
+			<label for="a4"> Currywurst</label><br>
+
+			<br><hr><br>
+
+			<label>Checkbox-Gruppe:</label><br><br>
+			<input type="checkbox" id="c1" name="check1[]" value="Schnitzel">
+			<label for="c1"> Schnitzel</label><br>
+			<input type="checkbox" id="c2" name="check1[]" value="Burger">
+			<label for="c2"> Burger</label><br>
+			<input type="checkbox" id="c3" name="check1[]" value="Fritten">
+			<label for="c3"> Fritten</label><br>
+			<input type="checkbox" id="c4" name="check1[]" value="Currywurst">
+			<label for="c4"> Currywurst</label><br>
+
+			<br><hr><br>
+
+			<label>Checkbox-Standalone:</label><br><br>
+			<input type="checkbox" id="b1" name="check2_1" value="Schnitzel">
+			<label for="b1"> Schnitzel</label><br>
+			<input type="checkbox" id="b2" name="check2_2" value="Burger">
+			<label for="b2"> Burger</label><br>
+			<input type="checkbox" id="b3" name="check2_3" value="Fritten">
+			<label for="b3"> Fritten</label><br>
+			<input type="checkbox" id="b4" name="check2_4" value="Currywurst">
+			<label for="b4"> Currywurst</label><br>
+
+			<br><hr><br>
+			<table>
+				<tr><td><label for="textfeld">Ein simples Textfeld</label></td>
+				<td><input id="textfeld" type="text" name="textfeld" maxlength="30"></td></tr>
+			 
+				<tr><td><label for="telfeld">Ein Telefonfeld</label> </td>
+				<td><input id="telfeld" type="tel" name="telfeld" maxlength="30"></td></tr>
+
+				<tr><td><label for="passfeld">Ein Passwortfeld</label> </td>
+				<td><input id="passfeld" type="password" name="passfeld" maxlength="30"></td></tr>
+
+				<tr><td><label for="urlfeld">Ein URL-Feld</label> </td>
+				<td><input id="urlfeld" type="url" name="urlfeld" maxlength="30"></td></tr>
+
+				<tr><td><label for="emailfeld">Ein email-Feld</label> </td>
+				<td><input id="emailfeld" type="email" name="emailfeld" maxlength="30"></td></tr>
+
+				<tr><td><label for="hiddenfeld">Ein hidden-Feld</label> </td>
+				<td><input id="hiddenfeld" type="hidden" name="hiddenfeld" value= "KUNDENALARM" maxlength="30"></td></tr>
+				
+				<tr><td><label for="filefeld">Ein file-Feld</label> </td>
+				<td><input id="filefeld" type="file" name="filefeld"  maxlength="30"></td></tr>
+
+				<tr><td><label for="colorfeld">Ein color-Feld</label> </td>
+				<td><input id="colorfeld" type="color" name="colorfeld" maxlength="30"></td>
+				<td><output id="colorout" for="colorfeld">30</output></td></tr>
+				
+				<tr><td><label for="numberfeld">Ein number-Feld</label> </td>
+				<td><input id="numberfeld" type="number" name="numberfeld" min="30" max="70" value="50"><br></td></tr>
+
+				<tr><td><label for="rangefeld">Ein range-Feld</label> </td>
+				<td><input id="rangefeld" type="range" name="rangefeld" type="range" min="0" max="100" value="30"></td>
+				<td><output id="rangeout" for="rangefeld">30</output></td></tr>
+			</table>
+
+			<br><hr><br>
+		
+			<label>Einzelne Künstler(in):</label><br>
+				<select name="top5_1" size="5">
+					<option>Heino</option>
+					<option>Michael Jackson</option>
+					<option selected>Tom Waits</option>
+					<option>Nina Hagen</option>
+					<option>Marianne Rosenberg</option>
+				</select>
+			<br><br>
+
+			<label>Mehrere Künstler(innen):</label><br>
+				<select name="top5_2[]" size="5" multiple>
+					<option>Heino</option>
+					<option>Michael Jackson</option>
+					<option selected>Tom Waits</option>
+					<option>Nina Hagen</option>
+					<option>Marianne Rosenberg</option>
+				</select>
+			<br><br>
+
+			<br><hr><br>
+
+			<p>Wählen Sie Ihren Lieblingsnamen.</p>
+			<p><label>Vorname:</label>
+			<select  multiple name="Namen[]" size="6">
+				<optgroup label="Namen mit A">
+					<option label="Anna">Anna</option>
+					<option label="Achim">Achim</option>
+					<option label="August">August</option>
+				</optgroup>
+				<optgroup label="Namen mit B">
+					<option label="Berta">Berta</option>
+					<option label="Barbara">Barbara</option>
+					<option label="Bernhard">Bernhard</option>
+				</optgroup>
+				<optgroup label="Namen mit C">
+					<option label="Caesar">Caesar</option>
+					<option label="Christiane">Christiane</option>
+					<option label="Christian">Christian</option>
+				</optgroup>
+			</select>
+			</p>
+
+			<br><hr><br>
+
+			<textarea id="areafeld" name="areafeld" cols="50" rows="10">Hier könnte Ihr Text stehen …</textarea><br>
+			
+			<button form="formular" type="reset">Eingaben zurücksetzen</button>
+			<button type="submit">Eingaben absenden</button>
+		</form>
+
+	</body>
+</html>
+

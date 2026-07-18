@@ -1,0 +1,119 @@
+﻿<!DOCTYPE html>
+<html lang="de">
+	<head>
+		<title>Formulare</title>
+		<link rel="SHORTCUT ICON" href="graphics/blume.jpg">
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link href="WEBP2-04-Loesung2.css" type="text/css" rel="stylesheet">
+	</head>
+
+	<body>
+		<p></p>
+		<form id="formular" action="WEBP2-05-Loesung2.php" target="_blank" method="post">
+			<label for="formular">Bewerbungsformular:</label><br><br>
+
+			<table>
+				<tr><td align=right><label for="textfeld">Vorname</label></td>
+				<td><input id="textfeld" type="text" name="vor" maxlength="30"></td>
+
+				<td align=right><label for="textfeld">Nachname</label></td>
+				<td><input id="textfeld" type="text" name="nach" maxlength="30"></td></tr>
+
+				<tr><td align=right><label for="textfeld">PLZ</label></td>
+				<td><input id="textfeld" type="text" name="plz" maxlength="30"></td>
+
+				<td align=right><label for="textfeld">Strasse</label></td>
+				<td><input id="textfeld" type="text" name="str" maxlength="30"></td></tr>
+
+				<tr><td align=right><label for="textfeld">Ort</label></td>
+				<td><input id="textfeld" type="text" name="ort" maxlength="30"></td>
+
+				<td align=right><label for="emailfeld">Email</label> </td>
+				<td><input id="emailfeld" type="email" name="email" maxlength="30"></td></tr>
+
+				<input id="hiddenfeld" type="hidden" name="hiddenfeld" value= "Ein Bewerber!!!!" maxlength="30">
+				
+			</table>
+
+			<br><hr><br>
+
+			<label for="areafeld1">Erzählen Sie etwas über sich:</label><br><br>
+			<textarea id="areafeld1" name="person" cols="50" rows="10"></textarea><br>
+
+			<br><hr><br>
+
+			<label for="areafeld2">Warum wir?</label><br><br>
+			<textarea id="areafeld2" name="firma" cols="50" rows="10"></textarea><br>
+
+			<br><hr><br>
+
+			<label>Welche Programmiersprachen beherrschen Sie:</label><br><br>
+			<input type="checkbox" id="c1" name="check1[]" value="C">
+			<label for="c1"> C</label>
+					<label>Niveau:</label>
+					<input type="radio" id="c_1" name="cniveau" value="sehr gut">
+					<label for="c_1"> sehr gut</label>
+					<input type="radio" id="c_2" name="cniveau" value="gut">
+					<label for="c_2"> gut</label>
+					<input type="radio" id="c_3" name="cniveau" value="durchschnittlich">
+					<label for="c_3"> durchschnittlich</label>
+					<input type="radio" id="c_4" name="cniveau" value="schlecht">
+					<label for="c_4"> schlecht</label><br>
+
+			<input type="checkbox" id="c2" name="check1[]" value="C++">
+			<label for="c2"> C++</label>
+					<label>Niveau:</label>
+					<input type="radio" id="c_11" name="cpniveau" value="sehr gut">
+					<label for="c_11"> sehr gut</label>
+					<input type="radio" id="c_12" name="cpniveau" value="gut">
+					<label for="c_12"> gut</label>
+					<input type="radio" id="c_13" name="cpniveau" value="durchschnittlich">
+					<label for="c_13"> durchschnittlich</label>
+					<input type="radio" id="c_14" name="cpniveau" value="schlecht">
+					<label for="c_14"> schlecht</label><br>
+			
+			<input type="checkbox" id="c3" name="check1[]" value="C#">
+			<label for="c3"> C#</label>
+					<label>Niveau:</label>
+					<input type="radio" id="c_21" name="csniveau" value="sehr gut">
+					<label for="c_21"> sehr gut</label>
+					<input type="radio" id="c_22" name="csniveau" value="gut">
+					<label for="c_22"> gut</label>
+					<input type="radio" id="c_23" name="csniveau" value="durchschnittlich">
+					<label for="c_23"> durchschnittlich</label>
+					<input type="radio" id="c_24" name="csniveau" value="schlecht">
+					<label for="c_24"> schlecht</label><br>
+			
+			<input type="checkbox" id="c4" name="check1[]" value="PHP">
+			<label for="c4"> PHP</label>
+					<label>Niveau:</label>
+					<input type="radio" id="c_31" name="pniveau" value="sehr gut">
+					<label for="c_31"> sehr gut</label>
+					<input type="radio" id="c_32" name="pniveau" value="gut">
+					<label for="c_32"> gut</label>
+					<input type="radio" id="c_33" name="pniveau" value="durchschnittlich">
+					<label for="c_33"> durchschnittlich</label>
+					<input type="radio" id="c_34" name="pniveau" value="schlecht">
+					<label for="c_34"> schlecht</label><br>
+
+			<br><hr><br>
+
+			<label>Wie sind Sie auf uns aufmerksam geworden?</label><br>
+				<select name="aufmerksam[]" size="3" multiple>
+					<option>Monster.de</option>
+					<option>Stepstone.de</option>
+					<option>Inserat in der FAZ</option>
+					<option>Empfehlung</option>
+					<option>Suche nach Firmen in meiner Region</option>
+				</select>
+			<br><br>
+
+			<br><hr><br>
+
+			<button form="formular" type="reset">Eingaben zurücksetzen</button>
+			<button type="submit">Eingaben absenden</button>
+		</form>
+	</body>
+</html>
+

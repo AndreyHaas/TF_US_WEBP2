@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions
+    name="BuecherService"
+    targetNamespace="http://localhost/bibliothek"
+    xmlns:tns="http://localhost/bibliothek"
+    xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/"
+    xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+    xmlns="http://schemas.xmlsoap.org/wsdl/">
+
+    <message name="getBuecherRequest"/>
+
+    <message name="getBuecherResponse">
+        <part name="return" type="xsd:string"/>
+    </message>
+
+    <portType name="BuecherPortType">
+        <operation name="getBuecher">
+            <input message="tns:getBuecherRequest"/>
+            <output message="tns:getBuecherResponse"/>
+        </operation>
+    </portType>
+
+    <binding name="BuecherBinding" type="tns:BuecherPortType">
+        <soap:binding style="rpc"
+            transport="http://schemas.xmlsoap.org/soap/http"/>
+
+        <operation name="getBuecher">
+            <soap:operation soapAction="getBuecher"/>
+            <input>
+                <soap:body use="encoded"
+                    namespace="http://localhost/bibliothek"
+                    encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+            </input>
+
+            <output>
+                <soap:body use="encoded"
+                    namespace="http://localhost/bibliothek"
+                    encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+            </output>
+        </operation>
+    </binding>
+
+    <service name="BuecherService">
+        <port name="BuecherPort" binding="tns:BuecherBinding">
+            <soap:address location="http://localhost/bibliothek/server.php"/>
+        </port>
+    </service>
+
+</definitions>

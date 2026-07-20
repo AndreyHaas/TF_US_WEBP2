@@ -1,0 +1,213 @@
+/* CSS-Style-Sheet */
+
+@font-face {
+font-family: 'LokiCola';
+src: url('../fonts/lokicola.ttf') format('truetype'); }
+
+a:link {
+color: #FFFFFF;
+text-decoration: none; }
+
+a:visited {
+color: #FFFFFF;
+text-decoration: none; }
+
+a:hover {
+color: #FFFFFF;
+text-decoration: underline;
+background-color: rgba(190,142,168,0.75); }
+
+a:active {
+color: #FFFFFF;
+text-decoration: underline;
+background-color: rgba(190,142,168,0.75); }
+
+html {
+font-family: Verdana, sans-serif;
+color: #FFFFFF;
+text-shadow: 0.1em 0.1em 0.05em #000000;
+background: url(../pics/oregano.jpg);
+background-attachment: fixed;
+background-size: cover;
+background-repeat: no-repeat;
+background-position: 100% 100%;
+background-position: center center;
+display: flex;
+justify-content: center;
+overflow: hidden; }
+
+#wrapper {
+background: url(../pics/background.jpg);
+width: 1600px;
+height: 900px;
+margin-top: 20px;
+border-radius: 15px;
+border: 0;
+display: flex; 
+flex-direction: column; 
+vertical-align: top; }
+
+#logo {
+height: 120px; }
+
+#navigation {
+font-weight: bold;
+height: 50px;
+width: 100%;
+text-align: right;
+vertical-align: top;
+margin-bottom: 20px;}
+
+#screen {
+overflow-x: hidden;
+height: 650px;
+width: 95%;
+text-align: center;
+padding-left: 20px;
+padding-right: 20px;
+border: 0;
+background: rgba(0,0,0,0.3); }
+
+#contenttable {
+width: 100%; }
+
+#contentcolumn {
+width: 66%;
+text-align: center;
+vertical-align: top; }
+
+#contentcart {
+width: 34%;
+/*float: right;*/
+text-align: left;
+vertical-align: top;
+border: 0; }
+
+#menutable {
+width: 100%;
+text-align: left; }
+
+#cart {
+position: fixed;
+width: 285px;
+margin-top: 20px;
+margin-left: 20px; }
+
+#footer {
+color: #F7C677;
+padding-top: 10px;
+text-align: center;
+vertical-align: ; }
+
+#imgkey {
+height: 15px;
+width: 15px; }
+
+#colafont {
+font-family: LokiCola;
+font-size: 25px; }
+
+#carttable {
+width: 100%; }
+
+#cartdiv {
+/*position: fixed;*/
+margin-top: 25px;
+width: 100%; }
+
+#hygiene {
+width: 100%;
+text-align: center; }
+
+.wrappercolumnleft {
+width: 640px; }
+
+.wrappercolumnright {
+width: 960px;
+vertical-align: top; }
+
+.imgpizza {
+margin-top: 20px;
+margin-right: 20px;
+border-radius: 15px; }
+
+.piccolumn {
+text-align: left; }
+
+.infocolumn {
+text-align: left;
+vertical-align: top;
+padding-top: 25px; }
+
+.pizzaname {
+font-weight: bold; }
+
+.description_pizza {
+height: 70px;
+font-size: small; 
+vertical-align: top;
+text-align: left; }
+
+.description_cola {
+height: 20px;
+font-size: small; 
+vertical-align: top;
+text-align: left; }
+
+.pricetable {
+width: 100%;  }
+
+.price_lr {
+font-size: small;
+font-weight: bold;
+text-align: left;
+width: 33%; }
+
+.price_m {
+font-size: small;
+font-weight: bold;
+text-align: left;
+width: 34%; }
+
+.price_extras {
+font-size: small;
+font-weight: bold;
+text-align: left; }
+
+.buttontable {
+width: 100%;
+margin-top: 10px; }
+
+.buttoncolumn {
+text-align: right; }
+
+.addcart {
+height: 25px;
+width: 25px; }
+
+.cartcolumnheader {
+font-size: small;
+font-weight: bold;
+text-align: left; }
+
+.cartcolumn {
+font-size: small;
+text-align: left; }
+
+.cartlasttable {
+width: 100%; }
+ 
+.cartlastcolumnl {
+width: 50%;
+font-size: small;
+font-weight: bold;
+text-align: left;
+vertical-align: bottom; }
+ 
+.cartlastcolumnr {
+width: 50%;
+text-align: right; }
+
+.imgdelete {
+height: 15px;
+width: 15px; }

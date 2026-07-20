@@ -10,7 +10,7 @@ if (!is_dir($verzeichnis)) {
 $timestamp = date('d.m.Y H:i:s');
 
 $nachricht = '';
-$nachricht_typ = ''; // 'success', 'error', 'info'
+$nachricht_typ = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
     $name = trim($_POST['name'] ?? '');
     $qm = trim($_POST['qm'] ?? '');
@@ -43,6 +43,7 @@ $daten = '';
 if (file_exists($datei)) {
     $daten = file_get_contents($datei);
 }
+
 ?>
 <!DOCTYPE html>
 <html lang="de">
@@ -50,7 +51,6 @@ if (file_exists($datei)) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Betriebskosten erfassen</title>
-    <!-- Externes CSS einbinden -->
     <link rel="stylesheet" href="style.css">
 </head>
 <body>

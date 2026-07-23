@@ -1,0 +1,9 @@
+Wiederholung zu den Themen:
+
+- Grundlagen PHP-Programmierung
+- Formulare
+- mit Verzeichnissen und Dateien arbeiten
+- Datenbankanbindung und Abfragen
+- Sicherheit (SQL-Injection, Daten prüfen) 
+
+
